@@ -3,10 +3,10 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "zee-dynamic-page-lib": {
+    "angular-dynamic-page": {
       "projectType": "library",
-      "root": "projects/zee-dynamic-page-lib",
-      "sourceRoot": "projects/zee-dynamic-page-lib/src",
+      "root": "projects/angular-dynamic-page",
+      "sourceRoot": "projects/angular-dynamic-page/src",
       "prefix": "zee",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,24 +17,24 @@
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/zee-dynamic-page-lib/tsconfig.lib.json",
-            "project": "projects/zee-dynamic-page-lib/ng-package.json"
+            "tsConfig": "projects/angular-dynamic-page/tsconfig.lib.json",
+            "project": "projects/angular-dynamic-page/ng-package.json"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/zee-dynamic-page-lib/src/test.ts",
-            "tsConfig": "projects/zee-dynamic-page-lib/tsconfig.spec.json",
-            "karmaConfig": "projects/zee-dynamic-page-lib/karma.conf.js"
+            "main": "projects/angular-dynamic-page/src/test.ts",
+            "tsConfig": "projects/angular-dynamic-page/tsconfig.spec.json",
+            "karmaConfig": "projects/angular-dynamic-page/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/zee-dynamic-page-lib/tsconfig.lib.json",
-              "projects/zee-dynamic-page-lib/tsconfig.spec.json"
+              "projects/angular-dynamic-page/tsconfig.lib.json",
+              "projects/angular-dynamic-page/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -68,7 +68,7 @@
               "projects/dynamic-showcase-app/src/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/zee-dynamic-page-lib/src/assets",
+                "input": "./node_modules/angular-dynamic-page/src/assets",
                 "output": "/assets/"
               }
             ],
@@ -171,5 +171,5 @@
         }
       }
     }},
-  "defaultProject": "zee-dynamic-page-lib"
+  "defaultProject": "angular-dynamic-page"
 }

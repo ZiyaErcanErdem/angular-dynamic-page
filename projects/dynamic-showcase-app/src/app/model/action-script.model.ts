@@ -1,5 +1,5 @@
 import { ScriptType } from './enumerations/script-type.model';
-import { ActionType } from 'zee-dynamic-page-lib/public-api';
+import { ActionType } from 'angular-dynamic-page/public-api';
 import { IActionParam } from './action-param.model';
 import { IAction } from './action.model';
 import { IEndpoint } from './endpoint.model';

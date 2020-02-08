@@ -15,15 +15,15 @@ import {
   Operator,
   PageViewMode,
   DataActionType
- } from 'zee-dynamic-page-lib';
-import { TableFieldControl, TableField } from 'zee-dynamic-page-lib';
-import { BasePageView } from 'zee-dynamic-page-lib';
-import { DynamicService } from 'zee-dynamic-page-lib';
+ } from 'angular-dynamic-page';
+import { TableFieldControl, TableField } from 'angular-dynamic-page';
+import { BasePageView } from 'angular-dynamic-page';
+import { DynamicService } from 'angular-dynamic-page';
 import { TranslateService } from '@ngx-translate/core';
 import { Agent } from './model/agent.model';
 import { Endpoint } from './model/endpoint.model';
 import { EndpointProperty } from './model/endpoint-property.model';
-// import { DynamicConfigService } from 'zee-dynamic-page-lib';
+// import { DynamicConfigService } from 'angular-dynamic-page';
 
 
 @Component({

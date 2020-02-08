@@ -19,11 +19,11 @@
       "dom"
     ],
     "paths": {
-      "zee-dynamic-page-lib": [
-        "dist/zee-dynamic-page-lib"
+      "angular-dynamic-page": [
+        "dist/angular-dynamic-page"
       ],
-      "zee-dynamic-page-lib/*": [
-        "dist/zee-dynamic-page-lib/*"
+      "angular-dynamic-page/*": [
+        "dist/angular-dynamic-page/*"
       ]
     }
   },

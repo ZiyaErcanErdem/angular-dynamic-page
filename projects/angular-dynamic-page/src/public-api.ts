@@ -1,10 +1,10 @@
 /*
- * Public API Surface of zee-dynamic-page-lib
+ * Public API Surface of angular-dynamic-page
  */
 
-// export * from './lib/zee-dynamic-page-lib.service';
-// export * from './lib/zee-dynamic-page-lib.component';
-// export * from './lib/zee-dynamic-page-lib.module';
+// export * from './lib/angular-dynamic-page.service';
+// export * from './lib/angular-dynamic-page.component';
+// export * from './lib/angular-dynamic-page.module';
 
 export * from './lib/dynamic/dynamic.module';
 
