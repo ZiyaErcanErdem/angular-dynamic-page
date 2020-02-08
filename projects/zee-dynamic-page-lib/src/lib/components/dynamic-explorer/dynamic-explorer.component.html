@@ -1,0 +1,57 @@
+<ng-container *ngIf="element">
+    <div class="d-flex flex-fill p-0 align-content-center flex-nowrap">
+        <div class="flex-fill d-flex flex-row">
+            <div class="align-self-start" [ngClass]="explorerIconTheme">
+                <fa-icon *ngIf="hasChildren" [icon]="explorerIcon" class="explorer-icon" (click)="toggle($event)"></fa-icon>
+            </div>
+            <div *ngIf="icon" class="pr-1" [ngClass]="iconTheme">
+                <fa-icon [icon]="icon" class="element-icon"></fa-icon>
+            </div>
+            <div class="flex-fill d-flex flex-column p-0">
+                <div class="flex-fill d-flex flex-row p-0" (click)="toggleSelection($event)">
+                    <div class="flex-fill py-1 mr-auto explorer-view" [ngClass]="selectionTheme">
+                        <ng-container [ngSwitch]="renderAs">
+                            <ng-container *ngSwitchCase="'text'">
+                                <span>{{ textView }}</span>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'template'">
+                                <ng-container *ngTemplateOutlet="templateView; context: viewContext"></ng-container>
+                            </ng-container>
+                            <ng-container *ngSwitchCase="'component'">
+                                <ng-container *ngComponentOutlet="componentView; injector: getElementInjector()"></ng-container>
+                            </ng-container>
+                        </ng-container>
+                    </div>
+                    <ng-container *ngIf="actions">
+                        <div class="ml-auto py-0" [ngClass]="actionTheme">
+                            <ng-container *ngFor="let action of actions;">
+                                <zee-dynamic-button *ngIf="action.visible" class="p-0 pl-1 align-self-center" [action]="action"></zee-dynamic-button>
+                            </ng-container>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="editorAction && editorAction.visible">
+                        <div class="ml-auto py-0" [ngClass]="actionTheme">
+                            <zee-dynamic-button class="p-0 pl-1 align-self-center" [action]="editorAction"></zee-dynamic-button>
+                        </div>
+                    </ng-container>
+                    <ng-container *ngIf="navigations">
+                        <div class="ml-auto py-0 pl-1" [ngClass]="navigationTheme">
+                            <div class="btn-group btn-group-sm" role="group">
+                                <ng-container *ngFor="let navigation of navigations;">
+                                    <zee-dynamic-button *ngIf="navigation.visible"
+                                        [action]="navigation"></zee-dynamic-button>
+                                </ng-container>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+                <ng-container *ngIf="showChildren">
+                    <ng-container *ngFor="let child of children;">
+                        <zee-dynamic-explorer [manager]="manager" [element]="child" [theme]="theme" class="p-0">
+                        </zee-dynamic-explorer>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-container>

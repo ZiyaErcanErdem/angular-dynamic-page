@@ -1,0 +1,28 @@
+{
+  "coreconApp": {
+    "taskExecution": {
+      "home": {
+        "title": "Task Executions",
+        "createLabel": "Create a new Task Execution",
+        "createOrEditLabel": "Create or edit a Task Execution",
+        "notFound": "No Task Executions found"
+      },
+      "created": "A new Task Execution is created with identifier {{ param }}",
+      "updated": "A Task Execution is updated with identifier {{ param }}",
+      "deleted": "A Task Execution is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Task Execution {{ id }}?"
+      },
+      "detail": {
+        "title": "Task Execution"
+      },
+      "executionStartTime": "Execution Start Time",
+      "executionEndTime": "Execution End Time",
+      "executionStatus": "Execution Status",
+      "content": "Content",
+      "contentValidationError": "Content Validation Error",
+      "task": "Task",
+      "flowExecution": "Flow Execution"
+    }
+  }
+}

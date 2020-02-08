@@ -1,0 +1,53 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced. * * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+<style>
+  :host {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .content {
+    display: flex;
+    margin: 16px auto;
+    padding: 0 8px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+
+</style>
+
+<div class="content" role="main">
+
+  <zee-dynamic-panel class="mb-2 w-100" [theme]="endpointTheme" [title]="'Endpoint Page'" >
+    <zee-dynamic-page class="mb-2 w-100" [builder]="endpointPageBuilder" [theme]="endpointTheme" ></zee-dynamic-page>
+  </zee-dynamic-panel>
+
+  <zee-dynamic-panel class="mb-2 w-100" [theme]="agentTheme" [title]="'Agent Page'" >
+    <zee-dynamic-page class="mb-2 w-100" [builder]="agentPageBuilder" [theme]="agentTheme" ></zee-dynamic-page>
+  </zee-dynamic-panel>
+ 
+
+  <zee-dynamic-panel class="mb-2 w-100" [theme]="theme" [title]="'My Panel Title'" [actions]="actions">
+    <zee-dynamic-button class="p-0 pl-1 align-self-center" [action]="buttonAction"> BLA BLA</zee-dynamic-button>
+  </zee-dynamic-panel>
+
+
+  <zee-dynamic-table class="mb-2 w-100" [control]="control" [theme]="theme" [title]="title" (rowSelect)="rowSelected($event)"></zee-dynamic-table>
+
+  
+</div>
+
+
+<router-outlet></router-outlet>

@@ -1,0 +1,42 @@
+:host {
+    padding-bottom: 6px;
+    font-size: 12px;
+    font-weight: 500;
+
+    .dyn-panel-header {
+        font-size: 12px;
+        min-height: 36px;
+        font-weight: 600;
+        padding: 2px !important;
+    }
+
+    .dyn-panel-body {
+        background-color: white;
+    }
+
+    .panel-maximized {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 500 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        background-color: white;
+    }
+
+    .panel-normal {
+        background-color: white;
+        overflow-y: hidden !important;
+        overflow-x: hidden !important;
+        align-items: stretch;
+        display: flex !important;
+    }
+
+    .panel-body-normal {
+        background-color: white;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+}

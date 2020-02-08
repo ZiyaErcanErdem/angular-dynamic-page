@@ -1,0 +1,26 @@
+{
+  "coreconApp": {
+    "contentValidationError": {
+      "home": {
+        "title": "Content Validation Errors",
+        "createLabel": "Create a new Content Validation Error",
+        "createOrEditLabel": "Create or edit a Content Validation Error",
+        "notFound": "No Content Validation Errors found"
+      },
+      "created": "A new Content Validation Error is created with identifier {{ param }}",
+      "updated": "A Content Validation Error is updated with identifier {{ param }}",
+      "deleted": "A Content Validation Error is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Content Validation Error {{ id }}?"
+      },
+      "detail": {
+        "title": "Content Validation Error"
+      },
+      "sourceIndex": "Source Index",
+      "sourceText": "Source Text",
+      "errorText": "Error Text",
+      "task": "Task",
+      "taskExecution": "Task Execution"
+    }
+  }
+}

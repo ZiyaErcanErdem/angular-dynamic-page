@@ -1,0 +1,5 @@
+<div class="dynamic-field form-button" [formGroup]="group">
+    <button [disabled]="field.disabled" type="submit">
+          {{ field.metadata.label | translate }}
+    </button>
+</div>

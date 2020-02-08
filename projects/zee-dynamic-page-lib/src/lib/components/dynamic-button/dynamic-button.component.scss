@@ -1,0 +1,17 @@
+.btn-action-container {
+    max-height: 350px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: inline-block !important;
+}
+:host {
+    .popover-header {
+        font-size: 12px;
+    }
+    .btn-action-container {
+        max-height: 350px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: inline-block !important;
+    }
+}

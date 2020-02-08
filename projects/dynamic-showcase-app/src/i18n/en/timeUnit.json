@@ -1,0 +1,11 @@
+{
+  "coreconApp": {
+    "TimeUnit": {
+      "null": "",
+      "SECOND": "SECOND",
+      "MINUTE": "MINUTE",
+      "HOUR": "HOUR",
+      "DAY": "DAY"
+    }
+  }
+}

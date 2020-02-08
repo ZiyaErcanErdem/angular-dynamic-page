@@ -1,0 +1,23 @@
+:host {
+    background-color: white;
+    padding-top: 0px;
+  
+    .pager-container {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  
+    ngb-pagination {
+      margin-bottom: -10px;
+    }
+  
+    zee-dynamic-item-count {
+      font-size: 12px;
+      font-weight: 500;
+    }
+  
+    ul > .pagination {
+      margin-bottom: 0.1rem !important;
+    }
+  }
+  

@@ -1,0 +1,53 @@
+
+
+<zee-dynamic-panel *ngIf="control" class="my-1 w-100"
+    [embeddedBody]="true"
+    [header]="control.hasHeader"
+    [theme]="theme"
+    [title]="tableTitle"
+    [minimizable]="true"
+    [maximizable]="true"
+    [panelState]="panelState"
+    (panelStateChanged)="handlePanelStateChange($event)"
+    [actions]="actions">
+
+    <span panel-addon="embeded-view">
+    <div *ngIf="filterEnabled" class="input-group input-group-sm">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="table-filter">
+                <fa-icon class="pr-1" [icon]="'filter'"></fa-icon>
+            </span>
+        </div>
+        <input type="text" [(ngModel)]="filteredValue" class="form-control"
+            placeholder="{{'dynamic.action.filter' | translate}}"
+            aria-label="Filter" aria-describedby="table-filter">
+        <div *ngIf="pageSizingEnabled" class="input-group-append">
+            <select [(ngModel)]="pageSize" class="form-control form-control-sm">
+                <option *ngFor="let item of pageSizeList" [ngValue]="item">{{ item }}</option>
+            </select>
+        </div>
+    </div>
+    </span>
+
+    <div class="dyn-table-container d-flex flex-column" [ngClass]="gridBorderTheme">
+        <cdk-table  [dataSource]="control.dataSource$" class="dyn-table">
+            <ng-container *ngFor="let field of control.fields">
+                <ng-container cdkColumnDef="{{field.name}}">
+                    <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell" [fxFlex]="calcColWidth(field)">
+                        <zee-table-sort-header [field]="field" [control]="control"></zee-table-sort-header>
+                    </cdk-header-cell>
+                    <cdk-cell *cdkCellDef="let row" class="dyn-cell" [class.text-center]="field.type==='action'" [fxFlex]="calcColWidth(field)">
+                        <zee-table-cell-view [field]="field" [row]="row" (rowChange)="handleGridRowChange($event)"></zee-table-cell-view>
+                    </cdk-cell>
+                </ng-container>
+            </ng-container>
+            <cdk-header-row *cdkHeaderRowDef="control.displayedColumns$ | async" [ngClass]="gridHeaderRowTheme"></cdk-header-row>
+            <cdk-row *cdkRowDef="let row; columns: control.displayedColumns$ | async"
+                    class="dyn-row" [ngClass] = "{'bg-secondary text-white': control.isSelected(row)}"
+                    (click)="handleGridSelect(row, $event)" ></cdk-row>
+        </cdk-table>
+        <zee-table-pagination *ngIf="paginationEnabled"
+        [control]="control" class="mt-auto"></zee-table-pagination>
+    </div>
+
+</zee-dynamic-panel>

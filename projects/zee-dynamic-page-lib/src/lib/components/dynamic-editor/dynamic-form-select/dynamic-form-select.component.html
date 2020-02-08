@@ -1,0 +1,25 @@
+<ng-container [ngSwitch]="metadata.viewable">
+    <ng-container *ngSwitchCase="false">
+        <div class="form-group" style="display:none;" [formGroup]="group">
+                <input [id]="metadata.path" type="hidden" [formControlName]="metadata.name" />
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchDefault >
+        <div  class="form-group row" [formGroup]="group">
+            <label class="col-3 form-control-label form-control-label-sm" [attr.for]="metadata.path">{{ metadata.label | translate }}</label>
+            <div class="col-9">
+                <select class="form-control form-control-sm" [class.required]="required" [id]="metadata.path" [formControlName]="metadata.name">
+                    <option value="">{{ field.placeholder }}</option>
+                    <option *ngFor="let option of metadata.options" [value]="option.value">
+                        {{ option.label | translate }}
+                    </option>
+                </select>
+                <div [hidden]="!(control?.dirty && control?.invalid)">
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.required">
+                        {{ 'dynamic.validation.required' | translate}}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>

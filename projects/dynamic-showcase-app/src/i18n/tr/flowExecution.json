@@ -1,0 +1,30 @@
+{
+  "coreconApp": {
+    "flowExecution": {
+      "home": {
+        "title": "Flow Executions",
+        "createLabel": "Create a new Flow Execution",
+        "createOrEditLabel": "Create or edit a Flow Execution",
+        "notFound": "No Flow Executions found"
+      },
+      "created": "A new Flow Execution is created with identifier {{ param }}",
+      "updated": "A Flow Execution is updated with identifier {{ param }}",
+      "deleted": "A Flow Execution is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flow Execution {{ id }}?"
+      },
+      "detail": {
+        "title": "Flow Execution"
+      },
+      "executionStartTime": "Execution Start Time",
+      "executionEndTime": "Execution End Time",
+      "totalTaskCount": "Total Task Count",
+      "runningTaskCount": "Running Task Count",
+      "errorTaskCount": "Error Task Count",
+      "executionStatus": "Execution Status",
+      "taskExecution": "Task Execution",
+      "content": "Content",
+      "flow": "Flow"
+    }
+  }
+}

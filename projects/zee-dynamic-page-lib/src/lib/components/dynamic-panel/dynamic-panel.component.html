@@ -1,0 +1,51 @@
+<div class="d-flex flex-column" [ngClass]="containerClass">
+    <div *ngIf="header" class="dyn-panel-header" [ngClass]="panelHeaderClass">
+        <div class="d-flex align-content-center">
+            <div *ngIf="tooltip" class="p-0 m-0 pl-2 align-self-center">
+                <ng-template #tooltipContent>
+                    <div class="d-flex flex-row align-items-center p-2 border rounded" [ngClass]="tooltipClass">
+                        <div class="p-2 ">
+                            <fa-icon [icon]="'exclamation-triangle'"></fa-icon>
+                        </div>
+                        <div class="p-2 mr-2 flex-grow-1">{{ tooltip }}</div>
+                    </div>
+                </ng-template>
+                <button type="button" class="py-0 px-2 btn btn-sm border border-white" [ngClass]="tooltipButtonClass" [ngbPopover]="tooltipContent"
+                    container="body" placement="right" triggers="mouseenter:mouseleave">
+                    <fa-icon class="p-0 m-0" [icon]="'exclamation'"></fa-icon>
+                </button>
+            </div>
+            <div class="p-2 align-self-center flex-grow-1 mr-auto" (click)="toggle($event)">{{ title }}</div>
+            <div class="p-0 align-self-center">
+                <ng-content select="[panel-addon=embeded-view]"></ng-content>
+            </div>
+            <ng-container *ngIf="actions">
+                <ng-container *ngFor="let action of actions;">
+                    <zee-dynamic-button *ngIf="action.visible" class="p-0 pl-2 align-self-center" [action]="action"></zee-dynamic-button>
+                </ng-container>
+            </ng-container>
+            <div class="p-2 align-self-center">
+                <ng-content select="[panel-addon=info]"></ng-content>
+            </div>
+
+            <div *ngIf="isCollapseIconVisible" class="p-2 align-self-center" [attr.title]="'dynamic.action.panelcollapse' | translate"
+                (click)="collapse()">
+                <fa-icon [icon]="collapseIcon" class="pointer"></fa-icon>
+            </div>
+            <div *ngIf="isExpandIconVisible" class="p-2 align-self-center" [attr.title]="expandTitle | translate" (click)="expand()">
+                <fa-icon [icon]="expandIcon" class="pointer"></fa-icon>
+            </div>
+            <div *ngIf="isMaximizeIconVisible" class="p-2 align-self-center" [attr.title]="'dynamic.action.panelmaximize' | translate"
+                (click)="maximize()">
+                <fa-icon [icon]="maximizeIcon" class="pointer"></fa-icon>
+            </div>
+            <div *ngIf="isCloseIconVisible" class="p-2 align-self-center" [attr.title]="'dynamic.action.panelclose' | translate">
+                <fa-icon [icon]="closeIcon" class="pointer" (click)="close()"></fa-icon>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="isContentVisible" class="dyn-panel-body" [ngClass]="panelBodyClass">
+        <ng-content></ng-content>
+    </div>
+</div>
+

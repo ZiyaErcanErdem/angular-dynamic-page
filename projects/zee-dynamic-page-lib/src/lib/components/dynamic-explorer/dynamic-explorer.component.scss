@@ -1,0 +1,27 @@
+:host {
+    background-color: white;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.explorer-view:hover {
+    background-color: rgb(243, 241, 247);
+    cursor: pointer;
+}
+
+.explorer-icon-container {
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.explorer-icon {
+    cursor: pointer;
+}
+
+.element-icon {
+    font-size: 16px;
+}
+
+.pointer {
+    cursor: pointer;
+}

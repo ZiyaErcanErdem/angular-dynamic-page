@@ -1,0 +1,76 @@
+<ng-container [ngSwitch]="inputType">
+    <ng-container *ngSwitchCase="'hidden'">
+        <div class="form-group" style="display:none;" [formGroup]="group">
+             <input [id]="metadata.path" [type]="inputType" [formControlName]="metadata.name" />
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchCase="'radio'">
+        <div class="form-group row" [formGroup]="group">
+            <label  class="col-3 form-control-label form-control-label-sm" [attr.for]="'selected.'+metadata.path">{{ metadata.label | translate }}</label>
+            <div class="col-9">
+                <div class="custom-control custom-radio custom-control-inline form-control-sm">
+                    <input type="radio" [id]="itemIdFirst" [formControlName]="metadata.name" [value]="true" class="custom-control-input">
+                    <label class="custom-control-label" [attr.for]="itemIdFirst">{{ 'dynamic.options.yes' | translate }}</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline form-control-sm">
+                    <input type="radio" [id]="itemIdSecond" [formControlName]="metadata.name" [value]="false" class="custom-control-input">
+                    <label class="custom-control-label" [attr.for]="itemIdSecond">{{ 'dynamic.options.no' | translate }}</label>
+                </div>
+                <div [hidden]="!(control?.dirty && control?.invalid)">
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.required">
+                        {{ 'dynamic.validation.required' | translate}}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container *ngSwitchDefault >
+        <div class="form-group row" [formGroup]="group">
+            <label  class="col-3 form-control-label form-control-label-sm" [attr.for]="metadata.path">{{ metadata.label | translate }}</label>
+            <div class="col-9">
+                <div class="input-group input-group-sm">
+                    <input *ngIf="!isLargeText" class="form-control form-control-sm" [id]="metadata.path" [type]="inputType"
+                        [attr.placeholder]="field.placeholder"
+                        [readonly]="readonlyItem"
+                        [class.required]="required" [minlength]="minLength" [maxlength]="maxLength" [min]="minValue" [max]="maxValue"
+                        [formControlName]="metadata.name" />                                
+                    <textarea  *ngIf="isLargeText" rows="3" class="form-control form-control-sm" [id]="metadata.path" 
+                        [attr.placeholder]="field.placeholder"
+                        [readonly]="readonlyItem"
+                        [class.required]="required" [minlength]="minLength" [maxlength]="maxLength" 
+                        [formControlName]="metadata.name"></textarea>
+                    <div class="input-group-append" *ngIf="selectorEnabled">
+                        <button (click)="openSelector()" class="btn btn-secondary" type="button">
+                            <fa-icon [icon]="'bars'"></fa-icon>
+                        </button>
+                    </div>
+                    <div *ngIf="selectorEnabled && hasSelectedValue()" class="input-group-append">
+                        <button (click)="clearSelectorValue()" class="btn btn-secondary" type="button">
+                                <fa-icon [icon]="'times'"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+                <div [hidden]="!(control?.dirty && control?.invalid)">
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.required">
+                        {{ 'dynamic.validation.required' | translate}}
+                    </small>
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.minlength">
+                        {{ 'dynamic.validation.minlength' | translate:{ min: minLength } }}
+                    </small>
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.maxlength">
+                        {{ 'dynamic.validation.maxlength' | translate:{ min: maxLength } }}
+                    </small>
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.min">
+                        {{ 'dynamic.validation.min' | translate:{ min: minValue } }}
+                    </small>
+                    <small class="form-text text-danger" [hidden]="!control?.errors?.max">
+                        {{ 'dynamic.validation.max' | translate:{ max: maxValue } }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-container>
+
+
+

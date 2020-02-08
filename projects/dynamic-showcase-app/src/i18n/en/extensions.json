@@ -1,0 +1,18 @@
+{
+  "extension": {
+    "action": {
+      "generateMapper": "Generate Mapper",
+      "generateParam": "Generate Parameter",
+      "testCheckScript": "Test",
+      "execute": "Execute",
+      "content": "Content"
+    },
+    "message": {
+      "CM_GENERATED": "Content Mapper is generated.",
+      "PRM_GENERATED": "Parameters are generated.",
+      "PRM_CS_VALIDATED": "CheckScript is validated.",
+      "PRM_CS_EXECUTED": "CheckScript is executed.",
+      "PRM_ACTION_EXECUTED": "Action is executed."
+    }
+  }
+}

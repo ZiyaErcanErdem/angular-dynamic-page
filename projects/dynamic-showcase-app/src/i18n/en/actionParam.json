@@ -1,0 +1,26 @@
+{
+  "coreconApp": {
+    "actionParam": {
+      "home": {
+        "title": "Action Params",
+        "createLabel": "Create a new Action Param",
+        "createOrEditLabel": "Create or edit a Action Param",
+        "notFound": "No Action Params found"
+      },
+      "created": "A new Action Param is created with identifier {{ param }}",
+      "updated": "A Action Param is updated with identifier {{ param }}",
+      "deleted": "A Action Param is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Action Param {{ id }}?"
+      },
+      "detail": {
+        "title": "Action Param"
+      },
+      "paramName": "Param Name",
+      "paramDataType": "Param Data Type",
+      "paramValue": "Param Value",
+      "paramExpression": "Param Expression",
+      "actionScript": "Action Script"
+    }
+  }
+}

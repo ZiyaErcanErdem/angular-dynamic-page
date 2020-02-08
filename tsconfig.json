@@ -17,7 +17,15 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "zee-dynamic-page-lib": [
+        "dist/zee-dynamic-page-lib"
+      ],
+      "zee-dynamic-page-lib/*": [
+        "dist/zee-dynamic-page-lib/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,

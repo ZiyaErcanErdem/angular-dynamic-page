@@ -1,0 +1,12 @@
+{
+  "coreconApp": {
+    "ActionState": {
+      "null": "",
+      "PENDING": "PENDING",
+      "PAUSED": "PAUSED",
+      "PROCESSING": "PROCESSING",
+      "COMPLETED": "COMPLETED",
+      "RESOLVED": "RESOLVED"
+    }
+  }
+}

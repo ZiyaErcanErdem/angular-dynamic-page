@@ -1,0 +1,52 @@
+<ng-template #actionContent>
+    <div *ngIf="action.buttonType !== 'button'"
+        class="btn-group-vertical btn-group-sm btn-action-container" role="group" aria-label="button actions">
+        <button *ngFor="let child of action.childs"
+            [disabled]="child.disabled" (click)="child.emit(child.payload)"
+            type="button"
+            [ngClass]="child.buttonClass"
+            class="text-nowrap btn">
+            <fa-icon class="pr-1 float-left" [icon]="child.iconClass"></fa-icon>
+            <span class="ml-1 float-left text-nowrap">{{ child.i18n ? (child.label | translate) : child.label }}</span>
+            <span class="float-right badge badge-light">{{ child.badge }}</span>
+        </button>
+    </div>
+</ng-template>
+
+<ng-container [ngSwitch]="isDropDown">
+    <ng-container *ngSwitchCase="true">
+        <ng-container *ngIf="isVisible && !action.disabled">
+            <div class="btn-group">
+                <button type="button" #origin
+                        [disabled]="action.disabled" [attr.title]="action.label | translate"
+                        (click)="(action.buttonType === 'split') ? actionButton.click() : action.emit(action.payload, origin)"
+                        class="btn btn-sm text-nowrap" [ngClass]="action.buttonClass">
+                    <fa-icon class="float-left" [ngClass]="iconPadding" [icon]="action.iconClass"></fa-icon>
+                    <span *ngIf="hasLabel" class="d-none d-md-inline">{{ action.i18n ? (action.label | translate) : action.label }}</span>
+                    <span *ngIf="hasBadge" class="badge badge-light">{{ action.badge }}</span>
+                </button>
+                <button #actionButton
+                        [ngbPopover]="actionContent"
+                        [placement]="['top', 'left', 'right', 'bottom']"
+                        [container]="'body'"
+                        type="button"
+                        [disabled]="action.disabled"
+                        class="btn btn-sm" [ngClass]="action.buttonClass">
+                    <fa-icon [icon]="'caret-down'"></fa-icon>
+                </button>
+            </div>
+        </ng-container>
+    </ng-container>
+    <ng-container *ngSwitchDefault>
+        <ng-container *ngIf="isVisible">
+            <button type="button"  #origin
+                [disabled]="action.disabled" [attr.title]="action.label | translate"
+                (click)="action.emit(action.payload, origin)"
+                class="btn btn-sm text-nowrap" [ngClass]="action.buttonClass">
+                <fa-icon [ngClass]="iconPadding" [icon]="action.iconClass"></fa-icon>
+                <span *ngIf="hasLabel" class="d-none d-md-inline">{{ action.i18n ? (action.label | translate) : action.label }}</span>
+                <span *ngIf="hasBadge" class="badge badge-light">{{ action.badge }}</span>
+            </button>
+        </ng-container>
+    </ng-container>
+</ng-container>

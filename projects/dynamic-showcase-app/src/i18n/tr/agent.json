@@ -1,0 +1,29 @@
+{
+  "coreconApp": {
+    "agent": {
+      "home": {
+        "title": "Agents",
+        "createLabel": "Create a new Agent",
+        "createOrEditLabel": "Create or edit a Agent",
+        "notFound": "No Agents found"
+      },
+      "created": "A new Agent is created with identifier {{ param }}",
+      "updated": "A Agent is updated with identifier {{ param }}",
+      "deleted": "A Agent is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Agent {{ id }}?"
+      },
+      "detail": {
+        "title": "Agent"
+      },
+      "agentName": "Agent Name",
+      "agentInstanceId": "Agent Instance Id",
+      "listenURI": "Listen URI",
+      "agentType": "Agent Type",
+      "agentStatus": "Agent Status",
+      "agentDescription": "Agent Description",
+      "task": "Task",
+      "action": "Action"
+    }
+  }
+}

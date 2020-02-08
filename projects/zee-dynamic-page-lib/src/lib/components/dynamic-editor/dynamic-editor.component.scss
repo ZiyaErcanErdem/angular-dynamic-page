@@ -1,0 +1,12 @@
+:host {
+    background-color: white;
+    .query-view {
+        width: 100%;
+        min-height: 400px;
+    }
+
+    .ng-valid[required],
+    .ng-valid.required {
+        border-left: 5px solid green;
+    }
+}

@@ -1,0 +1,12 @@
+<ng-template #actionContent>
+    <div class="btn-group flex-btn-group-container">
+        <ng-container *ngFor="let action of actions;" >
+            <zee-dynamic-button [action]="action"></zee-dynamic-button>
+        </ng-container>
+    </div>
+</ng-template>
+
+<button *ngIf="actions && actions.length > 0" type="button" class="btn btn-outline-secondary btn-sm" placement="left" (click)="$event.stopPropagation();"
+        [ngbPopover]="actionContent" >
+        <fa-icon [icon]="'ellipsis-h'"></fa-icon>
+</button>

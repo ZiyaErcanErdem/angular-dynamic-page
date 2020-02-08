@@ -1,0 +1,26 @@
+{
+  "coreconApp": {
+    "scriptParam": {
+      "home": {
+        "title": "Script Params",
+        "createLabel": "Create a new Script Param",
+        "createOrEditLabel": "Create or edit a Script Param",
+        "notFound": "No Script Params found"
+      },
+      "created": "A new Script Param is created with identifier {{ param }}",
+      "updated": "A Script Param is updated with identifier {{ param }}",
+      "deleted": "A Script Param is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Script Param {{ id }}?"
+      },
+      "detail": {
+        "title": "Script Param"
+      },
+      "paramName": "Param Name",
+      "paramDataType": "Param Data Type",
+      "paramValue": "Param Value",
+      "paramExpression": "Param Expression",
+      "checkScript": "Check Script"
+    }
+  }
+}

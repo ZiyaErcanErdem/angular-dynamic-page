@@ -1,0 +1,22 @@
+<ng-container *ngIf="ready">
+
+    <ng-container *ngIf="(mode !== 'CHILD')">
+        <form class="dynamic-form" [formGroup]="form" (submit)="handleSubmit($event)">
+            <ng-container *ngFor="let item of items;">
+                <zee-dynamic-form-item [builder]="builder" [mode]="mode" [itemConfig]="item"></zee-dynamic-form-item>
+            </ng-container>
+        </form>
+    </ng-container>
+
+    <zee-dynamic-page *ngIf="activeChildBuilder && (mode === 'CHILD')" [builder]='activeChildBuilder' [theme]="theme"></zee-dynamic-page>
+
+    <ng-container *ngIf="false && (mode === 'EDIT' || mode === 'CREATE')">
+        <div> {{ valid }}</div>
+        <div>
+            <textarea class='query-view'>{{ value | json }}</textarea>
+        </div>
+    </ng-container>
+</ng-container>
+<ng-container *ngIf="(mode !== 'CHILD')">
+    <ng-template cdkPortalOutlet></ng-template>
+</ng-container>

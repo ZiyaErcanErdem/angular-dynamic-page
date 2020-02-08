@@ -1,0 +1,72 @@
+:host {
+    width: 100% !important;
+    min-height: 160px !important;
+    .dynamic-popover {
+        display: block;
+        background-color: #fff;
+        padding: 0.25rem;
+        font-size: 12px;
+        box-shadow: 0 2px 14px 0 rgba(0, 0, 0, 0.2);
+        // background-color: red;
+        box-sizing: border-box;
+        overflow: auto;
+        outline: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .dynamic-dialog-container {
+        position: fixed;
+        top: 1%;
+        right: 15%;
+        bottom: 1%;
+        left: 15%;
+        overflow: hidden;
+        outline: 0;
+        background-color: white;
+        border-radius: 0.3rem !important;
+    }
+
+    .dynamic-popup-container {
+        position: fixed;
+        top: 1%;
+        right: 15%; // bottom: 1%;
+        left: 15%;
+        overflow: auto;
+        outline: 0;
+        background-color: white;
+        border-radius: 0.3rem !important;
+    }
+
+    .dynamic-alert-container {
+        overflow: auto;
+        outline: 0;
+        background-color: white;
+        border-radius: 0.3rem !important;
+    }
+
+    .dynamic-dialog-content {
+        height: 100%;
+        min-height: 80px;
+    }
+
+    .dynamic-dialog-header,
+    .dynamic-dialog-footer {
+        border: 0;
+        font-weight: 700;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .dynamic-dialog-body {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .dynamic-alert-message {
+        min-width: 400px;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+    }
+}

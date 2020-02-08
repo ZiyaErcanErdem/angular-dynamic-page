@@ -1,0 +1,27 @@
+<ng-container *ngIf="field">
+    <ng-container [ngSwitch]="field.type">
+        <ng-container *ngSwitchCase="'text'">
+            <input type="text" [(ngModel)]="value" (change)="handleRowChange(field, row, $event)" class="form-control form-control-sm">
+        </ng-container>
+        <ng-container *ngSwitchCase="'number'">
+            <input type="number" [(ngModel)]="value" (change)="handleRowChange(field, row, $event)" class="form-control form-control-sm">
+        </ng-container>
+        <ng-container *ngSwitchCase="'selection'">
+            <select [(ngModel)]="value" (change)="handleRowChange(field, row, $event)" class="form-control form-control-sm">
+                <option *ngFor="let item of field.selection" [ngValue]="item.value">{{item.label}}</option>
+            </select>
+        </ng-container>
+        <ng-container *ngSwitchCase="'action'">
+            <button (click)="field.action(row)" class="btn btn-danger btn-sm">
+                <fa-icon *ngIf="field.icon"class="pr-1" [icon]="field.icon"></fa-icon>
+                <span class="d-none d-md-inline">{{ field.i18n ? (field.label | translate) : field.label }}</span>
+            </button>
+        </ng-container>
+        <ng-container *ngSwitchCase="'static'">
+            <span>{{row | tableCellView:field}}</span>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <span>{{row | tableCellView:field}}</span>
+        </ng-container>
+    </ng-container>
+</ng-container>

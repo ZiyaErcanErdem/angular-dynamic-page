@@ -1,0 +1,29 @@
+{
+  "coreconApp": {
+    "flow": {
+      "home": {
+        "title": "Flows",
+        "createLabel": "Create a new Flow",
+        "createOrEditLabel": "Create or edit a Flow",
+        "notFound": "No Flows found"
+      },
+      "created": "A new Flow is created with identifier {{ param }}",
+      "updated": "A Flow is updated with identifier {{ param }}",
+      "deleted": "A Flow is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Flow {{ id }}?"
+      },
+      "detail": {
+        "title": "Flow"
+      },
+      "flowName": "Flow Name",
+      "flowDescription": "Flow Description",
+      "nextExecutionStartTime": "Next Execution Start Time",
+      "flowState": "Flow State",
+      "flowExecution": "Flow Execution",
+      "task": "Task",
+      "content": "Content",
+      "eventTrigger": "Event Trigger"
+    }
+  }
+}

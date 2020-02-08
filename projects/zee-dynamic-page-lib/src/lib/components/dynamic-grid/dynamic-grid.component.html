@@ -1,0 +1,28 @@
+<ng-container *ngIf="pageReady">
+    <div class="dyn-table-container d-flex flex-column" [ngClass]="gridBorderTheme">
+        <cdk-table [dataSource]="dataSource" [trackBy]="trackByFn" [ngClass]="gridTheme">
+            <ng-container *ngFor="let cmd of columns">
+                <ng-container cdkColumnDef="{{cmd.path}}">
+                    <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell" [fxFlex]="calcColWidth(cmd)">
+                        <zee-dynamic-sort-header [column]="cmd" [builder]="builder" [criteria]="criteria"></zee-dynamic-sort-header>
+                    </cdk-header-cell>
+                    <cdk-cell *cdkCellDef="let row" class="dyn-cell" [fxFlex]="calcColWidth(cmd)">{{row | dynamicCellView:cmd:builderType}}</cdk-cell>
+                </ng-container>
+            </ng-container>
+
+            <ng-container cdkColumnDef="gridActions">
+                <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell dyn-header-cell-action text-right mr-auto">
+                    <zee-dynamic-grid-configurer [builder]="builder" [theme]="theme"></zee-dynamic-grid-configurer>
+                </cdk-header-cell>
+                <cdk-cell *cdkCellDef="let row" class="dyn-cell dyn-cell-action text-right ml-auto ">
+                    <zee-dynamic-grid-actions *ngIf="isSelected(row)" [builder]="builder"></zee-dynamic-grid-actions>
+                </cdk-cell>
+            </ng-container>
+            <cdk-header-row *cdkHeaderRowDef="displayedColumns" [ngClass]="gridHeaderRowTheme"></cdk-header-row>
+            <cdk-row *cdkRowDef="let row; columns: displayedColumns;"
+                        class="dyn-row" [ngClass] = "{'bg-secondary text-white': isSelected(row)}"
+                        (click)="handleGridSelect(row, $event)" ></cdk-row>
+        </cdk-table>
+        <zee-dynamic-pagination *ngIf="paginationEnabled" [builder]="builder" [criteria]="criteria" class="mb-auto"></zee-dynamic-pagination>
+    </div>
+</ng-container>

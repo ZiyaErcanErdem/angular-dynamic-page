@@ -1,0 +1,157 @@
+<ng-container *ngIf="ready">
+    <div class="d-flex flex-nowrap align-content-center flex-row">
+        <div class="align-self-center order-1">
+            <ng-container *ngIf="getCriteriaConditionTemplate() as template; else defaultCriteriaConditionTemplate">
+                <ng-container *ngTemplateOutlet="template; context: {$implicit: criteria}"></ng-container>
+            </ng-container>
+
+            <ng-template #defaultCriteriaConditionTemplate>
+                <ng-container *ngIf="criteria && criteria.predicates.length > 0" >
+                    <button type="button" (click)="criteria.toggleCondition()"
+                            [disabled] = "criteria.conditionReadonly"
+                            class="btn btn-sm" [ngClass]="queryActionButtonClass">
+                        {{criteria.condition === 'AND' ? 'AND' : 'OR'}}
+                    </button>
+                </ng-container>
+            </ng-template>
+        </div>
+
+        <ng-container *ngIf="getCriteriaActionTemplate() as template; else defaultCriteriaAction">
+            <div [ngClass]="getClassName('criteriaAction')">
+                <ng-container *ngTemplateOutlet="template; context: getCriteriaActionContext()"></ng-container>
+            </div>
+        </ng-container>
+
+        <ng-template #defaultCriteriaAction>
+            <div *ngIf="isCreatePredicateActionActive(criteria)" class="align-self-center order-2 ml-auto">
+                <button type="button" [attr.title]="'dynamic.action.createpredicate' | translate" (click)="createPredicate()" [ngClass]="queryActionButtonClass">
+                    <fa-icon [icon]="'plus'"></fa-icon>
+                </button>
+            </div>
+            <div class="align-self-center order-3" *ngIf="isCreateCriteriaActionActive(criteria)">
+                <button type="button" [attr.title]="'dynamic.action.createcriteria' | translate" (click)="createCriteria()" [ngClass]="queryActionButtonClass">
+                    <fa-icon [icon]="'share-alt'"></fa-icon>
+                </button>
+            </div>
+            <ng-container *ngIf="isRemoveCriteriaActionActive(parentCriteria, criteria)">
+                <div class="align-self-center order-4">
+                    <button type="button" [attr.title]="'dynamic.action.removecriteria' | translate"(click)="removeCriteria()" class="btn btn-outline-danger btn-sm">
+                            <fa-icon [icon]="'trash'"></fa-icon>
+                    </button>
+                </div>
+            </ng-container>
+        </ng-template>
+
+    </div>
+
+    <ul [ngClass]="getClassName('queryTree')" *ngIf="criteria && criteria.predicates">
+        <ng-container *ngFor="let predicate of criteria.predicates; let predicateIndex = index; let lastPredicate = last;">
+            <ng-container *ngIf="{visible: !predicate.hidden, hasCriteria: !!predicate.predicates, invalid: !config.allowEmptyCriteria && predicate.predicates && predicate.predicates.length === 0} as local">
+                <li *ngIf="local.visible" [ngClass]="getQueryItemClassName(local)" class="d-flex m-0">
+                <ng-container *ngIf="!local.hasCriteria">
+                    <div class="d-flex flex-nowrap align-content-center flex-row" style="margin:0; padding:0;">
+                        <div class="align-self-center order-1">
+                            <ng-container *ngIf="getPredicateFieldTemplate() as template; else defaultPredicateFieldTemplate">
+                                <ng-container *ngTemplateOutlet="template; context: getPredicateFieldContext(predicate)"></ng-container>
+                            </ng-container>
+
+                            <ng-template #defaultPredicateFieldTemplate>
+                                <div class="d-flex flex-nowrap align-content-center flex-row" style="margin:0; padding:0;">
+                                    <div class="p-1 align-self-center order-1">
+                                        <select class="form-control form-control-sm" [disabled]="predicate.readonly" [(ngModel)]="predicate.relation" (ngModelChange)="changeRelation($event, predicate)">
+                                            <ng-container *ngFor="let relation of relations" >
+                                                <option [ngValue]="relation">{{ relation.label | translate }}</option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                    <div class="align-self-center order-2">
+                                        <select class="form-control form-control-sm" [disabled]="predicate.readonly" [(ngModel)]="predicate.metadata" (ngModelChange)="changeField($event, predicate)">
+                                            <ng-container *ngFor="let column of columns" >
+                                                <option *ngIf="column.columnType !== 'ASSOCIATION' && predicate.relation && predicate.relation.group === column.group" [ngValue]="column">{{column.label | translate}}</option>
+                                            </ng-container>
+                                        </select>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <div class="p-1 align-self-center order-2">
+                            <ng-container *ngIf="getPredicateOperatorTemplate() as template; else defaultOperator">
+                                <ng-container *ngTemplateOutlet="template; context: getPredicateOperatorContext(predicate)"></ng-container>
+                            </ng-container>
+
+                            <ng-template #defaultOperator>
+                                <select class="form-control form-control-sm dyn-operator" [disabled]="predicate.readonly" [(ngModel)]="predicate.operator">
+                                    <option *ngFor="let oper of getOperators(predicate.metadata)" [ngValue]="oper.operator">{{oper.label | translate}}</option>
+                                </select>
+                            </ng-template>
+                        </div>
+                        <div class="align-self-center order-3">
+                            <ng-container *ngIf="findTemplateForPredicate(predicate) as template; else defaultInput">
+                                <ng-container *ngTemplateOutlet="template; context: getPredicateInputContext(predicate)"></ng-container>
+                            </ng-container>
+
+                            <ng-template #defaultInput>
+                                <ng-container [ngSwitch]="getPredicateInputType(predicate.metadata, predicate.operator)">
+                                    <div *ngSwitchCase="'string'" class="input-group input-group-sm">
+                                        <input type="text" [readonly]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                        <div class="input-group-append" *ngIf="predicate.metadata && predicate.metadata.selector">
+                                            <button (click)="openSelector(predicate)" class="btn btn-secondary" type="button"><fa-icon [icon]="'bars'"></fa-icon></button>
+                                        </div>
+                                    </div>
+                                    <div *ngSwitchCase="'number'" class="input-group input-group-sm">
+                                        <input type="number" [readonly]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                        <div class="input-group-append" *ngIf="predicate.metadata && predicate.metadata.selector">
+                                            <button (click)="openSelector(predicate)" class="btn btn-secondary" type="button"><fa-icon [icon]="'bars'"></fa-icon></button>
+                                        </div>
+                                    </div>
+                                    <input *ngSwitchCase="'date'" type="date" [readonly]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                    <input *ngSwitchCase="'time'" type="time" [readonly]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                    <select *ngSwitchCase="'enum'" [disabled]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                            <option *ngFor="let opt of getOptions(predicate.metadata)" [ngValue]="opt.value">{{opt.label | translate}}</option>
+                                    </select>
+                                    <ng-container *ngSwitchCase="'multiselect'">
+                                        <select multiple [disabled]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                            <option *ngFor="let opt of getOptions(predicate.metadata)" [ngValue]="opt.value">{{opt.label | translate}}</option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-container *ngSwitchCase="'boolean'">
+                                        <select [disabled]="predicate.readonly" [(ngModel)]="predicate.value" class="form-control form-control-sm">
+                                            <option [ngValue]="true">TRUE</option>
+                                            <option [ngValue]="false">FALSE</option>
+                                        </select>
+                                    </ng-container>
+                                </ng-container>
+                            </ng-template>
+
+                        </div>
+                        <div class="p-1 align-self-center order-4">
+                            <ng-container *ngIf="getRemovePredicateTemplate() as template; else defaultRemovePredicateTemplate">
+                                <ng-container *ngTemplateOutlet="template; context: getRemovePredicateContext(predicate)"></ng-container>
+                            </ng-container>
+
+                            <ng-template #defaultRemovePredicateTemplate>
+                                <button type="button" class="btn btn-outline-secondary btn-sm"  *ngIf="!predicate.readonly"
+                                        [attr.title]="'dynamic.action.removepredicate' | translate"
+                                        (click)="removePredicate(predicate, criteria)">
+                                    <fa-icon [icon]="'minus'"></fa-icon>
+                                </button>
+                            </ng-template>
+                        </div>
+                    </div>
+
+                </ng-container>
+                <zee-dynamic-query *ngIf="local.hasCriteria" style="width:100%;"
+                    [builder]="builder"
+                    [theme]="theme"
+                    [allowCriteria]="allowCriteria"
+                    [criteria]="predicate"
+                    [templateContext]="templateContext"
+                    [parentCriteria]="criteria">
+                </zee-dynamic-query>
+                <p [ngClass]="getClassName('emptyWarning')" *ngIf="local.invalid">A criteria cannot be empty. Please add a predicate or remove it all together.</p>
+                </li>
+            </ng-container>
+        </ng-container>
+    </ul>
+</ng-container>
+

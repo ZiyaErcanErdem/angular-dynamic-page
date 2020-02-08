@@ -1,0 +1,26 @@
+{
+  "coreconApp": {
+    "actionExecution": {
+      "home": {
+        "title": "Action Executions",
+        "createLabel": "Create a new Action Execution",
+        "createOrEditLabel": "Create or edit a Action Execution",
+        "notFound": "No Action Executions found"
+      },
+      "created": "A new Action Execution is created with identifier {{ param }}",
+      "updated": "A Action Execution is updated with identifier {{ param }}",
+      "deleted": "A Action Execution is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Action Execution {{ id }}?"
+      },
+      "detail": {
+        "title": "Action Execution"
+      },
+      "executionStartTime": "Execution Start Time",
+      "executionEndTime": "Execution End Time",
+      "executionStatus": "Execution Status",
+      "actionLog": "Action Log",
+      "action": "Action"
+    }
+  }
+}

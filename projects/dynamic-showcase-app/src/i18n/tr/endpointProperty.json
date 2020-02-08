@@ -1,0 +1,27 @@
+{
+  "coreconApp": {
+    "endpointProperty": {
+      "home": {
+        "title": "Endpoint Properties",
+        "createLabel": "Create a new Endpoint Property",
+        "createOrEditLabel": "Create or edit a Endpoint Property",
+        "notFound": "No Endpoint Properties found"
+      },
+      "created": "A new Endpoint Property is created with identifier {{ param }}",
+      "updated": "A Endpoint Property is updated with identifier {{ param }}",
+      "deleted": "A Endpoint Property is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Endpoint Property {{ id }}?"
+      },
+      "detail": {
+        "title": "Endpoint Property"
+      },
+      "propKey": "Prop Key",
+      "propKeyType": "Prop Key Type",
+      "propValue": "Prop Value",
+      "propValueType": "Prop Value Type",
+      "propDescription": "Prop Description",
+      "endpoint": "Endpoint"
+    }
+  }
+}

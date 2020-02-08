@@ -1,0 +1,10 @@
+{
+  "coreconApp": {
+    "ActionType": {
+      "null": "",
+      "EMAIL": "EMAIL",
+      "SMS": "SMS",
+      "SCRIPT": "SCRIPT"
+    }
+  }
+}

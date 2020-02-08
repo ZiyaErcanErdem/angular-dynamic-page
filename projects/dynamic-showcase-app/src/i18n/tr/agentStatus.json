@@ -1,0 +1,10 @@
+{
+  "coreconApp": {
+    "AgentStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "PASSIVE": "PASSIVE",
+      "DISCONNECTED": "DISCONNECTED"
+    }
+  }
+}

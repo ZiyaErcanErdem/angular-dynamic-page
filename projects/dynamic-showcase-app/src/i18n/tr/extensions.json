@@ -1,0 +1,18 @@
+{
+  "extension": {
+    "action": {
+      "generateMapper": "Mapper Oluştur",
+      "generateParam": "Parametre Oluştur",
+      "testCheckScript": "Test Et",
+      "execute": "Çalıştır",
+      "content": "İçerik"
+    },
+    "message": {
+      "CM_GENERATED": "Content Mapper oluşturuldu.",
+      "PRM_GENERATED": "Parametreler oluşturuldu.",
+      "PRM_CS_VALIDATED": "CheckScript sorunsuz çalışıyor.",
+      "PRM_CS_EXECUTED": "CheckScript çalıştırıldı.",
+      "PRM_ACTION_EXECUTED": "Aksiyon çalıştırıldı."
+    }
+  }
+}

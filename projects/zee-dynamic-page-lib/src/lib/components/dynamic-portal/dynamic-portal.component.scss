@@ -1,0 +1,32 @@
+:host {
+    background-color: white;
+
+    .dyn-portal-header {
+        font-size: 12px;
+        height: 36px;
+        font-weight: 600;
+        padding: 2px !important;
+    }
+
+    .pointer {
+        cursor: pointer;
+    }
+
+    .dyn-portal-body {
+        overflow-y: auto;
+        overflow-x: hidden;
+        font-size: 12px;
+        font-weight: 500;
+        margin-bottom: -6px;
+    }
+
+    .dyn-portal-body-page {
+        max-height: 540px;
+        min-height: 540px;
+    }
+
+    .dyn-portal-body-child-page {
+        max-height: 480px;
+        min-height: 480px;
+    }
+}

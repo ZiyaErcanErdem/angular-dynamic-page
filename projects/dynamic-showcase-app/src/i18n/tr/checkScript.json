@@ -1,0 +1,30 @@
+{
+  "coreconApp": {
+    "checkScript": {
+      "home": {
+        "title": "Check Scripts",
+        "createLabel": "Create a new Check Script",
+        "createOrEditLabel": "Create or edit a Check Script",
+        "notFound": "No Check Scripts found"
+      },
+      "created": "A new Check Script is created with identifier {{ param }}",
+      "updated": "A Check Script is updated with identifier {{ param }}",
+      "deleted": "A Check Script is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Check Script {{ id }}?"
+      },
+      "detail": {
+        "title": "Check Script"
+      },
+      "scriptName": "Script Name",
+      "scriptType": "Script Type",
+      "scriptSource": "Script Source",
+      "actionRuleExpression": "Action Rule Expression",
+      "scriptParam": "Script Param",
+      "task": "Task",
+      "content": "Content",
+      "endpoint": "Endpoint",
+      "contentMapper": "Content Mapper"
+    }
+  }
+}

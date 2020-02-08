@@ -1,0 +1,13 @@
+
+<div (click) = "handleSortRequest()" class="d-flex align-content-center flex-nowrap">
+    <div class="align-self-center mr-auto p-2">
+        <ng-container *ngIf="field.label; else emptyLabel">
+            <span>{{ field.i18n ? (field.label | translate) : field.label }}</span>
+        </ng-container>
+    </div>
+    <fa-icon *ngIf="sortable" [icon]="sortIcon" class="align-self-center p-2 dyn-sort-image"></fa-icon>
+</div>
+
+<ng-template #emptyLabel>
+    <span>&nbsp;</span>
+</ng-template>

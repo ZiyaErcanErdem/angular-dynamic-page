@@ -1,0 +1,29 @@
+{
+  "coreconApp": {
+    "actionScript": {
+      "home": {
+        "title": "Action Scripts",
+        "createLabel": "Create a new Action Script",
+        "createOrEditLabel": "Create or edit a Action Script",
+        "notFound": "No Action Scripts found"
+      },
+      "created": "A new Action Script is created with identifier {{ param }}",
+      "updated": "A Action Script is updated with identifier {{ param }}",
+      "deleted": "A Action Script is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Action Script {{ id }}?"
+      },
+      "detail": {
+        "title": "Action Script"
+      },
+      "actionCode": "Action Code",
+      "scriptName": "Script Name",
+      "scriptType": "Script Type",
+      "actionType": "Action Type",
+      "actionSource": "Action Source",
+      "actionParam": "Action Param",
+      "action": "Action",
+      "endpoint": "Endpoint"
+    }
+  }
+}

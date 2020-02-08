@@ -1,0 +1,11 @@
+{
+  "coreconApp": {
+    "TriggerType": {
+      "null": "",
+      "MANUAL": "MANUAL",
+      "PERIODIC": "PERIODIC",
+      "CRON": "CRON",
+      "EVENT": "EVENT"
+    }
+  }
+}

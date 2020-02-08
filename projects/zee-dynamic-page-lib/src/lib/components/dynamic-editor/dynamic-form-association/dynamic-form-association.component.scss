@@ -1,0 +1,18 @@
+:host {
+    .form-group {
+        margin-bottom: 0.3rem;
+    }
+    .id-column {
+        flex: 0.3 1 auto !important;
+        width: 1%;
+    }
+
+    .ng-valid[required],
+    .ng-valid.required {
+        border-left: 5px solid green;
+    }
+
+    .ng-invalid:not(form) {
+        border-left: 5px solid red;
+    } 
+}

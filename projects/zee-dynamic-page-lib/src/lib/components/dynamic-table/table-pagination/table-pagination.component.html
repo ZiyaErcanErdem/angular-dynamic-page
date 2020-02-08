@@ -1,0 +1,16 @@
+<ng-container *ngIf="activated">
+    <div class="pager-container">
+        <div class="row justify-content-center pt-2" *ngIf="dataSize > 0">
+            <ngb-pagination size="sm"
+                    [collectionSize]="dataSize"
+                    [(page)]="pageIndex"
+                    [pageSize]="pageSize"
+                    [maxSize]="5"
+                    [rotate]="true"
+                    [boundaryLinks]="true"></ngb-pagination>
+        </div>
+        <div class="row justify-content-center pb-2">
+            <zee-dynamic-item-count [page]="pageIndex" [total]="dataSize" [itemsPerPage]="pageSize"></zee-dynamic-item-count>
+        </div>
+    </div>
+</ng-container>

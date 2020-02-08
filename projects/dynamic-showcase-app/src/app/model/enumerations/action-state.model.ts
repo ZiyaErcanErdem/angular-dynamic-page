@@ -1,0 +1,7 @@
+export const enum ActionState {
+  PENDING = 'PENDING',
+  PAUSED = 'PAUSED',
+  PROCESSING = 'PROCESSING',
+  COMPLETED = 'COMPLETED',
+  RESOLVED = 'RESOLVED'
+}

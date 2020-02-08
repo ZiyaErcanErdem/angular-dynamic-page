@@ -1,0 +1,13 @@
+{
+  "coreconApp": {
+    "EndpointSpec": {
+      "null": "",
+      "ANY": "ANY",
+      "MSSQL": "MSSQL",
+      "MYSQL": "MYSQL",
+      "POSTGRESQL": "POSTGRESQL",
+      "ORACLE": "ORACLE",
+      "MONGODB": "MONGODB"
+    }
+  }
+}

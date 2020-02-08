@@ -1,0 +1,8 @@
+
+<div (click) = "handleSortRequest()" class="d-flex align-content-center flex-nowrap">
+    <div class="align-self-center mr-auto p-2">
+        {{ showPrefix ? (prefix | translate) + '.' : '' }}{{ column.label | translate}}
+    </div>
+    <fa-icon [icon]="sortIcon" class="align-self-center p-2 dyn-sort-image"></fa-icon>
+</div>
+

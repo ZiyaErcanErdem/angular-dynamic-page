@@ -1,0 +1,25 @@
+<ng-container *ngIf="metamodel">
+    <ng-container [ngSwitch]="mode">
+        <ng-container *ngSwitchCase="'GRID'">
+            <div class="btn-group dyn-grid-config" ngbDropdown role="group" [autoClose]="'outside'" [placement]="['bottom-right']" boundary="window">
+                <button [ngClass]="configurerButtonClass" [attr.id]="dropdownId" ngbDropdownToggle>
+                    <fa-icon [icon]="'list'"></fa-icon>
+                </button>
+                <div class="dropdown-menu p-0 m-0 dyn-grid-cols" ngbDropdownMenu [attr.aria-labelledby]="dropdownId">
+                    <div class="dropdown-item" *ngFor="let cmd of metamodel">
+                        <div class="form-check" (click)="$event.stopPropagation();">
+                            <input class="form-check-input form-check-input-sm" type="checkbox" #cntrl value="selected" (change)="reconfigure($event, cmd)"
+                                [checked]="isSelected(cmd)" [attr.id]="dropdownId+'-'+cmd.path">
+                            <label class="form-check-label form-check-label-sm" [attr.for]="dropdownId+'-'+cmd.path">{{ cmd.group }}.{{ cmd.label | translate }}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+            <button type="button" [ngClass]="configurerButtonClass" (click)="toogleGrid()">
+                <fa-icon [icon]="gridToogleIconClass"></fa-icon>
+            </button>
+        </ng-container>
+    </ng-container>
+</ng-container>

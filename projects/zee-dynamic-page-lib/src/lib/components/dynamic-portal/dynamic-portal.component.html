@@ -1,0 +1,7 @@
+<zee-dynamic-panel *ngIf="ready" [actions]="actions" [theme]="theme" [title]="title | translate" (panelStateChanged)="handlePanelStateChange($event)"
+    [closable]="true" [minimizable]="false">
+    <ng-template cdkPortalOutlet></ng-template>
+    <span>
+        <ng-content select="[portal-addon=portal]"></ng-content>
+    </span>
+</zee-dynamic-panel>

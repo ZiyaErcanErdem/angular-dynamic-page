@@ -1,0 +1,84 @@
+:host {
+    .dyn-table-container {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .dyn-table {
+        display: block;
+        overflow-x: hidden;
+        overflow-y: auto;
+        margin-bottom: 0;
+        max-height: 610px;
+        min-height: 350px;
+        background-color: white;
+    }
+
+    .dyn-table-page {
+        // max-height: 490px;
+        min-height: 490px;
+    }
+
+    .dyn-table-grid {
+        // max-height: 490px;
+        min-height: 350px;
+    }
+
+    .dyn-table-child-page {
+        // max-height: 480px;
+        min-height: 480px;
+    }
+
+    .dyn-table-popup {
+        // max-height: 450px;
+        min-height: 450px;
+    }
+
+    .dyn-row,
+    .dyn-header-row {
+        display: flex;
+        align-items: center;
+        min-height: 26px;
+        padding: 0 2px;
+        font-size: 12px;
+    }
+
+    .dyn-header-row {
+        background-color: #f7f7f7;
+        min-height: 36px;
+        font-weight: 600;
+        border: 0px;
+        z-index: auto;
+    }
+
+    .dyn-row {
+        border-bottom-width: 1px;
+        border-bottom-style: solid;
+        border-bottom-color: #ccc;
+        cursor: pointer;
+        font-weight: 400;
+    }
+    .dyn-row:hover {
+        background-color: rgb(243, 241, 247);
+    }
+    .dyn-cell,
+    .dyn-header-cell {
+        flex: 1;
+        overflow: hidden;
+        word-wrap: break-word;
+    }
+    .dyn-row-selected {
+        background-color: rgb(223, 222, 226);
+    }
+
+    .dyn-header-cell-action,
+    .dyn-cell-action {
+        width: 45px !important;
+        max-width: 45px !important;
+        margin: 0 !important;
+        margin-left: auto !important;
+        padding: 0 !important;
+        border-right: 0 !important;
+    }
+}

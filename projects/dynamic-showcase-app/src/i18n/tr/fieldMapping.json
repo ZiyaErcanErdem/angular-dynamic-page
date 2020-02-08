@@ -1,0 +1,33 @@
+{
+  "coreconApp": {
+    "fieldMapping": {
+      "home": {
+        "title": "Field Mappings",
+        "createLabel": "Create a new Field Mapping",
+        "createOrEditLabel": "Create or edit a Field Mapping",
+        "notFound": "No Field Mappings found"
+      },
+      "created": "A new Field Mapping is created with identifier {{ param }}",
+      "updated": "A Field Mapping is updated with identifier {{ param }}",
+      "deleted": "A Field Mapping is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Field Mapping {{ id }}?"
+      },
+      "detail": {
+        "title": "Field Mapping"
+      },
+      "sourceIndex": "Source Index",
+      "sourceName": "Source Name",
+      "sourceFormat": "Source Format",
+      "sourceStartIndex": "Source Start Index",
+      "sourceEndIndex": "Source End Index",
+      "sourceDataType": "Source Data Type",
+      "targetName": "Target Name",
+      "targetColName": "Target Col Name",
+      "targetDataType": "Target Data Type",
+      "transformation": "Transformation",
+      "requiredData": "Required Data",
+      "contentMapper": "Content Mapper"
+    }
+  }
+}

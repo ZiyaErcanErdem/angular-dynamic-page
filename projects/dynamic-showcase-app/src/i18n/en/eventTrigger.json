@@ -1,0 +1,28 @@
+{
+  "coreconApp": {
+    "eventTrigger": {
+      "home": {
+        "title": "Event Triggers",
+        "createLabel": "Create a new Event Trigger",
+        "createOrEditLabel": "Create or edit a Event Trigger",
+        "notFound": "No Event Triggers found"
+      },
+      "created": "A new Event Trigger is created with identifier {{ param }}",
+      "updated": "A Event Trigger is updated with identifier {{ param }}",
+      "deleted": "A Event Trigger is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Event Trigger {{ id }}?"
+      },
+      "detail": {
+        "title": "Event Trigger"
+      },
+      "triggerName": "Trigger Name",
+      "triggerType": "Trigger Type",
+      "triggerPeriod": "Trigger Period",
+      "triggerTimeUnit": "Trigger Time Unit",
+      "triggerCronExpression": "Trigger Cron Expression",
+      "triggerCronTimeZone": "Trigger Cron Time Zone",
+      "flow": "Flow"
+    }
+  }
+}

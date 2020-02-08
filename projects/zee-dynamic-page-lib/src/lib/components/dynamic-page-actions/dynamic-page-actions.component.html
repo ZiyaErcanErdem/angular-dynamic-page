@@ -1,0 +1,11 @@
+<zee-dynamic-panel class="w-100" [actions]="panelActions" [theme]="theme" [title]="title | translate" [minimizable]="false" [maximizable]="panelMaximizable"
+    [panelState]="panelState" (panelStateChanged)="handlePanelStateChange($event)">
+    <zee-dynamic-query [criteria]="query" [builder]="builder" [theme]="theme" allowCriteria="true" (keydown.enter)="search()"
+        [ngClass]="{'d-none': !queryEnabled}">
+    </zee-dynamic-query>
+    <div class="float-right btn-group flex-btn-group-container">
+        <ng-container *ngFor="let action of queryActions;">
+            <zee-dynamic-button class="ml-1" *ngIf="action && action.visible" [action]="action"></zee-dynamic-button>
+        </ng-container>
+    </div>
+</zee-dynamic-panel>

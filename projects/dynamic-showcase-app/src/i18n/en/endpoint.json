@@ -1,0 +1,29 @@
+{
+  "coreconApp": {
+    "endpoint": {
+      "home": {
+        "title": "Endpoints",
+        "createLabel": "Create a new Endpoint",
+        "createOrEditLabel": "Create or edit a Endpoint",
+        "notFound": "No Endpoints found"
+      },
+      "created": "A new Endpoint is created with identifier {{ param }}",
+      "updated": "A Endpoint is updated with identifier {{ param }}",
+      "deleted": "A Endpoint is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Endpoint {{ id }}?"
+      },
+      "detail": {
+        "title": "Endpoint"
+      },
+      "endpointName": "Endpoint Name",
+      "endpointInstanceId": "Endpoint Instance Id",
+      "endpointType": "Endpoint Type",
+      "endpointSpec": "Endpoint Spec",
+      "endpointDescription": "Endpoint Description",
+      "endpointProperty": "Endpoint Property",
+      "checkScript": "Check Script",
+      "actionScript": "Action Script"
+    }
+  }
+}

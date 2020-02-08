@@ -1,0 +1,66 @@
+<div class="dynamic-popover">
+    <div class="d-flex flex-column dynamic-dialog-content">
+        <div *ngIf="!!config.header" class="p-2 dynamic-dialog-header" [ngClass]="dialogHeaderTheme">
+            <div class="d-flex justify-content-between">
+                <div class="p-2 mr-auto"></div>
+                <div *ngIf="!!config.title" class="p-2">
+                    <ng-container *ngIf="!!config.i18n; else noTranslation">
+                        {{ config.title | translate:i18nParams }}
+                    </ng-container>
+                    <ng-template #noTranslation>
+                        {{ config.title }}
+                    </ng-template>
+                </div>
+                <div class="p-2 ml-auto" (click)="close()">
+                    <fa-icon [icon]="'times'"></fa-icon>
+                </div>
+            </div>
+        </div>
+        <div class="p-0 py-1 align-self-stretch dynamic-dialog-body border-0">
+            <ng-container [ngSwitch]="renderAs">
+                <ng-container *ngSwitchCase="'text'">
+                    <ng-container *ngIf="!!config.i18n; else noTranslation">
+                        <div class="dynamic-alert-message mx-auto align-middle p-2">
+                            <span>{{ message | translate:i18nParams }}</span>
+                        </div>
+                    </ng-container>
+                    <ng-template #noTranslation>
+                        <div class="dynamic-alert-message mx-auto align-middle p-2">
+                            <span>{{ message }}</span>
+                        </div>
+                    </ng-template>
+                </ng-container>
+                <ng-container *ngSwitchCase="'template'">
+                    <ng-container *ngTemplateOutlet="templateRef; context: context"></ng-container>
+                </ng-container>
+                <ng-container *ngSwitchCase="'component'">
+                    <ng-container *ngComponentOutlet="componentType"></ng-container>
+                </ng-container>
+            </ng-container>
+        </div>
+        <div *ngIf="hasFooter" class="mt-auto p-0 dynamic-dialog-footer"
+            [ngClass]="dialogFooterTheme">
+            <div class="d-flex justify-content-end p-1">
+                <ng-container *ngFor="let action of actions;">
+                    <zee-dynamic-button *ngIf="action.visible" [action]="action" class="ml-1"></zee-dynamic-button>
+                </ng-container>
+                <ng-container *ngIf="popoverType === 'alert'">
+                    <button type="button" class="btn btn-sm btn-danger text-nowrap ml-1" (click)="close()">
+                        <fa-icon class="pr-1" [icon]="'check'"></fa-icon>
+                        <span class="d-none d-md-inline">Close</span>
+                    </button>
+                </ng-container>
+                <ng-container *ngIf="popoverType === 'confirmation'">
+                    <button type="button" class="btn btn-sm btn-success text-nowrap ml-1" (click)="close(true)">
+                        <fa-icon class="pr-1" [icon]="'check'"></fa-icon>
+                        <span class="d-none d-md-inline">{{ 'dynamic.action.ok' | translate}}</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-warning text-nowrap ml-1" (click)="close(false)">
+                        <fa-icon class="pr-1" [icon]="'ban'"></fa-icon>
+                        <span class="d-none d-md-inline">{{ 'dynamic.action.cancel' | translate}}</span>
+                    </button>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

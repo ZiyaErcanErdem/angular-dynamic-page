@@ -1,0 +1,38 @@
+<ng-container *ngIf="ready && idColumn">
+    <div class="form-group row" [formGroup]="group">
+        <label  class="col-3 form-control-label form-control-label-sm" [attr.for]="idColumn.path">{{ parentColumn.label | translate }}</label>
+        <div class="col-9">
+            <div class="input-group input-group-sm">
+                <input readonly class="form-control form-control-sm readonly"
+                      [ngClass]="{'id-column': descColumn, 'ml-1': (!mode && !(control && control?.invalid))}"
+                      [id]="idColumn.path" type="text"
+                      [formControlName]="idColumn.name"
+                      [class.required]="required" [min]="minValue" />
+                <ng-container *ngIf="descColumn">
+                    <input readonly class="form-control form-control-sm readonly" [id]="descColumn.path" type="text" [formControlName]="descColumn.name" />
+                </ng-container>
+                <div *ngIf="!isChild" class="input-group-append">
+                    <button (click)="openRelationPopup()" class="btn btn-secondary" type="button">
+                        <fa-icon [icon]="'bars'"></fa-icon>
+                    </button>
+                </div>
+                <div *ngIf="!isChild && hasValue()" class="input-group-append">
+                    <button (click)="clearValue()" class="btn btn-secondary" type="button">
+                        <fa-icon [icon]="'times'"></fa-icon>
+                    </button>
+                </div>
+            </div>
+            <div [hidden]="!(control?.dirty && control?.invalid)">
+                <small class="form-text text-danger" [hidden]="!control?.errors?.required">
+                    {{ 'dynamic.validation.required' | translate}}
+                </small>
+                <small class="form-text text-danger" [hidden]="!control?.errors?.min">
+                    {{ 'dynamic.validation.min' | translate:{ min: minValue } }}
+                </small>
+                <small class="form-text text-danger" [hidden]="!control?.errors?.needsAssociation">
+                    {{ 'dynamic.validation.required' | translate }}
+                </small>
+            </div>
+        </div>
+    </div>
+</ng-container>

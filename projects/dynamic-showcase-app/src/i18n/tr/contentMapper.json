@@ -1,0 +1,27 @@
+{
+  "coreconApp": {
+    "contentMapper": {
+      "home": {
+        "title": "Content Mappers",
+        "createLabel": "Create a new Content Mapper",
+        "createOrEditLabel": "Create or edit a Content Mapper",
+        "notFound": "No Content Mappers found"
+      },
+      "created": "A new Content Mapper is created with identifier {{ param }}",
+      "updated": "A Content Mapper is updated with identifier {{ param }}",
+      "deleted": "A Content Mapper is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Content Mapper {{ id }}?"
+      },
+      "detail": {
+        "title": "Content Mapper"
+      },
+      "mapperName": "Mapper Name",
+      "itemFormat": "Item Format",
+      "containsHeader": "Contains Header",
+      "fieldDelimiter": "Field Delimiter",
+      "checkScript": "Check Script",
+      "fieldMapping": "Field Mapping"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+:host {
+    .dropdown-item {
+        font-size: 12px;
+    }
+    .dyn-grid-config {
+        position: static;
+    }
+    .dyn-grid-cols {
+        max-height: 450px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}

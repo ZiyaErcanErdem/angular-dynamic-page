@@ -1,0 +1,27 @@
+<ng-container *ngIf="ready">
+    <a class="dynamic-export-template" #exportTemplateLink></a>
+    <zee-dynamic-panel class="w-100" [theme]="theme"
+        [actions]="actions" [title]="title | translate"
+        [minimizable]="false" [maximizable]="false">
+
+        <div *ngIf="canUpload() && downloadInfo === null" class="form-group inputDnD">
+            <input #file type="file" id="inputFile" class="form-control-file font-weight-bold"
+                [ngClass]="{'text-primary': (!selectedFile), 'text-success': (selectedFile)}"
+                accept=".xls, .xlsx, .csv"
+                (change)="onFilesAdded($event)"
+                [disabled]="uploading || uploadSuccessful"
+                [attr.data-title]="uploadInfo | translate:i18nParams">
+        </div>
+        <div *ngIf="canDownload() && downloadInfo" (click)="clearDownloadInfo()" class="p-3 mb-1 bg-success text-white">{{downloadInfo  | translate:i18nParams}}</div>
+
+    </zee-dynamic-panel>
+</ng-container>
+
+
+
+
+
+
+
+
+
