@@ -1,6 +1,26 @@
 {
   "name": "angular-dynamic-page",
   "version": "0.0.1",
+  "description": "Angular dynamic CRUD page generation from JPA metamodel",
+  "author": "Ziya Ercan Erdem",
+  "keywords": [
+    "angular",
+    "typescript",
+    "javascript",
+    "bootstrap",
+    "JPA Metamodel",
+    "CRUD Page",
+    "dynamic-page"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ZiyaErcanErdem/angular-dynamic-page",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZiyaErcanErdem/angular-dynamic-page.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ZiyaErcanErdem/angular-dynamic-page/issues"
+  },  
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",

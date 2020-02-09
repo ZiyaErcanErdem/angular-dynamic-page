@@ -19,12 +19,12 @@
       "dom"
     ],
     "paths": {
-      "angular-dynamic-page": [
-        "dist/angular-dynamic-page"
-      ],
-      "angular-dynamic-page/*": [
-        "dist/angular-dynamic-page/*"
-      ]
+//      "angular-dynamic-page": [
+//        "dist/angular-dynamic-page"
+//      ],
+//      "angular-dynamic-page/*": [
+//       "dist/angular-dynamic-page/*"
+//      ]
     }
   },
   "angularCompilerOptions": {

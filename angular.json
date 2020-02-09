@@ -68,7 +68,7 @@
               "projects/dynamic-showcase-app/src/assets",
               {
                 "glob": "**/*",
-                "input": "./node_modules/angular-dynamic-page/src/assets",
+                "input": "./node_modules/angular-dynamic-page/assets",
                 "output": "/assets/"
               }
             ],
