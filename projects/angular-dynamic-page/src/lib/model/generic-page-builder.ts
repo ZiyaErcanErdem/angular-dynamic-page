@@ -156,7 +156,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.formValueChangeSubject = new Subject();
         this.monitoredFormItems = [];
 
-        this.collect = this._dataSelection.onChange.subscribe(changes => {
+        this.collect = this._dataSelection.changed.subscribe(changes => {
             if (this._dataSelection.selected && this._dataSelection.selected.length > 0) {
                 this.pageDataSubject.next(this._dataSelection.selected[0]);
             } else {
@@ -394,7 +394,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public dataSelectionChange(): Observable<boolean> {
-        return this._dataSelection.onChange.pipe(map(s => true));
+        return this._dataSelection.changed.pipe(map(s => true));
     }
 
     public isDataSelected(data: T): boolean {

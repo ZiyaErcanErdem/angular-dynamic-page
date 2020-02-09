@@ -39,6 +39,14 @@ export * from './lib/components/dynamic-page/dynamic-page.component';
 export * from './lib/components/dynamic-portal/dynamic-portal.module';
 export * from './lib/components/dynamic-portal/dynamic-portal.component';
 
+
+export * from './lib/components/dynamic-grid/pipes/dynamic-cell-view.pipe';
+
+export * from './lib/components/dynamic-editor/dynamic-form-button/dynamic-form-button.component';
+export * from './lib/components/dynamic-editor/dynamic-form-select/dynamic-form-select.component';
+export * from './lib/components/dynamic-editor/dynamic-form-button/dynamic-form-button.component';
+export * from './lib/components/dynamic-editor/dynamic-form-input/dynamic-form-input.component';
+
 export * from './lib/model/base-page-view';
 export * from './lib/model/page-builder';
 export * from './lib/model/criteria';

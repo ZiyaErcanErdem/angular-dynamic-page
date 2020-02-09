@@ -167,7 +167,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
         this._dataSelection = new SelectionModel<R>(false, [], true);
         this._selectedDataSubject = new BehaviorSubject<R>(undefined);
 
-        this.collect = this._dataSelection.onChange.subscribe(changes => {
+        this.collect = this._dataSelection.changed.subscribe(changes => {
             if (this._dataSelection.selected && this._dataSelection.selected.length > 0) {
                 this._selectedDataSubject.next(this._dataSelection.selected[0]);
             } else {

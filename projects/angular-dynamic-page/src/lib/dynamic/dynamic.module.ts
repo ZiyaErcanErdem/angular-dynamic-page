@@ -14,7 +14,7 @@ import { DynamicService } from '../services/dynamic.service';
   ]
 })
 export class DynamicModule { 
-  static forRoot(registryConfig: DynamicRegistryConfiguration): ModuleWithProviders {
+  static forRoot(registryConfig: DynamicRegistryConfiguration): ModuleWithProviders<DynamicModule> {
     return {
         ngModule: DynamicModule,
         providers: [

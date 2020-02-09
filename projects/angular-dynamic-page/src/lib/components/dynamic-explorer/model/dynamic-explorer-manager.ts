@@ -114,7 +114,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
         this._contentSelectionSubject = new Subject<IDynamicElementContent<T>>();
         this._elementSelection = new SelectionModel<IDynamicElement<any>>(false, [], true);
         this._selection = new BehaviorSubject<IDynamicElement<any>>(null);
-        this.collect = this._elementSelection.onChange.subscribe(changes => {
+        this.collect = this._elementSelection.changed.subscribe(changes => {
             if (this._elementSelection.hasValue()) {
                 const sel = this._elementSelection.selected[0];
                 if (sel !== this._selection.value) {

@@ -1,10 +1,11 @@
-import { Input, OnDestroy, OnInit } from '@angular/core';
+import { Input, OnDestroy, OnInit, Directive } from '@angular/core';
 import { PageBuilder } from './page-builder';
 import { FormGroup } from '@angular/forms';
 import { PageMode } from './page-mode.enum';
 import { Observable } from 'rxjs';
 import { BasePanelView } from './base-panel-view';
 
+@Directive()
 export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnInit, OnDestroy {
     @Input()
     set builder(value: PageBuilder<any>) {

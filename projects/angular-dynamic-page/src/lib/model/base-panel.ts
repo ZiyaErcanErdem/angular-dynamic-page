@@ -1,8 +1,9 @@
-import { Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Input, Output, EventEmitter, OnInit, Directive } from '@angular/core';
 import { PanelState } from './panel-state.enum';
 import { DynamicAction } from './dynamic-action';
 
 
+@Directive()
 export class BasePanel implements OnInit {
     @Input()
     title: string;

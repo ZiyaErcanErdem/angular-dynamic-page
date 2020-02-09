@@ -1,9 +1,10 @@
 import { PanelState } from './panel-state.enum';
 import { DynamicAction } from './dynamic-action';
 import { DynamicBaseComponent } from './dynamic-base-component';
-import { OnDestroy, Input } from '@angular/core';
+import { OnDestroy, Input, Directive } from '@angular/core';
 import { Theme } from './theme.enum';
 
+@Directive()
 export class BasePanelView extends DynamicBaseComponent implements OnDestroy {
     @Input()
     public theme: Theme;

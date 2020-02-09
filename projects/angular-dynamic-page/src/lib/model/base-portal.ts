@@ -1,12 +1,13 @@
-import { ViewChild, ComponentRef, EmbeddedViewRef } from '@angular/core';
+import { ViewChild, ComponentRef, EmbeddedViewRef, Directive } from '@angular/core';
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
 import { DynamicBaseComponent } from './dynamic-base-component';
 import { DynamicPortalView, DynamicViewType } from './dynamic-portal-view';
 
 
+@Directive()
 export class BasePortal extends DynamicBaseComponent {
-    @ViewChild(CdkPortalOutlet, { static: false })
+    @ViewChild(CdkPortalOutlet)
     portalOutlet: CdkPortalOutlet;
 
     private portalView: DynamicPortalView<any>;

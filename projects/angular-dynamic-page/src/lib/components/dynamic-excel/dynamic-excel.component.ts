@@ -20,9 +20,9 @@ export class DynamicExcelComponent extends DynamicBaseComponent implements OnIni
   @Input()
   theme: Theme = Theme.dark;
 
-  @ViewChild('exportTemplateLink', { static: false })
+  @ViewChild('exportTemplateLink')
   private exportTemplateLink: ElementRef;
-  @ViewChild('file', { static: false })
+  @ViewChild('file')
   private file: ElementRef;
 
   public ready = false;

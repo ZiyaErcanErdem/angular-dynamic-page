@@ -114,7 +114,7 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
                   this.gridViewMode = gridViewmode;
                   this.setupDisplayedColumns();
               });
-              this.collect = this.builder.gridColumnsSelection().onChange.subscribe(changes => this.setupDisplayedColumns());
+              this.collect = this.builder.gridColumnsSelection().changed.subscribe(changes => this.setupDisplayedColumns());
               this.ready = isReady;
           }
       });
