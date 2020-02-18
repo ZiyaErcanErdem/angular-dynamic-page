@@ -17,7 +17,7 @@ export class DynamicPortalComponent extends BasePortal implements OnInit, OnDest
   @Input()
   title: string;
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
   ready = false;
@@ -46,15 +46,15 @@ export class DynamicPortalComponent extends BasePortal implements OnInit, OnDest
 
   close(): void {
       this.detachView();
-      this.builder.setPageMode(PageMode.GRID);
+      this.manager.setPageMode(PageMode.GRID);
   }
 
   ngOnInit() {
-      this.collect = this.builder.ready().subscribe(isReady => {
+      this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
-              this.collect = this.builder.mode().subscribe(mode => this.setupMode(mode));
-              this.pageConfig = this.builder.config;
-              this.collect = this.builder.portal().subscribe(dpw => this.attachView(dpw));
+              this.collect = this.manager.mode().subscribe(mode => this.setupMode(mode));
+              this.pageConfig = this.manager.config;
+              this.collect = this.manager.portal().subscribe(dpw => this.attachView(dpw));
               this.buildActions();
           }
       });
@@ -78,7 +78,7 @@ export class DynamicPortalComponent extends BasePortal implements OnInit, OnDest
   }
 
   private buildActions(): void {
-      this.collect = this.builder.actions().subscribe(actionList => {
+      this.collect = this.manager.actions().subscribe(actionList => {
           const portalActions = actionList
               .filter(a => this.filterAction(a))
               .filter(a => a.id !== 'close')

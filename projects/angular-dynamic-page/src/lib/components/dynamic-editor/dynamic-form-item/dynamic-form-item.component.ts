@@ -12,7 +12,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-item.component.scss']
 })
 export class DynamicFormItemComponent implements OnInit {
-  @Input() builder: PageManager<any>;
+  @Input() manager: PageManager<any>;
   @Input() mode: EditorMode;
   @Input() itemConfig: FormItemConfig;
 

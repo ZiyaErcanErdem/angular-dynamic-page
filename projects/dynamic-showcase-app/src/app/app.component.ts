@@ -48,8 +48,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
   private registeredActions: Array<GenericDynamicAction<any>> = [];
   themeActions: Array<DynamicAction<any>> = [];
 
-  public agentPageBuilder: PageManager<Agent>;
-  public endpointPageBuilder: PageManager<Endpoint>;
+  public agentPageManager: PageManager<Agent>;
+  public endpointPageManager: PageManager<Endpoint>;
 
   constructor(private dynamicService: DynamicService, private translateService: TranslateService) {
     super();
@@ -68,8 +68,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     this.themeActions = this.buildThemeActions();
     this.buildTable();
     this.registerActions();
-    this.prepareAgentBuilder();
-    this.prepareEndpointBuilder();
+    this.prepareAgentManager();
+    this.prepareEndpointManager();
   }
 
   ngOnDestroy() {
@@ -78,15 +78,15 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
       this.control = undefined;
     }
 
-    if (this.agentPageBuilder) {
-      this.registeredActions.forEach(a => this.agentPageBuilder.unregisterAction(a));
-      this.agentPageBuilder.destroy();
-      this.agentPageBuilder = undefined;
+    if (this.agentPageManager) {
+      this.registeredActions.forEach(a => this.agentPageManager.unregisterAction(a));
+      this.agentPageManager.destroy();
+      this.agentPageManager = undefined;
     }
-    if (this.endpointPageBuilder) {
-      this.registeredActions.forEach(a => this.endpointPageBuilder.unregisterAction(a));
-      this.endpointPageBuilder.destroy();
-      this.endpointPageBuilder = undefined;
+    if (this.endpointPageManager) {
+      this.registeredActions.forEach(a => this.endpointPageManager.unregisterAction(a));
+      this.endpointPageManager.destroy();
+      this.endpointPageManager = undefined;
     }
 
     this.registeredActions = [];
@@ -94,9 +94,9 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
   }
 
 
-  private prepareAgentBuilder() {
-    this.agentPageBuilder = this.dynamicService.createPageBuilder<Agent>({qualifier: 'Agent'});
-    this.agentPageBuilder
+  private prepareAgentManager() {
+    this.agentPageManager = this.dynamicService.createPageManager<Agent>({qualifier: 'Agent'});
+    this.agentPageManager
     .withSortingSample(Agent)
     .withGridColumns('id', 'agentName', 'agentInstanceId', 'agentType', 'agentStatus')
     .withCompactColumns('id', 'agentInstanceId')
@@ -113,7 +113,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     })
     .withDataActionController((a, d) => {
       if (a === DataActionType.BEFORE_DELETE) {
-        return this.agentPageBuilder.openConfirmation('Alooo Agent Silinecek. Okey Mi?', {title: 'Onay Istiyorum', i18n: false});
+        return this.agentPageManager.openConfirmation('Alooo Agent Silinecek. Okey Mi?', {title: 'Onay Istiyorum', i18n: false});
       }
       return Promise.resolve(true);
     })
@@ -142,9 +142,9 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     .withViewer(PageViewMode.EDITOR);
   }
 
-  private prepareEndpointBuilder() {
-    this.endpointPageBuilder = this.dynamicService.createPageBuilder<Endpoint>({qualifier: 'Endpoint'});
-    this.endpointPageBuilder
+  private prepareEndpointManager() {
+    this.endpointPageManager = this.dynamicService.createPageManager<Endpoint>({qualifier: 'Endpoint'});
+    this.endpointPageManager
       .withSortingSample(Endpoint)
       .withGridColumns('id', 'endpointName', 'endpointInstanceId', 'endpointType', 'endpointSpec')
       .withCompactColumns('id', 'endpointName')
@@ -158,7 +158,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
       })
       .withDataActionController((a, d) => {
         if (a === DataActionType.BEFORE_DELETE) {
-          return this.endpointPageBuilder.openConfirmation(
+          return this.endpointPageManager.openConfirmation(
             'Alooo Endpoint Silinecek. Okey Mi?',
             {title: 'Onay Istiyorum',
             i18n: false, minWidth: '500px'}
@@ -177,8 +177,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
             relation.accessPath = 'endpoint-properties';
             relation.descriptionColumnName = 'propertyName';
 
-            this.endpointPageBuilder
-                .createRelationPageBuilder(relation)
+            this.endpointPageManager
+                .createRelationPageManager(relation)
                 .withGridColumns('id', 'propKey', 'propKeyType', 'propValue', 'propValueType')
                 .withCompactColumns('id', 'propKey')
                 .withSortingSamples(EndpointProperty);

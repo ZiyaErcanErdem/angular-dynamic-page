@@ -14,7 +14,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-input.component.scss']
 })
 export class DynamicFormInputComponent extends DynamicBaseComponent implements OnInit, OnDestroy, FormField {
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   field: FormFieldConfig;
   group: FormGroup;
   mode: EditorMode;
@@ -117,7 +117,7 @@ export class DynamicFormInputComponent extends DynamicBaseComponent implements O
       this.collect = selector.selection().subscribe(sel => {
           selector.mapSelection(sel, this.group);
       });
-      this.builder.openSelector(selector);
+      this.manager.openSelector(selector);
   }
 
   public hasSelectedValue(): boolean {

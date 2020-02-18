@@ -12,15 +12,15 @@ export class DynamicService {
   constructor(private dynamicConfigService: DynamicConfigService) { }
 
 
-  public createPageBuilder<T>(
+  public createPageManager<T>(
     {qualifier, appId}: {qualifier: string, appId?: string} = {qualifier: 'Default', appId: null}
   ): PageManager<T> {
 
     const storageProvider: IDynamicStorageProvider = this.dynamicConfigService.getStorageProvider();
     const dynamicConfig: IDynamicConfig = this.dynamicConfigService.getConfig(appId);
 
-    const pageBuilder: PageManager<T> = new DynamicPageManager<T>(qualifier, dynamicConfig);
-    pageBuilder.withStorageProvider(storageProvider);
-    return pageBuilder;
+    const pageManager: PageManager<T> = new DynamicPageManager<T>(qualifier, dynamicConfig);
+    pageManager.withStorageProvider(storageProvider);
+    return pageManager;
   }
 }

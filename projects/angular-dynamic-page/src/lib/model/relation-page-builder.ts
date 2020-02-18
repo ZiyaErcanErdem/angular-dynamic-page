@@ -11,7 +11,7 @@ import { BuilderType } from './builder-type.enum';
 import { DynamicPortalView } from './dynamic-portal-view';
 
 export class RelationPageBuilder {
-    public builder: PageManager<any>;
+    public manager: PageManager<any>;
     private gridCols: Array<string>;
     private compactCols: Array<string>;
     private sortingSamples: new () => any;
@@ -19,11 +19,11 @@ export class RelationPageBuilder {
     private viewer: DynamicPortalView<any>;
     private metamodelConfigurer: (col: ColumnMetadata) => void;
     private configConfigurer: (config: PageConfig<any>) => PageConfig<any>;
-    private relationConfigurer: (builder: PageManager<any>, col: PageRelation) => PageRelation;
+    private relationConfigurer: (manager: PageManager<any>, col: PageRelation) => PageRelation;
 
     constructor(
         public relation: PageRelation,
-        private parentBuilder: PageManager<any>,
+        private parentManager: PageManager<any>,
         private parentConfig: PageConfig<any>,
         private parentMetamodel: PageMetamodel
     ) {
@@ -56,7 +56,7 @@ export class RelationPageBuilder {
     }
 
     public withRelationConfiguration(
-        relationConfigFn: (builder: PageManager<any>, col: PageRelation) => PageRelation
+        relationConfigFn: (manager: PageManager<any>, col: PageRelation) => PageRelation
     ): RelationPageBuilder {
         this.relationConfigurer = relationConfigFn;
         return this;
@@ -72,9 +72,9 @@ export class RelationPageBuilder {
     }
 
     public destroy(): void {
-        if (this.builder) {
-            this.builder.destroy();
-            this.builder = undefined;
+        if (this.manager) {
+            this.manager.destroy();
+            this.manager = undefined;
         }
 
         if (this.relation) {
@@ -82,17 +82,17 @@ export class RelationPageBuilder {
             this.relation = undefined;
         }
 
-        this.parentBuilder = undefined;
+        this.parentManager = undefined;
         this.parentConfig = undefined;
         this.parentMetamodel = undefined;
     }
 
     public build<C>(): PageManager<C> {
-        if (this.builder && !this.builder.isDestroyed()) {
-            return this.builder;
+        if (this.manager && !this.manager.isDestroyed()) {
+            return this.manager;
         }
-        this.builder = this.parentBuilder.createInstanceFor(this.relation.qualifier, this.parentBuilder);
-        this.builder
+        this.manager = this.parentManager.createInstanceFor(this.relation.qualifier, this.parentManager);
+        this.manager
             .withSortingSample(this.sortingSamples)
             .withPageConfiguration(config => {
                 config.itemsPerPage = this.parentConfig.itemsPerPage;
@@ -135,7 +135,7 @@ export class RelationPageBuilder {
                     rel.pageTitle = originalRel.pageTitle;
                 }
                 if (this.relationConfigurer) {
-                    this.relationConfigurer(this.builder, rel);
+                    this.relationConfigurer(this.manager, rel);
                 }
                 return rel;
             })
@@ -155,6 +155,6 @@ export class RelationPageBuilder {
             })
             .withViewer(this.viewMode ? this.viewMode : PageViewMode.EDITOR, this.viewer);
 
-        return this.builder;
+        return this.manager;
     }
 }

@@ -4,7 +4,7 @@ import { EditorMode } from '../../../model/editor-mode.enum';
 import { PageManager } from '../../../model/page-manager';
 
 export interface FormField {
-    builder: PageManager<any>;
+    manager: PageManager<any>;
     field: FormFieldConfig;
     group: FormGroup;
     mode: EditorMode;

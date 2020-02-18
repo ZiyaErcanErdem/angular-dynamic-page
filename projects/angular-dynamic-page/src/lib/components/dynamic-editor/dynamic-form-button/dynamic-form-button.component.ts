@@ -11,7 +11,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-button.component.scss']
 })
 export class DynamicFormButtonComponent implements OnInit, FormField {
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   field: FormFieldConfig;
   group: FormGroup;
   mode: EditorMode;

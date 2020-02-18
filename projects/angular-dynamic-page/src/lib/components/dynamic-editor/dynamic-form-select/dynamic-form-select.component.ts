@@ -12,7 +12,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-select.component.scss']
 })
 export class DynamicFormSelectComponent implements OnInit, FormField {
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   field: FormFieldConfig;
   group: FormGroup;
   mode: EditorMode;

@@ -80,7 +80,7 @@ export interface PageManager<T> {
   formItemChange(...formItems: string[]): Observable<{form: FormGroup, control: AbstractControl, name: string, value: any}>;
   portal(): Observable<DynamicPortalView<any>>;
   relationPages(): Observable<Array<RelationPageBuilder>>;
-  activeBuilder(): Observable<PageManager<any>>;
+  activeManager(): Observable<PageManager<any>>;
   onNotification(): Observable<any>;
   onExit(): Observable<T>;
 
@@ -89,7 +89,7 @@ export interface PageManager<T> {
   setView(view: DynamicPortalView<any>): void;
   registerAction(action: DynamicAction<any>): boolean;
   unregisterAction(action: DynamicAction<any>): void;
-  setActiveBuilder(apb: PageManager<any>): void;
+  setActiveManager(apb: PageManager<any>): void;
   setForm(form: FormGroup): void;
 
   gridColumns(): Observable<Array<ColumnMetadata>>;
@@ -148,7 +148,7 @@ export interface PageManager<T> {
 
   createInstanceFor<R>(qualifier: string, parent?: PageManager<any>): PageManager<R>;
   createSelectorBuilder(qualifier: string, accessPath: string): DynamicSelectorBuilder<any>;
-  createRelationPageBuilder(relation: PageRelation): RelationPageBuilder;
+  createRelationPageManager(relation: PageRelation): RelationPageBuilder;
 
   openViewer(preferredViewerMode?: EditorMode): void;
 
@@ -161,7 +161,7 @@ export interface PageManager<T> {
   createTemplatePortal(template: TemplateRef<any>, context?: any): DynamicPortalView<any>;
 
   openEditor(mode: EditorMode): PopoverRef<any, any>;
-  openDynamicPage(builder: PageManager<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any>;
+  openDynamicPage(manager: PageManager<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any>;
   openSelector(selector: DynamicSelectorModel<any>): void;
 
   newPredicate(): Predicate;

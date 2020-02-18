@@ -17,7 +17,7 @@ import { DynamicUtil } from '../../model/dynamic-util';
 })
 export class DynamicPageActionsComponent extends BasePanelView implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
 
   public query: Criteria;
 
@@ -50,7 +50,7 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
 
   private buildActions(): void {
       if (!this.actionSubscription) {
-          this.actionSubscription = this.builder.actions().subscribe(actionList => {
+          this.actionSubscription = this.manager.actions().subscribe(actionList => {
               const allPageActions = actionList
                   .filter(a => a.containsScope(ActionScope.PAGE))
                   .sort((a, b) => -1 * (a.order > b.order ? 1 : a.order === b.order ? 0 : -1));
@@ -62,15 +62,15 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
   }
 
   ngOnInit() {
-      this.config = this.builder.config;
-      this.collect = this.builder.query().subscribe(q => (this.query = q));
+      this.config = this.manager.config;
+      this.collect = this.manager.query().subscribe(q => (this.query = q));
       this.registerActions();
       this.buildActions();
   }
 
   ngOnDestroy() {
       super.ngOnDestroy();
-      this.registeredActions.forEach(a => this.builder.unregisterAction(a));
+      this.registeredActions.forEach(a => this.manager.unregisterAction(a));
 
       if (this.actionSubscription) {
           const s = this.actionSubscription;
@@ -91,7 +91,7 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
 
   private registerAction(action: GenericDynamicAction<any>) {
       this.registeredActions.push(action);
-      this.builder.registerAction(action);
+      this.manager.registerAction(action);
   }
 
   private registerActions(): void {
@@ -160,11 +160,11 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
   }
 
   search() {
-      this.builder.search(this.query).subscribe();
+      this.manager.search(this.query).subscribe();
   }
 
   private resetQuery(): void {
-      this.builder.resetQuery();
+      this.manager.resetQuery();
   }
 }
 

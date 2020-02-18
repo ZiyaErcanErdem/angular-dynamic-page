@@ -44,7 +44,7 @@ import { QueryMode } from '../../model/query-mode.enum';
 export class DynamicQueryComponent extends DynamicBaseComponent
             implements ControlValueAccessor, AfterContentInit, OnInit, OnDestroy, OnChanges {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   allowCriteria = true;
   @Input()
@@ -106,13 +106,13 @@ export class DynamicQueryComponent extends DynamicBaseComponent
   }
 
   ngOnInit() {
-      this.collect = this.builder.ready().subscribe(isReady => {
+      this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
-              this.config = this.builder.config;
-              this.collect = this.builder.metamodel().subscribe(pmm => {
+              this.config = this.manager.config;
+              this.collect = this.manager.metamodel().subscribe(pmm => {
                   this.relations = pmm.getRelations().filter(r => r.searchable);
               });
-              this.collect = this.builder.searchColumns().subscribe(cols => (this.columns = cols), err => console.warn(err));
+              this.collect = this.manager.searchColumns().subscribe(cols => (this.columns = cols), err => console.warn(err));
               if (!this.templateContext) {
                   this.templateContext = new TemplateContext();
               }
@@ -323,28 +323,28 @@ export class DynamicQueryComponent extends DynamicBaseComponent
               predicate.value = sel[selectionKey] || '';
           }
       });
-      this.builder.openSelector(selector);
+      this.manager.openSelector(selector);
   }
 
   createPredicate(parent?: Criteria): void {
       parent = parent || this.criteria;
-      this.builder.createPredicate(parent);
+      this.manager.createPredicate(parent);
   }
 
   removePredicate(predicate: Predicate, parent?: Criteria): void {
       parent = parent || this.criteria;
-      this.builder.removePredicate(predicate, parent);
+      this.manager.removePredicate(predicate, parent);
   }
 
   createCriteria(parent?: Criteria): Criteria {
       parent = parent || this.criteria;
-      return this.builder.createCriteria(parent);
+      return this.manager.createCriteria(parent);
   }
 
   removeCriteria(criteria?: Criteria, parent?: Criteria): void {
       criteria = criteria || this.criteria;
       parent = parent || this.parentCriteria;
-      this.builder.removeCriteria(criteria, parent);
+      this.manager.removeCriteria(criteria, parent);
   }
 
   changeRelation(rel: PageRelation, predicate: Predicate): void {
@@ -373,7 +373,7 @@ export class DynamicQueryComponent extends DynamicBaseComponent
       if (cmd && !predicate.operator) {
           console.warn(
               `No operators found for Column '${predicate.metadata.path}'. ` +
-                  `A 'defaultOperator' is also not specified on the builder. Operator value will default to null.`
+                  `A 'defaultOperator' is also not specified on the manager. Operator value will default to null.`
           );
       }
 
@@ -398,7 +398,7 @@ export class DynamicQueryComponent extends DynamicBaseComponent
       if (!operator) {
           console.warn(
               `No operators found for Column '${cmd.path}'. ` +
-                  `A 'defaultOperator' is also not specified on the builder. Operator value will default to null.`
+                  `A 'defaultOperator' is also not specified on the manager. Operator value will default to null.`
           );
       }
       return operator;

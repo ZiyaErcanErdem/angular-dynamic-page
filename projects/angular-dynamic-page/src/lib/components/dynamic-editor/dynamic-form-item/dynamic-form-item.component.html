@@ -1,8 +1,8 @@
 <ng-container [ngSwitch]="itemType">
     <ng-container *ngSwitchCase="'ASSOCIATION'">
-        <zee-dynamic-form-association [builder]="builder" [mode]="mode" [itemConfig]="itemConfig"></zee-dynamic-form-association>
+        <zee-dynamic-form-association [manager]="manager" [mode]="mode" [itemConfig]="itemConfig"></zee-dynamic-form-association>
     </ng-container>
     <ng-container *ngSwitchDefault >
-        <ng-container zeeDynamicField [builder]="builder" [field]="field" [group]="group" [mode]="mode" ></ng-container>
+        <ng-container zeeDynamicField [manager]="manager" [field]="field" [group]="group" [mode]="mode" ></ng-container>
     </ng-container>
 </ng-container>

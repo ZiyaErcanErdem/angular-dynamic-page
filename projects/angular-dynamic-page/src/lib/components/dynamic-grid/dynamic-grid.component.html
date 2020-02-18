@@ -4,7 +4,7 @@
             <ng-container *ngFor="let cmd of columns">
                 <ng-container cdkColumnDef="{{cmd.path}}">
                     <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell" [fxFlex]="calcColWidth(cmd)">
-                        <zee-dynamic-sort-header [column]="cmd" [builder]="builder" [criteria]="criteria"></zee-dynamic-sort-header>
+                        <zee-dynamic-sort-header [column]="cmd" [manager]="manager" [criteria]="criteria"></zee-dynamic-sort-header>
                     </cdk-header-cell>
                     <cdk-cell *cdkCellDef="let row" class="dyn-cell" [fxFlex]="calcColWidth(cmd)">{{row | dynamicCellView:cmd:builderType}}</cdk-cell>
                 </ng-container>
@@ -12,16 +12,16 @@
 
             <ng-container cdkColumnDef="gridActions">
                 <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell dyn-header-cell-action text-right mr-auto">
-                    <zee-dynamic-grid-configurer [builder]="builder" [theme]="theme"></zee-dynamic-grid-configurer>
+                    <zee-dynamic-grid-configurer [manager]="manager" [theme]="theme"></zee-dynamic-grid-configurer>
                 </cdk-header-cell>
                 <cdk-cell *cdkCellDef="let row" class="dyn-cell dyn-cell-action ml-auto">
-                    <zee-dynamic-grid-actions *ngIf="isSelected(row)" [builder]="builder"></zee-dynamic-grid-actions>
+                    <zee-dynamic-grid-actions *ngIf="isSelected(row)" [manager]="manager"></zee-dynamic-grid-actions>
                 </cdk-cell>
             </ng-container>
 
             <ng-container cdkColumnDef="idColumn">
                 <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell dyn-header-cell-action text-right mr-auto">
-                    <zee-dynamic-grid-configurer [builder]="builder" [theme]="theme"></zee-dynamic-grid-configurer>
+                    <zee-dynamic-grid-configurer [manager]="manager" [theme]="theme"></zee-dynamic-grid-configurer>
                 </cdk-header-cell>
                 <cdk-cell *cdkCellDef="let row" class="dyn-cell" [fxFlex]="calcColWidth(idColumn)">{{row[idColumn.path]}}</cdk-cell>
             </ng-container>  
@@ -31,6 +31,6 @@
                         class="dyn-row" [ngClass] = "{'bg-secondary text-white': isSelected(row)}"
                         (click)="handleGridSelect(row, $event)" ></cdk-row>
         </cdk-table>
-        <zee-dynamic-pagination *ngIf="paginationEnabled" [builder]="builder" [criteria]="criteria" class="mb-auto"></zee-dynamic-pagination>
+        <zee-dynamic-pagination *ngIf="paginationEnabled" [manager]="manager" [criteria]="criteria" class="mb-auto"></zee-dynamic-pagination>
     </div>
 </ng-container>

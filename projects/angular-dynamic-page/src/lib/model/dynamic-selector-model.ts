@@ -11,7 +11,7 @@ export interface QueryItemModel {
 }
 
 export class DynamicSelectorModel<S> {
-    builder: PageManager<S>;
+    manager: PageManager<S>;
 
     private selectionSubject: Subject<S>;
 
@@ -103,8 +103,8 @@ export class DynamicSelectorModel<S> {
     }
 
     public destroy(): void {
-        const b = this.builder;
-        this.builder = undefined;
+        const b = this.manager;
+        this.manager = undefined;
         if (b) {
             b.destroy();
         }

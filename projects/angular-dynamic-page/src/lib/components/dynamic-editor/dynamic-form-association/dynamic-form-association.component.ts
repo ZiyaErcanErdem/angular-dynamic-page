@@ -24,7 +24,7 @@ import { FormFieldConfig } from '../model/form-field-config';
 })
 export class DynamicFormAssociationComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   mode: EditorMode;
   @Input()
@@ -48,15 +48,15 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
 
   entities: Array<any>;
   ready = false;
-  isChildBuilder: boolean;
+  isChildManager: boolean;
 
-  private associationBuilder: PageManager<any>;
+  private associationPageManager: PageManager<any>;
   private config: PageConfig<any>;
 
   constructor() {
       super();
       this.entities = [];
-      this.isChildBuilder = false;
+      this.isChildManager = false;
   }
 
   get qualifier(): string {
@@ -64,12 +64,12 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
 }
 
   get isChild(): boolean {
-      if (this.isChildBuilder && this.mode !== EditorMode.VIEW && this.column) {
-        const topQualifier = this.builder.top().qualifier;
+      if (this.isChildManager && this.mode !== EditorMode.VIEW && this.column) {
+        const topQualifier = this.manager.top().qualifier;
         const currentQualifier = this.pageMetamodel.qualifier;
         return topQualifier === currentQualifier;
       } else {
-          return this.isChildBuilder;
+          return this.isChildManager;
       }
   }
 
@@ -98,11 +98,11 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
         this.column = this.itemConfig.field.metadata;
       }
       this.pageMetamodel = this.column.metamodel;
-      this.isChildBuilder = this.builder.isChild();
+      this.isChildManager = this.manager.isChild();
 
-      this.collect = this.builder.ready().subscribe(isReady => {
-          this.config = this.builder.config;
-          this.collect = this.builder.metamodel().subscribe((pmd: PageMetamodel) => {
+      this.collect = this.manager.ready().subscribe(isReady => {
+          this.config = this.manager.config;
+          this.collect = this.manager.metamodel().subscribe((pmd: PageMetamodel) => {
               this.parentMetamodel = pmd;
               this.pageRelation = this.column.relation;
               this.pageMetamodel = this.pageRelation.metamodel;
@@ -129,11 +129,11 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
                   }
               }
 
-              if (this.builder.isChild()) {
-                const dataBuilder = this.getBuilderOf(this.pageMetamodel.qualifier);
-                if (dataBuilder) {
-                    const isOwnData = this.pageMetamodel.qualifier === dataBuilder.qualifier;
-                    this.collect = dataBuilder
+              if (this.manager.isChild()) {
+                const dataManager = this.getManagerOf(this.pageMetamodel.qualifier);
+                if (dataManager) {
+                    const isOwnData = this.pageMetamodel.qualifier === dataManager.qualifier;
+                    this.collect = dataManager
                         .data()
                         .subscribe(parentData => {
                             this.setAssociationValue(parentData, isOwnData);
@@ -145,16 +145,16 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
       });
   }
 
-  private getBuilderOf(qualifier: string): PageManager<any> {
+  private getManagerOf(qualifier: string): PageManager<any> {
         if (this.mode !== EditorMode.CREATE) {
-            return this.builder;
+            return this.manager;
         }
-        let builder = this.builder;
-        while (null != builder) {
-            if (builder.qualifier === qualifier) {
-                return builder;
+        let manager = this.manager;
+        while (null != manager) {
+            if (manager.qualifier === qualifier) {
+                return manager;
             }
-            builder = builder.parent();
+            manager = manager.parent();
         }
         return null;
   }
@@ -196,36 +196,36 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
 
   ngOnDestroy() {
       super.ngOnDestroy();
-      if (this.associationBuilder) {
-          this.associationBuilder.destroy();
-          this.associationBuilder = undefined;
+      if (this.associationPageManager) {
+          this.associationPageManager.destroy();
+          this.associationPageManager = undefined;
       }
   }
 
-  private createAssociationBuilder(): PageManager<any> {
-      if (this.associationBuilder && !this.associationBuilder.isDestroyed()) {
-          return this.associationBuilder;
+  private createAssociationManager(): PageManager<any> {
+      if (this.associationPageManager && !this.associationPageManager.isDestroyed()) {
+          return this.associationPageManager;
       }
-      this.associationBuilder = this.builder
-          .createInstanceFor(this.pageMetamodel.qualifier, this.builder.parent())
+      this.associationPageManager = this.manager
+          .createInstanceFor(this.pageMetamodel.qualifier, this.manager.parent())
           .withMetamodelConfiguration(cmd => this.configurePopupMetamodel(cmd))
           .withPageConfiguration(config => this.configurePopupConfig(config))
           .withRelationConfiguration(relation => this.configurePopupRelation(relation))
           .withDefaultQuery(query => this.configurePopupQuery(query))
           .withViewer(PageViewMode.NONE);
-      return this.associationBuilder;
+      return this.associationPageManager;
   }
 
   public openRelationPopup(): void {
       if (this.isChild) {
           return;
       }
-      const assocBuilder = this.createAssociationBuilder();
+      const assocManager = this.createAssociationManager();
       const theme = this.config ? this.config.pageTheme : undefined;
-      const title = assocBuilder.config ? assocBuilder.config.pageTitle : null;
+      const title = assocManager.config ? assocManager.config.pageTitle : null;
       const i18n = title ? true : false;
-      const ref = this.builder.openDynamicPage(assocBuilder, theme, title, i18n);
-      const sub = assocBuilder.onExit().subscribe(data => {
+      const ref = this.manager.openDynamicPage(assocManager, theme, title, i18n);
+      const sub = assocManager.onExit().subscribe(data => {
           ref.close(data);
       });
 

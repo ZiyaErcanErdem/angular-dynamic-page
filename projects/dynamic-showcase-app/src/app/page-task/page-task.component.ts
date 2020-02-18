@@ -38,7 +38,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   private executeAction: GenericDynamicAction<any>;
   private contentAction: GenericDynamicAction<any>;
 
-  public pageBuilder: PageManager<Task>;
+  public pageManager: PageManager<Task>;
 
   public ts: string;
 
@@ -52,8 +52,8 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   }
 
   ngOnInit() {
-    this.pageBuilder = this.dynamicService.createPageBuilder<Task>({qualifier: 'Task'});
-    this.pageBuilder
+    this.pageManager = this.dynamicService.createPageManager<Task>({qualifier: 'Task'});
+    this.pageManager
       .withSortingSample(Task, Agent, CheckScript, Flow)
       .withGridColumns(
         'id', 'taskName', 'nextExecutionStartTime', 'taskState',
@@ -113,27 +113,27 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
        })
       .withViewer(PageViewMode.EDITOR);
 
-    this.pageBuilder.ready().subscribe(isReady => {
+    this.pageManager.ready().subscribe(isReady => {
       if (isReady) {
         this.registerActions();
       }
     });
 
     /*
-    this.collect = this.pageBuilder.formItemChange('taskName', 'taskState').subscribe(change => {
+    this.collect = this.pageManager.formItemChange('taskName', 'taskState').subscribe(change => {
       change.form.get('taskDescription').setValue('Desc of ' + change.value);
     });
     */
 
-    this.collect = this.pageBuilder.dataSelectionChange().subscribe( _ => {
-      this.selection = this.pageBuilder.getSelectedData();
+    this.collect = this.pageManager.dataSelectionChange().subscribe( _ => {
+      this.selection = this.pageManager.getSelectedData();
       this.checkActionState();
     });
   }
 
   private attachTaskExecutionRelation(relation: PageRelation): void {
-    this.pageBuilder
-    .createRelationPageBuilder(relation)
+    this.pageManager
+    .createRelationPageManager(relation)
     .withPageConfiguration(config => {
       config.queryMode = QueryMode.CRITERIA;
       config.itemsPerPage = 50;
@@ -172,7 +172,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
 
   private attachSelector(cmd: ColumnMetadata): void {
     if (cmd.qualifier === 'CheckScript' &&  cmd.name === 'scriptName') {
-      cmd.selector = this.pageBuilder
+      cmd.selector = this.pageManager
         .createSelectorBuilder(cmd.qualifier, 'check-scripts')
         .withSelectionKey(cmd.name)
         .withSelectorColumns('id', 'scriptName', 'scriptType')
@@ -184,7 +184,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
         .addQueryItem({ name: cmd.name, operator: Operator.LIKE, value: '' })
         .build();
     } else if (cmd.qualifier === 'Flow' &&  cmd.name === 'flowName') {
-      cmd.selector = this.pageBuilder
+      cmd.selector = this.pageManager
         .createSelectorBuilder(cmd.qualifier, 'flows')
         .withSelectionKey(cmd.name)
         .withSelectorColumns('id', 'flowName', 'flowState')
@@ -196,7 +196,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
         .addQueryItem({ name: cmd.name, operator: Operator.LIKE, value: '' })
         .build();
     } else if (cmd.qualifier === 'Agent' &&  (cmd.name === 'agentName' || cmd.name === 'agentInstanceId')) {
-      cmd.selector = this.pageBuilder
+      cmd.selector = this.pageManager
         .createSelectorBuilder(cmd.qualifier, 'agents')
         .withSelectionKey(cmd.name)
         .withSelectorColumns('id', 'agentName', 'agentInstanceId', 'agentType', 'agentStatus')
@@ -207,7 +207,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   }
 
   private executeTask(): Observable<boolean> {
-    const current: Task = this.pageBuilder.getSelectedData();
+    const current: Task = this.pageManager.getSelectedData();
     if (!current || !current.id) {
       return of(false);
     }
@@ -239,7 +239,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   */
 
   private registerAction(action: GenericDynamicAction<any>): boolean {
-    if (this.pageBuilder.registerAction(action)) {
+    if (this.pageManager.registerAction(action)) {
       this.registeredActions.push(action);
       return true;
     }
@@ -261,7 +261,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
               notificationType: 'alert',
               title: ''
             };
-            this.pageBuilder.notify(notification);
+            this.pageManager.notify(notification);
           }
           comp.disabled = false;
         });
@@ -271,7 +271,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
     this.checkActionState();
   }
 
-  private registerExecutionActions(taskExecutionPageBuilder: PageManager<any>): void {
+  private registerExecutionActions(taskExecutionPageManager: PageManager<any>): void {
     this.contentAction = new DynamicActionBuilder<any>('extension.action.content', ActionType.CUSTOM)
       .withScope(ActionScope.EDITOR)
       .withLabel('extension.action.content')
@@ -284,7 +284,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
       })
       .build();
 
-    taskExecutionPageBuilder.registerAction(this.contentAction);
+    taskExecutionPageManager.registerAction(this.contentAction);
 
     this.checkActionState();
   }
@@ -296,15 +296,15 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   }
 
   ngOnDestroy() {
-    this.registeredActions.forEach(a => this.pageBuilder.unregisterAction(a));
+    this.registeredActions.forEach(a => this.pageManager.unregisterAction(a));
     this.registeredActions = [];
     this.executeAction = undefined;
     this.contentAction = undefined;
 
-    if (this.pageBuilder) {
-      this.registeredActions.forEach(a => this.pageBuilder.unregisterAction(a));
-      this.pageBuilder.destroy();
-      this.pageBuilder = undefined;
+    if (this.pageManager) {
+      this.registeredActions.forEach(a => this.pageManager.unregisterAction(a));
+      this.pageManager.destroy();
+      this.pageManager = undefined;
       alert('destroyed');
     }
     super.ngOnDestroy();

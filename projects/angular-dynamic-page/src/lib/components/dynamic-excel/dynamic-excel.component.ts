@@ -16,7 +16,7 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class DynamicExcelComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
 
@@ -51,16 +51,16 @@ export class DynamicExcelComponent extends DynamicBaseComponent implements OnIni
 
   private initIfPopover() {
       if (this.popoverRef && this.popoverRef.context) {
-          this.builder = this.popoverRef.context;
+          this.manager = this.popoverRef.context;
           this.theme = this.popoverRef.config.theme ? this.popoverRef.config.theme : Theme.dark;
       }
   }
 
   ngOnInit() {
       this.clearFiles();
-      this.setPageConfig(this.builder.config);
+      this.setPageConfig(this.manager.config);
 
-      this.collect = this.builder.ready().subscribe(isReady => {
+      this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
               this.ready = isReady;
               this.registerActions();
@@ -219,17 +219,17 @@ export class DynamicExcelComponent extends DynamicBaseComponent implements OnIni
   }
 
   public async exportTemplate(): Promise<void> {
-      const blob = await this.builder.exportExcelTemplate();
+      const blob = await this.manager.exportExcelTemplate();
       const fileName = this.toFileName(this.pageConfig.qualifier, 'Template');
-      this.builder.convertToExcel(blob, fileName, this.exportTemplateLink);
+      this.manager.convertToExcel(blob, fileName, this.exportTemplateLink);
       this.downloadInfo = 'dynamic.excel.templatesuccess';
       this.i18nParams = { filename: fileName };
   }
 
   public async exportData(): Promise<void> {
-      const blob = await this.builder.exportExcelData();
+      const blob = await this.manager.exportExcelData();
       const fileName = this.toFileName(this.pageConfig.qualifier, 'Data');
-      this.builder.convertToExcel(blob, fileName, this.exportTemplateLink);
+      this.manager.convertToExcel(blob, fileName, this.exportTemplateLink);
       this.downloadInfo = 'dynamic.excel.downloadsuccess';
       this.i18nParams = { filename: fileName };
   }
@@ -244,7 +244,7 @@ export class DynamicExcelComponent extends DynamicBaseComponent implements OnIni
       formData.append('file', this.selectedFile, this.selectedFile.name);
       this.progress = new Subject<number>();
 
-      this.collect = this.builder.importExcelData(formData).subscribe(
+      this.collect = this.manager.importExcelData(formData).subscribe(
           httpEvent => {
               if (httpEvent.type === HttpEventType.UploadProgress) {
                   const percentDone = Math.round((100 * httpEvent.loaded) / httpEvent.total);
@@ -270,7 +270,7 @@ export class DynamicExcelComponent extends DynamicBaseComponent implements OnIni
           return;
       }
       const fileName = this.toFileName(this.pageConfig.qualifier, 'Result');
-      this.builder.convertToExcel(resource, fileName, this.exportTemplateLink);
+      this.manager.convertToExcel(resource, fileName, this.exportTemplateLink);
   }
 
   private uploadCompleted(err?: any): void {

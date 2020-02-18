@@ -19,7 +19,7 @@ import { PageMode } from '../../model/page-mode.enum';
 })
 export class DynamicGridComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   criteria: Criteria;
   @Input()
@@ -96,26 +96,26 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
   }
 
   ngOnInit() {
-      this.collect = this.builder.ready().subscribe(isReady => {
+      this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
-              this.collect = this.builder.connect().subscribe(ds => (this.dataSource = ds));
-              this.collect = this.builder.gridColumns().subscribe(
+              this.collect = this.manager.connect().subscribe(ds => (this.dataSource = ds));
+              this.collect = this.manager.gridColumns().subscribe(
                   cols => {
                       this.columns = cols;
                       this.setupDisplayedColumns();
                   },
                   err => console.warn(err)
               );
-              this.config = this.builder.config;
-              this.collect = this.builder.mode().subscribe(mode => {
+              this.config = this.manager.config;
+              this.collect = this.manager.mode().subscribe(mode => {
                   this.mode = mode;
                   this.setupDisplayedColumns();
               });
-              this.collect = this.builder.gridViewMode().subscribe(gridViewmode => {
+              this.collect = this.manager.gridViewMode().subscribe(gridViewmode => {
                   this.gridViewMode = gridViewmode;
                   this.setupDisplayedColumns();
               });
-              this.collect = this.builder.gridColumnsSelection().changed.subscribe(changes => this.setupDisplayedColumns());
+              this.collect = this.manager.gridColumnsSelection().changed.subscribe(changes => this.setupDisplayedColumns());
               this.ready = isReady;
           }
       });
@@ -145,12 +145,12 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
   private setupDisplayedColumns(): void {
       if (!this.idColumn) {
         this.idColumn = this.columns
-            .filter(col => col.idColumn && col.qualifier === this.builder.qualifier)
+            .filter(col => col.idColumn && col.qualifier === this.manager.qualifier)
             .reduce((acc, col) => acc = col);
       }
       if (this.mode === PageMode.GRID) {
-          if (this.builder.gridColumnsSelection().selected) {
-              this.displayedCols = this.builder
+          if (this.manager.gridColumnsSelection().selected) {
+              this.displayedCols = this.manager
                   .gridColumnsSelection()
                   .selected.sort((c1, c2) => (c1.order > c2.order ? 1 : c1.order < c2.order ? -1 : 0))
                   .map(cmd => cmd.path);
@@ -177,15 +177,15 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
       if (event) {
           event.preventDefault();
       }
-      this.builder.toggleData(row);
+      this.manager.toggleData(row);
   }
 
   public isSelected(data: any): boolean {
-      return this.builder.isDataSelected(data);
+      return this.manager.isDataSelected(data);
   }
 
   public hasSelection(): boolean {
-      return this.builder.hasSelectedData();
+      return this.manager.hasSelectedData();
   }
 }
 

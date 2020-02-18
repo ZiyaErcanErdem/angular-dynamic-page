@@ -20,7 +20,7 @@ const components: { [type: string]: Type<FormField> } = {
 })
 export class DynamicFieldDirective implements FormField, OnChanges, OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   field: FormFieldConfig;
   @Input()
@@ -34,7 +34,7 @@ export class DynamicFieldDirective implements FormField, OnChanges, OnInit, OnDe
 
   ngOnChanges() {
       if (this.component) {
-          this.component.instance.builder = this.builder;
+          this.component.instance.manager = this.manager;
           this.component.instance.field = this.field;
           this.component.instance.group = this.group;
           this.component.instance.mode = this.mode;
@@ -49,7 +49,7 @@ export class DynamicFieldDirective implements FormField, OnChanges, OnInit, OnDe
       this.destroyComponent();
       const component = this.resolver.resolveComponentFactory<FormField>(components[this.field.type]);
       this.component = this.container.createComponent(component);
-      this.component.instance.builder = this.builder;
+      this.component.instance.manager = this.manager;
       this.component.instance.field = this.field;
       this.component.instance.group = this.group;
       this.component.instance.mode = this.mode;

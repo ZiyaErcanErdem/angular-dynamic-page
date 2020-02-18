@@ -17,7 +17,7 @@ export class DynamicSortHeaderComponent extends DynamicBaseComponent implements 
   @Input()
   column: ColumnMetadata;
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   criteria: Criteria;
 
@@ -64,8 +64,8 @@ export class DynamicSortHeaderComponent extends DynamicBaseComponent implements 
   }
 
   ngOnInit() {
-      this.pageConfig = this.builder.config;
-      this.collect = this.builder.sortChanged().subscribe(ctx => {
+      this.pageConfig = this.manager.config;
+      this.collect = this.manager.sortChanged().subscribe(ctx => {
           if (ctx.column !== this.column) {
               this.direction = '';
           } else {
@@ -81,7 +81,7 @@ export class DynamicSortHeaderComponent extends DynamicBaseComponent implements 
   handleSortRequest() {
       const dir = this.direction === 'desc' ? 'asc' : 'desc';
       const ctx: SortContext = { direction: dir, column: this.column };
-      this.builder.sortWith(ctx, this.criteria).subscribe();
+      this.manager.sortWith(ctx, this.criteria).subscribe();
   }
 }
 

@@ -7,13 +7,13 @@ import { PageManager } from '../../../model/page-manager';
 // @Directive()
 export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnInit, OnDestroy {
     @Input()
-    set builder(value: PageManager<any>) {
-        this.pageBuilder = value;
-        this.activePageBuilder = this.pageBuilder;
+    set manager(value: PageManager<any>) {
+        this.pageManager = value;
+        this.activePageManager = this.pageManager;
     }
 
-    private pageBuilder: PageManager<any>;
-    private activePageBuilder: PageManager<any>;
+    private pageManager: PageManager<any>;
+    private activePageManager: PageManager<any>;
     private data: T;
     public formValue: any;
     private form: FormGroup;
@@ -22,12 +22,12 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
         super();
     }
 
-    get activeBuilder(): PageManager<any> {
-        return this.activePageBuilder ? this.activePageBuilder : this.pageBuilder;
+    get activeManager(): PageManager<any> {
+        return this.activePageManager ? this.activePageManager : this.pageManager;
     }
 
     get qualifier(): string {
-        return this.activePageBuilder ? this.activePageBuilder.qualifier : undefined;
+        return this.activePageManager ? this.activePageManager.qualifier : undefined;
     }
 
     get visible(): boolean {
@@ -59,20 +59,20 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
 
     public set entityValue(value: any) {
         this.formValue = value;
-        if (this.activePageBuilder) {
+        if (this.activePageManager) {
             this.entityChanged();
         }
     }
 
     protected delegateUpdate(delegator: (d: T) => Observable<T>): void {
-        if (this.activePageBuilder) {
-            this.activePageBuilder.delegateEntityUpdate(delegator);
+        if (this.activePageManager) {
+            this.activePageManager.delegateEntityUpdate(delegator);
         }
     }
 
     protected resetUpdateDelegation(): void {
-        if (this.activePageBuilder) {
-            this.activePageBuilder.clearEntityUpdateDelegate();
+        if (this.activePageManager) {
+            this.activePageManager.clearEntityUpdateDelegate();
         }
     }
 
@@ -104,18 +104,18 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
     }
 
     ngOnInit() {
-        if (this.pageBuilder) {
-            this.collect = this.pageBuilder.activeBuilder().subscribe(apb => {
-                if (this.activePageBuilder) {
-                    this.activePageBuilder.clearEntityUpdateDelegate();
+        if (this.pageManager) {
+            this.collect = this.pageManager.activeManager().subscribe(apb => {
+                if (this.activePageManager) {
+                    this.activePageManager.clearEntityUpdateDelegate();
                 }
                 if (apb) {
-                    console.log('Active Builder Changed: ' + apb.qualifier);
-                    this.activePageBuilder = apb;
-                    this.monitorBuilder(this.activePageBuilder);
+                    console.log('Active Manager Changed: ' + apb.qualifier);
+                    this.activePageManager = apb;
+                    this.monitorManager(this.activePageManager);
                 } else {
-                    console.log('Active Builder Removed');
-                    this.activePageBuilder = this.pageBuilder;
+                    console.log('Active Manager Removed');
+                    this.activePageManager = this.pageManager;
                 }
             });
         }
@@ -123,16 +123,16 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
 
     ngOnDestroy() {
         super.ngOnDestroy();
-        this.unmonitorBuilder();
-        this.pageBuilder = undefined;
-        if (this.activePageBuilder) {
-            this.activePageBuilder.clearEntityUpdateDelegate();
+        this.unmonitorManager();
+        this.pageManager = undefined;
+        if (this.activePageManager) {
+            this.activePageManager.clearEntityUpdateDelegate();
         }
-        this.activePageBuilder = undefined;
+        this.activePageManager = undefined;
     }
 
-    private monitorBuilder(b: PageManager<any>): void {
-        this.unmonitorBuilder();
+    private monitorManager(b: PageManager<any>): void {
+        this.unmonitorManager();
         if (this.isInScope(b.qualifier)) {
             this.collect = b.data().subscribe(d => {
                 this.data = d as T;
@@ -151,9 +151,9 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
         }
     }
 
-    private unmonitorBuilder(): void {
-        if (this.activePageBuilder) {
-            this.activePageBuilder.clearEntityUpdateDelegate();
+    private unmonitorManager(): void {
+        if (this.activePageManager) {
+            this.activePageManager.clearEntityUpdateDelegate();
         }
         this.form = undefined;
         this.data = undefined;

@@ -17,7 +17,7 @@ let confUniqueId = 0;
 })
 export class DynamicGridConfigurerComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
   metamodel: Array<ColumnMetadata>;
@@ -45,9 +45,9 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
 
   toogleGrid(): void {
       if (this.gridViewMode === GridViewMode.MINIMIZED) {
-          this.builder.setGridViewMode(GridViewMode.COMPACT);
+          this.manager.setGridViewMode(GridViewMode.COMPACT);
       } else if (this.gridViewMode === GridViewMode.COMPACT) {
-          this.builder.setGridViewMode(GridViewMode.MINIMIZED);
+          this.manager.setGridViewMode(GridViewMode.MINIMIZED);
       }
   }
 
@@ -64,7 +64,7 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
   }
 
   private storeGridColumnSelectionSetting(): void {
-      if (this.builder && this.selection) {
+      if (this.manager && this.selection) {
           let displayedColumns = null;
           if (this.selection.selected) {
               displayedColumns = this.selection.selected
@@ -72,22 +72,22 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
                   .map(cmd => cmd.path);
           }
           if (displayedColumns) {
-              this.builder.storeSetting('displayedColumns', displayedColumns);
+              this.manager.storeSetting('displayedColumns', displayedColumns);
           } else {
-              this.builder.clearSetting('displayedColumns');
+              this.manager.clearSetting('displayedColumns');
           }
       }
   }
 
   ngOnInit() {
-      this.builder.gridColumns().subscribe(cols => {
+      this.manager.gridColumns().subscribe(cols => {
           this.metamodel = cols.filter(cmd => cmd.listable);
       });
-      this.selection = this.builder.gridColumnsSelection();
-      this.collect = this.builder.mode().subscribe(mode => {
+      this.selection = this.manager.gridColumnsSelection();
+      this.collect = this.manager.mode().subscribe(mode => {
           this.mode = mode;
       });
-      this.collect = this.builder.gridViewMode().subscribe(gridViewMode => {
+      this.collect = this.manager.gridViewMode().subscribe(gridViewMode => {
           this.gridViewMode = gridViewMode;
       });
   }

@@ -37,7 +37,7 @@ export class PredicateBuilder<T> {
 }
 export class CriteriaBuilder<T> {
     constructor(
-        private builder: PageManager<T>,
+        private manager: PageManager<T>,
         private queryBuilder: QueryBuilder<T>,
         private parent: CriteriaBuilder<T>,
         private criteria: Criteria
@@ -81,16 +81,16 @@ export class CriteriaBuilder<T> {
     public addPredicate(fieldPath: string, operator: Operator, value?: any, overwrite?: boolean): PredicateBuilder<T> {
         const col = this.queryBuilder.findColumn(fieldPath);
         if (!col) {
-            // console.log(`Invalid predicate. Field ${fieldPath} is not defined. Check builder config!`);
+            // console.log(`Invalid predicate. Field ${fieldPath} is not defined. Check manager config!`);
         }
         let predicate: Predicate = null;
         if (overwrite) {
             predicate = this.queryBuilder.findPredicate(fieldPath);
             if (!predicate) {
-                predicate = this.builder.createPredicate(this.criteria, col);
+                predicate = this.manager.createPredicate(this.criteria, col);
             }
         } else {
-            predicate = this.builder.createPredicate(this.criteria, col);
+            predicate = this.manager.createPredicate(this.criteria, col);
         }
 
         predicate.field = col ? col.name : fieldPath;
@@ -103,9 +103,9 @@ export class CriteriaBuilder<T> {
     }
 
     addCriteria(condition: Condition): CriteriaBuilder<T> {
-        const criteria: Criteria = this.builder.createCriteria(this.criteria, true);
+        const criteria: Criteria = this.manager.createCriteria(this.criteria, true);
         criteria.condition = condition;
-        return new CriteriaBuilder<T>(this.builder, this.queryBuilder, this, criteria);
+        return new CriteriaBuilder<T>(this.manager, this.queryBuilder, this, criteria);
     }
 
     then(): CriteriaBuilder<T> {
@@ -156,9 +156,9 @@ export class QueryBuilder<T> {
     private rootCriteria: Criteria;
     private rootCriteriaBuilder: CriteriaBuilder<T>;
 
-    constructor(private builder: PageManager<T>) {
+    constructor(private manager: PageManager<T>) {
         this.rootCriteria = new Criteria(Condition.AND);
-        this.rootCriteriaBuilder = new CriteriaBuilder<T>(this.builder, this, null, this.rootCriteria);
+        this.rootCriteriaBuilder = new CriteriaBuilder<T>(this.manager, this, null, this.rootCriteria);
     }
 
     public query(): CriteriaBuilder<T> {
@@ -183,7 +183,7 @@ export class QueryBuilder<T> {
     }
 
     public findColumn(pathName: string): ColumnMetadata {
-        return this.builder.findColumn(pathName);
+        return this.manager.findColumn(pathName);
     }
 
     public valueOf(param: any): any {

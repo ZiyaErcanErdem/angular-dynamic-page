@@ -11,7 +11,7 @@ import { PageConfig } from '../../model/page-config';
 })
 export class DynamicPaginationComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   criteria: Criteria;
   config: PageConfig<any>;
@@ -52,13 +52,13 @@ export class DynamicPaginationComponent extends DynamicBaseComponent implements 
   }
 
   public navigateToPage(): void {
-      this.builder.navigate(this.criteria, this.config.page).subscribe();
+      this.manager.navigate(this.criteria, this.config.page).subscribe();
   }
 
   ngOnInit() {
-      this.builder.ready().subscribe(isReady => {
+      this.manager.ready().subscribe(isReady => {
           if (isReady) {
-              this.config = this.builder.config;
+              this.config = this.manager.config;
               this.ready = isReady;
           }
       });

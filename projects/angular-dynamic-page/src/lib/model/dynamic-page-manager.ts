@@ -74,7 +74,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     private exitSubject: Subject<T>;
     private notificationSubject: Subject<any>;
     private routeDataSubscription: Subscription;
-    private activeBuilderSubject: BehaviorSubject<PageManager<any>>;
+    private activeManagerSubject: BehaviorSubject<PageManager<any>>;
     private formValueChangeSubject: Subject<{form: FormGroup, control: AbstractControl, name: string, value: any}>;
 
     private configConfigurer: (config: PageConfig<T>) => PageConfig<T>;
@@ -124,7 +124,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         // public readonly i18nPrefix: string,
         // public readonly i18nAppName: string,
         // public readonly appPathPrefix: string,
-        private parentBuilder?: PageManager<any>
+        private parentManager?: PageManager<any>
     ) {
         super();
         this.componentDestroyed = false;
@@ -153,7 +153,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.relationPagesSubject = new BehaviorSubject<Array<RelationPageBuilder>>([]);
         this.exitSubject = new Subject<any>();
         this.notificationSubject = new Subject<any>();
-        this.activeBuilderSubject = new BehaviorSubject<PageManager<any>>(null);
+        this.activeManagerSubject = new BehaviorSubject<PageManager<any>>(null);
         this.formValueChangeSubject = new Subject();
         this.monitoredFormItems = [];
 
@@ -169,7 +169,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     public getStorageId(): string {
-        return `${this.parentBuilder ? this.parentBuilder.getStorageId() + '.' : ''}${this.pageMetamodel.getInstanceId()}`;
+        return `${this.parentManager ? this.parentManager.getStorageId() + '.' : ''}${this.pageMetamodel.getInstanceId()}`;
     }
 
     public delegateEntityUpdate(delegate: (entity: T) => Observable<T>): void {
@@ -222,15 +222,15 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.relationPagesSubject = this.destroySubject(this.relationPagesSubject);
         this.notificationSubject = this.destroySubject(this.notificationSubject);
         this.exitSubject = this.destroySubject(this.exitSubject);
-        this.activeBuilderSubject = this.destroySubject(this.activeBuilderSubject);
+        this.activeManagerSubject = this.destroySubject(this.activeManagerSubject);
         this.formValueChangeSubject = this.destroySubject(this.formValueChangeSubject);
 
         if (this.pageMetamodel) {
             this.pageMetamodel.getColumns().forEach(col => {
                 if (col.selector) {
-                    if (col.selector.builder) {
-                        col.selector.builder.destroy();
-                        col.selector.builder = undefined;
+                    if (col.selector.manager) {
+                        col.selector.manager.destroy();
+                        col.selector.manager = undefined;
                     }
                     // col.selector = undefined;
                 }
@@ -292,15 +292,15 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     public isChild(): boolean {
-        return !!this.parentBuilder;
+        return !!this.parentManager;
     }
 
     public parent(): PageManager<any> {
-        return this.parentBuilder;
+        return this.parentManager;
     }
 
     public top(): PageManager<any> {
-        return this.isChild() ? this.parentBuilder.top() : this;
+        return this.isChild() ? this.parentManager.top() : this;
     }
 
     public withMetamodelProvider(metadataProvider: DynamicMetamodelService): PageManager<T> {
@@ -505,7 +505,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                         if (preferredViewerMode) {
                             editorMode = preferredViewerMode;
                         }
-                        this.viewer.componentRef.instance.builder = this;
+                        this.viewer.componentRef.instance.manager = this;
                         this.viewer.componentRef.instance.mode = editorMode;
                         this.viewer.componentRef.instance.theme = this.config.pageTheme;
                         this.viewer.componentRef.instance.updateOn = this.config.formUpdateOnMode;
@@ -620,22 +620,22 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     public openEditor(mode: EditorMode): PopoverRef<any, any> {
-        const ctx: { builder: PageManager<any>; mode: EditorMode } = {
-            builder: this,
+        const ctx: { manager: PageManager<any>; mode: EditorMode } = {
+            manager: this,
             mode
         };
         const theme = this.config.pageTheme;
         const actions = this.actionSubject.value;
         const title = this.config.pageTitle;
         const i18n = title ? true : false;
-        const ref = this.openDialog<{ builder: PageManager<any>; mode: EditorMode }, any>(
+        const ref = this.openDialog<{ manager: PageManager<any>; mode: EditorMode }, any>(
             DynamicEditorComponent, ctx, {theme, actions, title, i18n}
         );
         return ref;
     }
 
-    public openDynamicPage(builder: PageManager<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any> {
-        const ref = this.openDialog<PageManager<any>, any>(DynamicPageComponent, builder, {theme, title, i18n});
+    public openDynamicPage(manager: PageManager<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any> {
+        const ref = this.openDialog<PageManager<any>, any>(DynamicPageComponent, manager, {theme, title, i18n});
         return ref;
     }
 
@@ -650,7 +650,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         return selectorModel;
     }
 
-    public createRelationPageBuilder(relation: PageRelation): RelationPageBuilder {
+    public createRelationPageManager(relation: PageRelation): RelationPageBuilder {
         const relPageBuilder = new RelationPageBuilder(relation, this, this.config, this.pageMetamodel);
         return relPageBuilder;
     }
@@ -679,10 +679,10 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         if (!selector) {
             return undefined;
         }
-        if (selector.builder && !selector.builder.isDestroyed()) {
-            return selector.builder;
+        if (selector.manager && !selector.manager.isDestroyed()) {
+            return selector.manager;
         }
-        selector.builder = this.createInstanceFor(selector.qualifier, this)
+        selector.manager = this.createInstanceFor(selector.qualifier, this)
             .withPageConfiguration(config => {
                 config.pageType = PageType.SELECTOR;
                 config.queryMode = selector.queryMode ? selector.queryMode : QueryMode.EXAMPLE;
@@ -734,7 +734,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         if (!selector.pageTitle) {
             selector.pageTitle = this.config.pageTitle;
         }
-        return selector.builder;
+        return selector.manager;
     }
 
     private build(): void {
@@ -780,7 +780,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.configureDefaultQuery();
         this.isReady = true;
         this.readySubject.next(this.isReady);
-        this.setActiveBuilder(this);
+        this.setActiveManager(this);
     }
 
     private configureConfig(): void {
@@ -1100,8 +1100,8 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         return this.exitSubject.asObservable();
     }
 
-    public activeBuilder(): Observable<PageManager<any>> {
-        return this.activeBuilderSubject.asObservable();
+    public activeManager(): Observable<PageManager<any>> {
+        return this.activeManagerSubject.asObservable();
     }
 
     private informDataActionController(dataActionType: DataActionType, data: T): Promise<boolean> {
@@ -1350,11 +1350,11 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.exitSubject.next(entity);
     }
 
-    public setActiveBuilder(apb: PageManager<any>): void {
-        if (this.parentBuilder) {
-            this.parentBuilder.setActiveBuilder(apb);
-        } else if (this.activeBuilderSubject) {
-            this.activeBuilderSubject.next(apb);
+    public setActiveManager(apb: PageManager<any>): void {
+        if (this.parentManager) {
+            this.parentManager.setActiveManager(apb);
+        } else if (this.activeManagerSubject) {
+            this.activeManagerSubject.next(apb);
         }
     }
 
@@ -1549,7 +1549,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     private toExpression(predicate: Predicate): string {
         const cmd: ColumnMetadata = predicate.metadata;
         if (!cmd) {
-            // console.log(`Skipping expression. Field ${predicate.field} is not defined. Check builder config!`);
+            // console.log(`Skipping expression. Field ${predicate.field} is not defined. Check manager config!`);
             return '';
         }
         const op = predicate.operator;

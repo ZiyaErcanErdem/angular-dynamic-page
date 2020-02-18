@@ -32,7 +32,7 @@ export class DynamicDataSource<T> implements DataSource<T> {
         private qualifier: string,
         private dynamicConfig: IDynamicConfig,
         private dynamicDataService: DynamicDataService,
-        private builder: PageManager<T>
+        private manager: PageManager<T>
     ) {
         this.datePipe = new DatePipe('en-US');
         this.columns = [];
@@ -40,7 +40,7 @@ export class DynamicDataSource<T> implements DataSource<T> {
         this.loadingSubject = new BehaviorSubject<boolean>(false);
         this.loading$ = this.loadingSubject.asObservable();
 
-        this.columnsSubscription = this.builder.columns().subscribe(cols => {
+        this.columnsSubscription = this.manager.columns().subscribe(cols => {
             this.columns = cols;
         });
     }
@@ -70,8 +70,8 @@ export class DynamicDataSource<T> implements DataSource<T> {
         this.loadingSubject.next(false);
         this.dataSubject.next(data);
 
-        if (this.builder.isChild() && this.builder.config.canCreate && (!data || data.length <= 0)) {
-            this.builder.openViewer(EditorMode.CREATE);
+        if (this.manager.isChild() && this.manager.config.canCreate && (!data || data.length <= 0)) {
+            this.manager.openViewer(EditorMode.CREATE);
         }
     }
 

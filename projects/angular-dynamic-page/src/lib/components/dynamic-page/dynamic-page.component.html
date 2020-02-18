@@ -1,10 +1,10 @@
 <div class="border-0 d-flex flex-column h-100">
     <ng-container *ngIf="isReady">
         <div class="d-flex flex-column">
-            <zee-dynamic-page-actions *ngIf="showPageActions" [title]="pageTitle" [builder]="builder" [theme]="theme" class="mb-2 mt-0" ></zee-dynamic-page-actions>
+            <zee-dynamic-page-actions *ngIf="showPageActions" [title]="pageTitle" [manager]="manager" [theme]="theme" class="mb-2 mt-0" ></zee-dynamic-page-actions>
             <div class="d-flex flex-row">
-                <zee-dynamic-grid [builder]="builder" [criteria]="query" [theme]="theme" [ngClass]="gridClass"></zee-dynamic-grid>
-                <zee-dynamic-portal [title]="pageTitle" [builder]="builder" [theme]="theme"  class="align-self-stretch rounded" [ngClass]="containerClass">
+                <zee-dynamic-grid [manager]="manager" [criteria]="query" [theme]="theme" [ngClass]="gridClass"></zee-dynamic-grid>
+                <zee-dynamic-portal [title]="pageTitle" [manager]="manager" [theme]="theme"  class="align-self-stretch rounded" [ngClass]="containerClass">
                         <span portal-addon="portal">
                             <ng-content select="[page-addon=portal]"></ng-content>
                         </span>

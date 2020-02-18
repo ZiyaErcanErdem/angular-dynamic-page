@@ -12,7 +12,7 @@ import { DynamicAction, ActionScope, ActionType } from '../../../model/dynamic-a
 })
 export class DynamicGridActionsComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
 
   private pageConfig: PageConfig<any>;
   private actionSubscription: Subscription;
@@ -23,9 +23,9 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
   }
 
   private buildActions(): void {
-      this.pageConfig = this.builder.config;
+      this.pageConfig = this.manager.config;
       if (!this.actionSubscription) {
-          this.actionSubscription = this.builder.actions().subscribe(actionList => {
+          this.actionSubscription = this.manager.actions().subscribe(actionList => {
               this.actions = actionList
                   .filter(a => this.canOperate(a))
                   .sort((a, b) => -1 * (a.order > b.order ? 1 : a.order === b.order ? 0 : -1));

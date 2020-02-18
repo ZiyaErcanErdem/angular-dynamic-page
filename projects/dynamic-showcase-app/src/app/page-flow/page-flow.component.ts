@@ -25,7 +25,7 @@ import { FlowExecution } from '../model/flow-execution.model';
 })
 export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnDestroy {
   private registeredActions: Array<GenericDynamicAction<any>> = [];
-  public pageBuilder: PageManager<Flow>;
+  public pageManager: PageManager<Flow>;
 
   constructor(
     private dynamicService: DynamicService,
@@ -37,8 +37,8 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
   }
 
   ngOnInit() {
-    this.pageBuilder = this.dynamicService.createPageBuilder<Flow>({qualifier: 'Flow'});
-    this.pageBuilder
+    this.pageManager = this.dynamicService.createPageManager<Flow>({qualifier: 'Flow'});
+    this.pageManager
       .withSortingSample(Flow, EventTrigger)
       .withGridColumns('id', 'flowName', 'nextExecutionStartTime', 'flowState', 'eventTrigger.triggerName', 'eventTrigger.triggerType')
       .withCompactColumns('id', 'flowName')
@@ -86,8 +86,8 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
   }
 
   private configureFlowExecutionRelation(relation: PageRelation): void {
-    this.pageBuilder
-    .createRelationPageBuilder(relation)
+    this.pageManager
+    .createRelationPageManager(relation)
     .withPageConfiguration(config => {
       config.queryMode = QueryMode.CRITERIA;
       config.itemsPerPage = 50;
@@ -114,8 +114,8 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
   }
 
   private configureTaskRelation(relation: PageRelation): void {
-    this.pageBuilder
-      .createRelationPageBuilder(relation)
+    this.pageManager
+      .createRelationPageManager(relation)
       .withGridColumns('id', 'taskName', 'taskState', 'checkScript.scriptName', 'flow.flowName', 'agent.agentName')
       .withCompactColumns('id', 'taskName')
       .withSortingSamples(Task)
@@ -138,13 +138,13 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
   }
 
   ngOnDestroy() {
-    this.registeredActions.forEach(a => this.pageBuilder.unregisterAction(a));
+    this.registeredActions.forEach(a => this.pageManager.unregisterAction(a));
     this.registeredActions = [];
 
-    if (this.pageBuilder) {
-      this.registeredActions.forEach(a => this.pageBuilder.unregisterAction(a));
-      this.pageBuilder.destroy();
-      this.pageBuilder = undefined;
+    if (this.pageManager) {
+      this.registeredActions.forEach(a => this.pageManager.unregisterAction(a));
+      this.pageManager.destroy();
+      this.pageManager = undefined;
       alert('destroyed');
     }
     super.ngOnDestroy();

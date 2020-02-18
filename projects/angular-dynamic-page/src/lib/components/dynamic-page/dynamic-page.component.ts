@@ -24,7 +24,7 @@ import { DynamicExcelComponent } from '../dynamic-excel/dynamic-excel.component'
 })
 export class DynamicPageComponent extends DynamicBaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
-  builder: PageManager<any>;
+  manager: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
   @Input()
@@ -85,24 +85,24 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
 
   private initIfPopover() {
       if (this.popoverRef && this.popoverRef.context) {
-          this.builder = this.popoverRef.context;
+          this.manager = this.popoverRef.context;
           this.theme = this.popoverRef.config.theme ? this.popoverRef.config.theme : Theme.dark;
       }
   }
 
   ngOnInit() {
-      this.builder.withDialog(this.popoverService);
-      this.builder.withRouter(this.router);
-      this.builder.withRoute(this.activatedRoute);
-      this.builder.withMetamodelProvider(this.dynamicMetamodelService);
-      this.builder.withDataProvider(this.dynamicDataService).connect();
-      this.handlePageConfig(this.builder.config);
-      this.collect = this.builder.query().subscribe(q => (this.query = q));
-      this.collect = this.builder.dataSelectionChange().subscribe(c => this.setActionStates());
-      this.collect = this.builder.mode().subscribe(mode => this.setupPageMode(mode));
-      this.collect = this.builder.gridViewMode().subscribe(gridViewMode => this.setupGridViewMode(gridViewMode));
-      this.collect = this.builder.onNotification().subscribe(notification => this.handleNotification(notification));
-      this.collect = this.builder.ready().subscribe(isReady => {
+      this.manager.withDialog(this.popoverService);
+      this.manager.withRouter(this.router);
+      this.manager.withRoute(this.activatedRoute);
+      this.manager.withMetamodelProvider(this.dynamicMetamodelService);
+      this.manager.withDataProvider(this.dynamicDataService).connect();
+      this.handlePageConfig(this.manager.config);
+      this.collect = this.manager.query().subscribe(q => (this.query = q));
+      this.collect = this.manager.dataSelectionChange().subscribe(c => this.setActionStates());
+      this.collect = this.manager.mode().subscribe(mode => this.setupPageMode(mode));
+      this.collect = this.manager.gridViewMode().subscribe(gridViewMode => this.setupGridViewMode(gridViewMode));
+      this.collect = this.manager.onNotification().subscribe(notification => this.handleNotification(notification));
+      this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
               Promise.resolve(null).then(() => {
                   this.ready = isReady;
@@ -123,7 +123,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
           const params = notification.params;
           const notificationType = notification.notificationType;
           if (message && 'alert' === notificationType) {
-              this.builder.openAlert(message, params);
+              this.manager.openAlert(message, params);
           }
           // console.log(`Notification => ${message}`, notification);
       }
@@ -142,40 +142,40 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
 
   ngOnDestroy() {
       super.ngOnDestroy();
-      this.registeredActions.forEach(a => this.builder.unregisterAction(a));
+      this.registeredActions.forEach(a => this.manager.unregisterAction(a));
       if (this.registeredActions) {
           this.registeredActions.forEach(a => a.destroy());
           this.registeredActions = undefined;
       }
       this.query = undefined;
       this.closeAction = undefined;
-      if (this.builder) {
+      if (this.manager) {
           // if (this.pageConfig.pageType !== PageType.CHILD_PAGE) {
-          this.builder.destroy();
-          this.builder = undefined;
+          this.manager.destroy();
+          this.manager = undefined;
           this.pageConfig = undefined;
           // } else {
-          //     this.builder.detachViewer();
+          //     this.manager.detachViewer();
           // }
       }
   }
 
   ngAfterViewInit() {
-      this.collect = this.builder.ready().subscribe(isReady => {
+      this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
               const toh = setTimeout(() => {
                   clearTimeout(toh);
-                  if (this.builder && this.pageConfig && !this.builder.isChild()) {
+                  if (this.manager && this.pageConfig && !this.manager.isChild()) {
                       if (this.pageConfig.autoSearch) {
                           this.search();
                       }
                   } else {
-                      this.collect = this.builder
+                      this.collect = this.manager
                           .parent()
                           .data()
                           .subscribe((parentData: any) => {
-                              this.builder.setPageMode(PageMode.GRID);
-                              this.builder.searchWith(parentData).subscribe();
+                              this.manager.setPageMode(PageMode.GRID);
+                              this.manager.searchWith(parentData).subscribe();
                           });
                   }
               }, 1);
@@ -184,15 +184,15 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
   }
 
   public search(): void {
-      this.builder.search(this.query).subscribe();
+      this.manager.search(this.query).subscribe();
   }
 
   private openEditor(mode: EditorMode, entity?: any): void {
       if (mode === EditorMode.CREATE) {
-          this.builder.openViewer(mode);
+          this.manager.openViewer(mode);
           return;
       }
-      let dialogRef = this.builder.openEditor(mode);
+      let dialogRef = this.manager.openEditor(mode);
       this.closeAction.handler = d => {
           if (dialogRef) {
               dialogRef.close();
@@ -203,16 +203,16 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
 
   private openImportExportDialog() {
       // 'dynamic.action.excel'
-      const dialogRef = this.builder.openDialog<PageManager<any>, any>(
+      const dialogRef = this.manager.openDialog<PageManager<any>, any>(
           DynamicExcelComponent,
-          this.builder,
+          this.manager,
           {theme: this.theme, minWidth: '500px'}
         );
   }
 
   private registerAction(action: GenericDynamicAction<any>) {
       this.registeredActions.push(action);
-      this.builder.registerAction(action);
+      this.manager.registerAction(action);
   }
 
   private registerActions(): void {
@@ -224,7 +224,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
           .build();
       this.closeAction.disabled = false;
       this.closeAction.order = 999999;
-      this.builder.registerAction(this.closeAction);
+      this.manager.registerAction(this.closeAction);
 
       let action: GenericDynamicAction<any> = null;
 
@@ -265,8 +265,8 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
           .withIconClass('eye')
           .withHandler((comp, d) => {
               comp.disabled = true;
-              if (this.builder.hasSelectedData()) {
-                  const val = this.builder.getSelectedData();
+              if (this.manager.hasSelectedData()) {
+                  const val = this.manager.getSelectedData();
                   this.openEditor(EditorMode.VIEW, val);
               }
               comp.disabled = false;
@@ -282,8 +282,8 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
               .withIconClass('edit')
               .withHandler((comp, d) => {
                   comp.disabled = true;
-                  if (this.builder.hasSelectedData()) {
-                      const val = this.builder.getSelectedData();
+                  if (this.manager.hasSelectedData()) {
+                      const val = this.manager.getSelectedData();
                       this.openEditor(EditorMode.EDIT, val);
                   }
                   comp.disabled = false;
@@ -300,13 +300,13 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
               .withIconClass('trash-alt')
               .withHandler((comp, d) => {
                   comp.disabled = true;
-                  if (this.builder.hasSelectedData()) {
-                      const val = this.builder.getSelectedData();
-                      this.collect = this.builder.delete(val).subscribe(
+                  if (this.manager.hasSelectedData()) {
+                      const val = this.manager.getSelectedData();
+                      this.collect = this.manager.delete(val).subscribe(
                           result => {
-                              this.builder.deselectData(val);
+                              this.manager.deselectData(val);
                               this.setActionStates();
-                              this.builder.setPageMode(PageMode.GRID);
+                              this.manager.setPageMode(PageMode.GRID);
                           },
                           err => (comp.disabled = false),
                           () => this.setActionStates()
@@ -321,7 +321,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
   }
 
   private setActionStates(): void {
-      const hasSelectedVal = this.builder.hasSelectedData();
+      const hasSelectedVal = this.manager.hasSelectedData();
       this.registeredActions.forEach(a => {
           if (a.containsScope(ActionScope.GRID) && !hasSelectedVal) {
               a.disabled = true;
