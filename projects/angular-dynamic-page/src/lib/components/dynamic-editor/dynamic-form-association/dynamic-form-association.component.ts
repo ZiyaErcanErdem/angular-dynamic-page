@@ -8,7 +8,7 @@ import { PageMetamodel } from '../../../model/page-metamodel';
 import { PageRelation } from '../../../model/page-relation';
 import { PageConfig } from '../../../model/page-config';
 import { ColumnType } from '../../../model/column-type.enum';
-import { BuilderType } from '../../../model/builder-type.enum';
+import { ManagerType } from '../../../model/manager-type.enum';
 import { PageType } from '../../../model/page-type.enum';
 import { CriteriaBuilder } from '../../../model/query-builder';
 import { Operator } from '../../../model/operator.enum';
@@ -250,7 +250,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
   }
 
   private configurePopupConfig(config: PageConfig<any>): PageConfig<any> {
-      config.builderType = BuilderType.ASSOCIATION;
+      config.managerType = ManagerType.ASSOCIATION;
       if (this.config) {
           config.pageTheme = this.config.pageTheme;
       }

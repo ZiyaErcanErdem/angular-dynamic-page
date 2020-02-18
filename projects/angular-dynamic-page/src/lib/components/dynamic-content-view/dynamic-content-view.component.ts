@@ -7,7 +7,7 @@ import { PageMetamodel } from '../../model/page-metamodel';
 import { DynamicMetamodelService } from '../../services/dynamic-metamodel.service';
 import { PopoverRef } from '../../model/popover-ref';
 import { Theme } from '../../model/theme.enum';
-import { BuilderType } from '../../model/builder-type.enum';
+import { ManagerType } from '../../model/manager-type.enum';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ColumnType } from '../../model/column-type.enum';
 
@@ -50,8 +50,8 @@ export class DynamicContentViewComponent extends DynamicBaseComponent implements
       }
   }
 
-  get builderType(): BuilderType {
-      return BuilderType.PAGE;
+  get managerType(): ManagerType {
+      return ManagerType.PAGE;
   }
 
   ngOnInit() {

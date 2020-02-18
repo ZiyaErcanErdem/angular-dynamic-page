@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { ColumnMetadata } from '../../../model/column-metadata';
-import { BuilderType } from '../../../model/builder-type.enum';
+import { ManagerType } from '../../../model/manager-type.enum';
 import { RelationType } from '../../../model/relation-type.enum';
 import { ColumnType } from '../../../model/column-type.enum';
 import { DatePipe } from '@angular/common';
@@ -9,8 +9,8 @@ import { DatePipe } from '@angular/common';
   name: 'dynamicCellView'
 })
 export class DynamicCellViewPipe implements PipeTransform {
-  transform(row: any, col: ColumnMetadata, builderType: BuilderType): string {
-      const path = this.toPath(col, builderType);
+  transform(row: any, col: ColumnMetadata, managerType: ManagerType): string {
+      const path = this.toPath(col, managerType);
       if (col.relType === RelationType.SELF) {
           return this.format(row[path], col);
       } else if (col.relType === RelationType.INNER) {
@@ -21,8 +21,8 @@ export class DynamicCellViewPipe implements PipeTransform {
       }
   }
 
-  private toPath(col: ColumnMetadata, builderType: BuilderType): string {
-      if (builderType === BuilderType.ASSOCIATION) {
+  private toPath(col: ColumnMetadata, managerType: ManagerType): string {
+      if (managerType === ManagerType.ASSOCIATION) {
           let levels = col.path.split('.');
           if (levels.length > 2 && levels.length >= col.level) {
               levels = levels.slice(col.level - 2);

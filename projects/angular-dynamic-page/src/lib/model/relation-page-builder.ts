@@ -7,7 +7,7 @@ import { PageType } from './page-type.enum';
 import { PageRelation } from './page-relation';
 import { Condition } from './condition.enum';
 import { Operator } from './operator.enum';
-import { BuilderType } from './builder-type.enum';
+import { ManagerType } from './manager-type.enum';
 import { DynamicPortalView } from './dynamic-portal-view';
 
 export class RelationPageBuilder {
@@ -97,7 +97,7 @@ export class RelationPageBuilder {
             .withPageConfiguration(config => {
                 config.itemsPerPage = this.parentConfig.itemsPerPage;
                 config.showPageActions = false;
-                config.builderType = BuilderType.RELATION;
+                config.managerType = ManagerType.RELATION;
                 config.pageType = PageType.CHILD_PAGE;
                 config.canCreate = this.parentConfig.canCreate;
                 config.canEdit = this.parentConfig.canEdit;

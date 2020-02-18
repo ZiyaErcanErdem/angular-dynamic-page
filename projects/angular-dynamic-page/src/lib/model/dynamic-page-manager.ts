@@ -31,7 +31,7 @@ import { DataActionType } from './data-action-type.enum';
 import { DynamicSelectorModel, DynamicSelectorBuilder } from './dynamic-selector-model';
 import { QueryMode } from './query-mode.enum';
 import { RelationPageBuilder } from './relation-page-builder';
-import { BuilderType } from './builder-type.enum';
+import { ManagerType } from './manager-type.enum';
 import { GridViewMode } from './grid-view-mode.enum';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { DynamicBaseComponent } from './dynamic-base-component';
@@ -1568,7 +1568,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
 
     private toPath(col: ColumnMetadata): string {
         let path = col.path;
-        if (this.config.builderType === BuilderType.ASSOCIATION) {
+        if (this.config.managerType === ManagerType.ASSOCIATION) {
             path = col.name;
         }
         return path;

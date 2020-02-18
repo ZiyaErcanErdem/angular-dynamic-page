@@ -6,13 +6,13 @@ import { InputType } from './input-type.enum';
 import { OptionContext } from './option-context';
 import { QueryMode } from './query-mode.enum';
 import { PageType } from './page-type.enum';
-import { BuilderType } from './builder-type.enum';
+import { ManagerType } from './manager-type.enum';
 import { PageRelation } from './page-relation';
 import { Theme } from './theme.enum';
 import { IDynamicConfig } from './dynamic-config';
 
 export interface PageConfig<T> {
-    builderType: BuilderType;
+    managerType: ManagerType;
     readonly qualifier: string;
     readonly dynamicConfig: IDynamicConfig;
     // readonly i18nPrefix: string;

@@ -6,7 +6,7 @@
                     <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell" [fxFlex]="calcColWidth(cmd)">
                         <zee-dynamic-sort-header [column]="cmd" [manager]="manager" [criteria]="criteria"></zee-dynamic-sort-header>
                     </cdk-header-cell>
-                    <cdk-cell *cdkCellDef="let row" class="dyn-cell" [fxFlex]="calcColWidth(cmd)">{{row | dynamicCellView:cmd:builderType}}</cdk-cell>
+                    <cdk-cell *cdkCellDef="let row" class="dyn-cell" [fxFlex]="calcColWidth(cmd)">{{row | dynamicCellView:cmd:managerType}}</cdk-cell>
                 </ng-container>
             </ng-container>
 

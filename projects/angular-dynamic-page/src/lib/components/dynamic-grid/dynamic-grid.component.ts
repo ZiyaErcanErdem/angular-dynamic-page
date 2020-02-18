@@ -9,7 +9,7 @@ import { PageConfig } from '../../model/page-config';
 import { GridViewMode } from '../../model/grid-view-mode.enum';
 import { PageType } from '../../model/page-type.enum';
 import { DynamicUtil } from '../../model/dynamic-util';
-import { BuilderType } from '../../model/builder-type.enum';
+import { ManagerType } from '../../model/manager-type.enum';
 import { PageMode } from '../../model/page-mode.enum';
 
 @Component({
@@ -62,8 +62,8 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
       return Theme.light === this.theme || Theme.warning === this.theme ? '' : 'text-white';
   }
 
-  get builderType(): BuilderType {
-      return this.config ? this.config.builderType : BuilderType.PAGE;
+  get managerType(): ManagerType {
+      return this.config ? this.config.managerType : ManagerType.PAGE;
   }
 
   get displayedColumns() {

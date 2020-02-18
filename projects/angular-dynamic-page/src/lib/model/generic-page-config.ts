@@ -7,7 +7,7 @@ import { OptionContext } from './option-context';
 import { OperatorContext } from './operator-context';
 import { QueryMode } from './query-mode.enum';
 import { PageType } from './page-type.enum';
-import { BuilderType } from './builder-type.enum';
+import { ManagerType } from './manager-type.enum';
 import { PageRelation } from './page-relation';
 import { Theme } from './theme.enum';
 import { IDynamicConfig } from './dynamic-config';
@@ -22,7 +22,7 @@ export class GenericPageConfig<T> implements PageConfig<T> {
 
     public pageTitle: string;
     public pageTheme: Theme;
-    public builderType: BuilderType;
+    public managerType: ManagerType;
     public pageType: PageType;
     public formUpdateOnMode?: 'change' | 'blur' | 'submit';
     public autoSearch: boolean;
@@ -54,7 +54,7 @@ export class GenericPageConfig<T> implements PageConfig<T> {
         this.allowEmptyCriteria = true;
         this.pageTitle = this.toI18n(`${this.qualifier}.home.title`);
         this.pageTheme = Theme.dark;
-        this.builderType = BuilderType.PAGE;
+        this.managerType = ManagerType.PAGE;
         this.pageType = PageType.PAGE;
         this.autoSearch = true;
         this.showPageActions = true;
