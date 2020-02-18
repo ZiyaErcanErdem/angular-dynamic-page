@@ -1,6 +1,6 @@
 import { PageMetamodel } from './page-metamodel';
 import { ColumnMetadata } from './column-metadata';
-import { PageBuilder } from './page-builder';
+import { PageManager } from './page-manager';
 import { PageViewMode } from './page-view-mode.enum';
 import { PageConfig } from './page-config';
 import { PageType } from './page-type.enum';
@@ -11,7 +11,7 @@ import { BuilderType } from './builder-type.enum';
 import { DynamicPortalView } from './dynamic-portal-view';
 
 export class RelationPageBuilder {
-    public builder: PageBuilder<any>;
+    public builder: PageManager<any>;
     private gridCols: Array<string>;
     private compactCols: Array<string>;
     private sortingSamples: new () => any;
@@ -19,11 +19,11 @@ export class RelationPageBuilder {
     private viewer: DynamicPortalView<any>;
     private metamodelConfigurer: (col: ColumnMetadata) => void;
     private configConfigurer: (config: PageConfig<any>) => PageConfig<any>;
-    private relationConfigurer: (builder: PageBuilder<any>, col: PageRelation) => PageRelation;
+    private relationConfigurer: (builder: PageManager<any>, col: PageRelation) => PageRelation;
 
     constructor(
         public relation: PageRelation,
-        private parentBuilder: PageBuilder<any>,
+        private parentBuilder: PageManager<any>,
         private parentConfig: PageConfig<any>,
         private parentMetamodel: PageMetamodel
     ) {
@@ -56,7 +56,7 @@ export class RelationPageBuilder {
     }
 
     public withRelationConfiguration(
-        relationConfigFn: (builder: PageBuilder<any>, col: PageRelation) => PageRelation
+        relationConfigFn: (builder: PageManager<any>, col: PageRelation) => PageRelation
     ): RelationPageBuilder {
         this.relationConfigurer = relationConfigFn;
         return this;
@@ -87,7 +87,7 @@ export class RelationPageBuilder {
         this.parentMetamodel = undefined;
     }
 
-    public build<C>(): PageBuilder<C> {
+    public build<C>(): PageManager<C> {
         if (this.builder && !this.builder.isDestroyed()) {
             return this.builder;
         }

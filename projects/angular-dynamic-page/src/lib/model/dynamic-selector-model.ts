@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { PageBuilder } from './page-builder';
+import { PageManager } from './page-manager';
 import { Operator } from './operator.enum';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { QueryMode } from './query-mode.enum';
@@ -11,7 +11,7 @@ export interface QueryItemModel {
 }
 
 export class DynamicSelectorModel<S> {
-    builder: PageBuilder<S>;
+    builder: PageManager<S>;
 
     private selectionSubject: Subject<S>;
 

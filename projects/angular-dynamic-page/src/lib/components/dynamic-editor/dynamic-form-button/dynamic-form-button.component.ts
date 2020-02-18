@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { FormGroup } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { FormField } from '../model/form-field';
@@ -11,7 +11,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-button.component.scss']
 })
 export class DynamicFormButtonComponent implements OnInit, FormField {
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   field: FormFieldConfig;
   group: FormGroup;
   mode: EditorMode;

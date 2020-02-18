@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Criteria } from '../../model/criteria';
 import { PageConfig } from '../../model/page-config';
 
@@ -11,7 +11,7 @@ import { PageConfig } from '../../model/page-config';
 })
 export class DynamicPaginationComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   criteria: Criteria;
   config: PageConfig<any>;

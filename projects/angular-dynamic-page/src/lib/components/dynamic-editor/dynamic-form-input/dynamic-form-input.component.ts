@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { ColumnMetadata } from '../../../model/column-metadata';
@@ -14,7 +14,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-input.component.scss']
 })
 export class DynamicFormInputComponent extends DynamicBaseComponent implements OnInit, OnDestroy, FormField {
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   field: FormFieldConfig;
   group: FormGroup;
   mode: EditorMode;

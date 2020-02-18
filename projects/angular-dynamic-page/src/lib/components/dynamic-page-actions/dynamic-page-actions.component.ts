@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { BasePanelView } from '../../model/base-panel-view';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Criteria } from '../../model/criteria';
 import { Subscription } from 'rxjs';
 import { DynamicAction, GenericDynamicAction, ActionScope, ActionType, DynamicActionBuilder } from '../../model/dynamic-action';
@@ -17,7 +17,7 @@ import { DynamicUtil } from '../../model/dynamic-util';
 })
 export class DynamicPageActionsComponent extends BasePanelView implements OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
 
   public query: Criteria;
 

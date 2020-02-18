@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
 import { ColumnMetadata } from '../../../model/column-metadata';
 import { Criteria } from '../../../model/criteria';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { PageConfig } from '../../../model/page-config';
 import { RelationType } from '../../../model/relation-type.enum';
 import { ColumnType } from '../../../model/column-type.enum';
@@ -17,7 +17,7 @@ export class DynamicSortHeaderComponent extends DynamicBaseComponent implements 
   @Input()
   column: ColumnMetadata;
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   criteria: Criteria;
 

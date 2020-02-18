@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, Input, Optional } from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Theme } from '../../model/theme.enum';
 import { Criteria } from '../../model/criteria';
 import { GenericDynamicAction, DynamicActionBuilder, ActionScope, ActionType } from '../../model/dynamic-action';
@@ -24,7 +24,7 @@ import { DynamicExcelComponent } from '../dynamic-excel/dynamic-excel.component'
 })
 export class DynamicPageComponent extends DynamicBaseComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
   @Input()
@@ -75,7 +75,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
       private popoverService: DynamicPopoverService,
       private activatedRoute: ActivatedRoute,
       private router: Router,
-      @Optional() private popoverRef: PopoverRef<PageBuilder<any>, any>
+      @Optional() private popoverRef: PopoverRef<PageManager<any>, any>
   ) {
       super();
       this.queryEnabled = false;
@@ -203,7 +203,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
 
   private openImportExportDialog() {
       // 'dynamic.action.excel'
-      const dialogRef = this.builder.openDialog<PageBuilder<any>, any>(
+      const dialogRef = this.builder.openDialog<PageManager<any>, any>(
           DynamicExcelComponent,
           this.builder,
           {theme: this.theme, minWidth: '500px'}

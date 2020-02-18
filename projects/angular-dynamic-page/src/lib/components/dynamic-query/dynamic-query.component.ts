@@ -5,7 +5,7 @@ import {
 } from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
 import { ControlValueAccessor } from '@angular/forms';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Criteria } from '../../model/criteria';
 import { Condition } from '../../model/condition.enum';
 import { TemplateContext } from './model/template-context';
@@ -44,7 +44,7 @@ import { QueryMode } from '../../model/query-mode.enum';
 export class DynamicQueryComponent extends DynamicBaseComponent
             implements ControlValueAccessor, AfterContentInit, OnInit, OnDestroy, OnChanges {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   allowCriteria = true;
   @Input()

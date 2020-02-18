@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Criteria } from '../../model/criteria';
 import { Theme } from '../../model/theme.enum';
 import { DynamicDataSource } from '../../model/dynamic-data-source';
@@ -19,7 +19,7 @@ import { PageMode } from '../../model/page-mode.enum';
 })
 export class DynamicGridComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   criteria: Criteria;
   @Input()

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { ColumnMetadata } from '../../../model/column-metadata';
@@ -12,7 +12,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-select.component.scss']
 })
 export class DynamicFormSelectComponent implements OnInit, FormField {
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   field: FormFieldConfig;
   group: FormGroup;
   mode: EditorMode;

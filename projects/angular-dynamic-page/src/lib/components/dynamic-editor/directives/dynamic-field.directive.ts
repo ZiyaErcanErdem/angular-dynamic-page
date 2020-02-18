@@ -1,6 +1,6 @@
 import { Directive, OnChanges, OnInit, OnDestroy, Input, Type } from '@angular/core';
 import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { FormGroup } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { DynamicFormButtonComponent } from '../dynamic-form-button/dynamic-form-button.component';
@@ -20,7 +20,7 @@ const components: { [type: string]: Type<FormField> } = {
 })
 export class DynamicFieldDirective implements FormField, OnChanges, OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   field: FormFieldConfig;
   @Input()

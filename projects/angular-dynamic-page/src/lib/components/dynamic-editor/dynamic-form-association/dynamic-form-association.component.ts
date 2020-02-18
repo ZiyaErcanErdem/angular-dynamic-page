@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { ColumnMetadata } from '../../../model/column-metadata';
@@ -24,7 +24,7 @@ import { FormFieldConfig } from '../model/form-field-config';
 })
 export class DynamicFormAssociationComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   mode: EditorMode;
   @Input()
@@ -50,7 +50,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
   ready = false;
   isChildBuilder: boolean;
 
-  private associationBuilder: PageBuilder<any>;
+  private associationBuilder: PageManager<any>;
   private config: PageConfig<any>;
 
   constructor() {
@@ -145,7 +145,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
       });
   }
 
-  private getBuilderOf(qualifier: string): PageBuilder<any> {
+  private getBuilderOf(qualifier: string): PageManager<any> {
         if (this.mode !== EditorMode.CREATE) {
             return this.builder;
         }
@@ -202,7 +202,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
       }
   }
 
-  private createAssociationBuilder(): PageBuilder<any> {
+  private createAssociationBuilder(): PageManager<any> {
       if (this.associationBuilder && !this.associationBuilder.isDestroyed()) {
           return this.associationBuilder;
       }

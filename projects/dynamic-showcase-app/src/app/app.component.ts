@@ -8,7 +8,7 @@ import {
   DynamicUtil,
   DynamicAction,
   Criteria,
-  PageBuilder,
+  PageManager,
   QueryMode,
   Condition,
   Operator,
@@ -48,8 +48,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
   private registeredActions: Array<GenericDynamicAction<any>> = [];
   themeActions: Array<DynamicAction<any>> = [];
 
-  public agentPageBuilder: PageBuilder<Agent>;
-  public endpointPageBuilder: PageBuilder<Endpoint>;
+  public agentPageBuilder: PageManager<Agent>;
+  public endpointPageBuilder: PageManager<Endpoint>;
 
   constructor(private dynamicService: DynamicService, private translateService: TranslateService) {
     super();

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ColumnType } from '../../../model/column-type.enum';
@@ -12,7 +12,7 @@ import { FormFieldConfig } from '../model/form-field-config';
   styleUrls: ['./dynamic-form-item.component.scss']
 })
 export class DynamicFormItemComponent implements OnInit {
-  @Input() builder: PageBuilder<any>;
+  @Input() builder: PageManager<any>;
   @Input() mode: EditorMode;
   @Input() itemConfig: FormItemConfig;
 

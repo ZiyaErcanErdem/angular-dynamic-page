@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   BasePageView,
-  PageBuilder,
+  PageManager,
   DynamicActionBuilder,
   DynamicUtil,
   GenericDynamicAction,
@@ -38,7 +38,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   private executeAction: GenericDynamicAction<any>;
   private contentAction: GenericDynamicAction<any>;
 
-  public pageBuilder: PageBuilder<Task>;
+  public pageBuilder: PageManager<Task>;
 
   public ts: string;
 
@@ -271,7 +271,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
     this.checkActionState();
   }
 
-  private registerExecutionActions(taskExecutionPageBuilder: PageBuilder<any>): void {
+  private registerExecutionActions(taskExecutionPageBuilder: PageManager<any>): void {
     this.contentAction = new DynamicActionBuilder<any>('extension.action.content', ActionType.CUSTOM)
       .withScope(ActionScope.EDITOR)
       .withLabel('extension.action.content')

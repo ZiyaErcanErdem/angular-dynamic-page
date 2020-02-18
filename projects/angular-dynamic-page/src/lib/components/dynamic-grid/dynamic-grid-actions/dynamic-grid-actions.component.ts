@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 import { PageConfig } from '../../../model/page-config';
 import { Subscription } from 'rxjs';
 import { DynamicAction, ActionScope, ActionType } from '../../../model/dynamic-action';
@@ -12,7 +12,7 @@ import { DynamicAction, ActionScope, ActionType } from '../../../model/dynamic-a
 })
 export class DynamicGridActionsComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
 
   private pageConfig: PageConfig<any>;
   private actionSubscription: Subscription;

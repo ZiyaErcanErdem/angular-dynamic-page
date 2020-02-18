@@ -1,7 +1,7 @@
 import { Observable, Subject, BehaviorSubject, of, Subscription } from 'rxjs';
 import { tap, map, filter } from 'rxjs/operators';
 
-import { PageBuilder, IDynamicStorageProvider } from './page-builder';
+import { PageManager, IDynamicStorageProvider } from './page-manager';
 import { PageConfig } from './page-config';
 import { DynamicDataSource } from './dynamic-data-source';
 import { ColumnMetadata } from './column-metadata';
@@ -47,7 +47,7 @@ import { DynamicEditorComponent } from '../components/dynamic-editor/dynamic-edi
 import { DynamicPageComponent } from '../components/dynamic-page/dynamic-page.component';
 import { PopoverConfig } from './popover-config';
 
-export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageBuilder<T> {
+export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageManager<T> {
     private router: Router;
     private dialog: DynamicPopoverService;
     private provider: DynamicDataService;
@@ -74,7 +74,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     private exitSubject: Subject<T>;
     private notificationSubject: Subject<any>;
     private routeDataSubscription: Subscription;
-    private activeBuilderSubject: BehaviorSubject<PageBuilder<any>>;
+    private activeBuilderSubject: BehaviorSubject<PageManager<any>>;
     private formValueChangeSubject: Subject<{form: FormGroup, control: AbstractControl, name: string, value: any}>;
 
     private configConfigurer: (config: PageConfig<T>) => PageConfig<T>;
@@ -124,7 +124,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         // public readonly i18nPrefix: string,
         // public readonly i18nAppName: string,
         // public readonly appPathPrefix: string,
-        private parentBuilder?: PageBuilder<any>
+        private parentBuilder?: PageManager<any>
     ) {
         super();
         this.componentDestroyed = false;
@@ -153,7 +153,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.relationPagesSubject = new BehaviorSubject<Array<RelationPageBuilder>>([]);
         this.exitSubject = new Subject<any>();
         this.notificationSubject = new Subject<any>();
-        this.activeBuilderSubject = new BehaviorSubject<PageBuilder<any>>(null);
+        this.activeBuilderSubject = new BehaviorSubject<PageManager<any>>(null);
         this.formValueChangeSubject = new Subject();
         this.monitoredFormItems = [];
 
@@ -295,21 +295,21 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return !!this.parentBuilder;
     }
 
-    public parent(): PageBuilder<any> {
+    public parent(): PageManager<any> {
         return this.parentBuilder;
     }
 
-    public top(): PageBuilder<any> {
+    public top(): PageManager<any> {
         return this.isChild() ? this.parentBuilder.top() : this;
     }
 
-    public withMetamodelProvider(metadataProvider: DynamicMetamodelService): PageBuilder<T> {
+    public withMetamodelProvider(metadataProvider: DynamicMetamodelService): PageManager<T> {
         this.metadataProvider = metadataProvider;
         this.build();
         return this;
     }
 
-    public withSortingSample(...samples: Array<new () => any >): PageBuilder<T> {
+    public withSortingSample(...samples: Array<new () => any >): PageManager<T> {
         if (samples && samples.length > 0) {
             this.sortingSample = new Array<string>();
             samples.forEach(sampleType => {
@@ -320,7 +320,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return this;
     }
 
-    public withRouter(router: Router): PageBuilder<T> {
+    public withRouter(router: Router): PageManager<T> {
         this.router = router;
         if (this.config && this.config.pageType === PageType.PAGE) {
             this.defaultPageURI = router.url.split('?')[0];
@@ -328,7 +328,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return this;
     }
 
-    public withRoute(route: ActivatedRoute): PageBuilder<T> {
+    public withRoute(route: ActivatedRoute): PageManager<T> {
         this.routeDataSubscription = route.data.subscribe(data => {
             if (this.isDestroyed()) {
                 return;
@@ -348,31 +348,31 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return this;
     }
 
-    public withStorageProvider(storage: IDynamicStorageProvider): PageBuilder<T> {
+    public withStorageProvider(storage: IDynamicStorageProvider): PageManager<T> {
         this.storage = storage;
         return this;
     }
 
-    public withGridColumns(...cols: string[]): PageBuilder<T> {
+    public withGridColumns(...cols: string[]): PageManager<T> {
         this.gridCols = cols;
         return this;
     }
-    public withCompactColumns(...cols: string[]): PageBuilder<T> {
+    public withCompactColumns(...cols: string[]): PageManager<T> {
         this.compactCols = cols;
         return this;
     }
 
-    public withDataActionController(dataActionControllerFn: (actionType: DataActionType, data: T) => Promise<boolean>): PageBuilder<T> {
+    public withDataActionController(dataActionControllerFn: (actionType: DataActionType, data: T) => Promise<boolean>): PageManager<T> {
         this.dataActionController = dataActionControllerFn;
         return this;
     }
 
-    public withViewerTrigger(viewerTrigger: 'manual' | 'auto'): PageBuilder<T> {
+    public withViewerTrigger(viewerTrigger: 'manual' | 'auto'): PageManager<T> {
         this.triggerType = viewerTrigger;
         return this;
     }
 
-    public withViewer(viewMode: PageViewMode, viewer?: DynamicPortalView<any>): PageBuilder<T> {
+    public withViewer(viewMode: PageViewMode, viewer?: DynamicPortalView<any>): PageManager<T> {
         if (!viewMode) {
             return this;
         }
@@ -527,42 +527,42 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         }
     }
 
-    public withPageConfiguration(configFn: (config: PageConfig<T>) => PageConfig<T>): PageBuilder<T> {
+    public withPageConfiguration(configFn: (config: PageConfig<T>) => PageConfig<T>): PageManager<T> {
         this.configConfigurer = configFn;
         return this;
     }
 
-    public withMetamodelConfiguration(metamodelConfigFn: (col: ColumnMetadata, parent?: ColumnMetadata) => void): PageBuilder<T> {
+    public withMetamodelConfiguration(metamodelConfigFn: (col: ColumnMetadata, parent?: ColumnMetadata) => void): PageManager<T> {
         this.metamodelConfigurer = metamodelConfigFn;
         return this;
     }
 
-    public withRelationConfiguration(relationConfigFn: (col: PageRelation) => PageRelation): PageBuilder<T> {
+    public withRelationConfiguration(relationConfigFn: (col: PageRelation) => PageRelation): PageManager<T> {
         this.relationConfigurer = relationConfigFn;
         return this;
     }
 
-    public withDataProvider(provider: DynamicDataService): PageBuilder<T> {
+    public withDataProvider(provider: DynamicDataService): PageManager<T> {
         this.provider = provider;
         return this;
     }
 
-    public withDataAuthorizer<A>(dataAuthorizer: DynamicDataAuthorizer<T, A>): PageBuilder<T> {
+    public withDataAuthorizer<A>(dataAuthorizer: DynamicDataAuthorizer<T, A>): PageManager<T> {
         this.dataAuthorizer = dataAuthorizer;
         return this;
     }
 
-    public withDialog(dialog: DynamicPopoverService): PageBuilder<T> {
+    public withDialog(dialog: DynamicPopoverService): PageManager<T> {
         this.dialog = dialog;
         return this;
     }
 
-    public withDefaultQuery(defaultQueryProviderFn: (qb: CriteriaBuilder<T>, parentData?: any) => void): PageBuilder<T> {
+    public withDefaultQuery(defaultQueryProviderFn: (qb: CriteriaBuilder<T>, parentData?: any) => void): PageManager<T> {
         this.defaultQueryProvider = defaultQueryProviderFn;
         return this;
     }
 
-    public withDefaultQueryConstraint(defaultQueryConstraintProviderFn: (qb: CriteriaBuilder<T>) => void): PageBuilder<T> {
+    public withDefaultQueryConstraint(defaultQueryConstraintProviderFn: (qb: CriteriaBuilder<T>) => void): PageManager<T> {
         this.defaultQueryConstraintProvider = defaultQueryConstraintProviderFn;
         return this;
     }
@@ -620,7 +620,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public openEditor(mode: EditorMode): PopoverRef<any, any> {
-        const ctx: { builder: PageBuilder<any>; mode: EditorMode } = {
+        const ctx: { builder: PageManager<any>; mode: EditorMode } = {
             builder: this,
             mode
         };
@@ -628,18 +628,18 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         const actions = this.actionSubject.value;
         const title = this.config.pageTitle;
         const i18n = title ? true : false;
-        const ref = this.openDialog<{ builder: PageBuilder<any>; mode: EditorMode }, any>(
+        const ref = this.openDialog<{ builder: PageManager<any>; mode: EditorMode }, any>(
             DynamicEditorComponent, ctx, {theme, actions, title, i18n}
         );
         return ref;
     }
 
-    public openDynamicPage(builder: PageBuilder<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any> {
-        const ref = this.openDialog<PageBuilder<any>, any>(DynamicPageComponent, builder, {theme, title, i18n});
+    public openDynamicPage(builder: PageManager<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any> {
+        const ref = this.openDialog<PageManager<any>, any>(DynamicPageComponent, builder, {theme, title, i18n});
         return ref;
     }
 
-    public createInstanceFor(qualifier: string, parent?: PageBuilder<any>): PageBuilder<any> {
+    public createInstanceFor(qualifier: string, parent?: PageManager<any>): PageManager<any> {
         const instance = new GenericPageBuilder<any>(qualifier, this.dynamicConfig, parent);
         instance.withStorageProvider(this.storage);
         return instance;
@@ -675,7 +675,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         });
     }
 
-    private createSelectionBuilder<S>(selector: DynamicSelectorModel<S>): PageBuilder<S> {
+    private createSelectionBuilder<S>(selector: DynamicSelectorModel<S>): PageManager<S> {
         if (!selector) {
             return undefined;
         }
@@ -1100,7 +1100,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return this.exitSubject.asObservable();
     }
 
-    public activeBuilder(): Observable<PageBuilder<any>> {
+    public activeBuilder(): Observable<PageManager<any>> {
         return this.activeBuilderSubject.asObservable();
     }
 
@@ -1194,7 +1194,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             this.lastQuery = criteria;
             const searchQuery = this.extractSearchQuery(query);
             this.clearSelection();
-            console.warn(`PageBuilder.search => page: ${this.config.page} query: ${searchQuery}`);
+            console.warn(`PageManager.search => page: ${this.config.page} query: ${searchQuery}`);
             if (this.dataAuthorizer) {
                 const authContext = this.dataAuthorizer.createAutrozitonContext();
                 return this.datasource
@@ -1240,7 +1240,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                     tap(
                         updatedData => {
                             // entity = Object.assign(entity, responseData);
-                            // console.log('PageBuilder.Update => entity updated');
+                            // console.log('PageManager.Update => entity updated');
                             this.refreshSearch().subscribe();
                             // this.synchEntity(updatedData);
                         },
@@ -1255,7 +1255,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                     tap(
                         responseData => {
                             // entity = Object.assign(entity, responseData);
-                            // console.log('PageBuilder.Update => entity updated');
+                            // console.log('PageManager.Update => entity updated');
                             this.refreshSearch().subscribe();
                             // this.synchEntity(responseData);
                         },
@@ -1275,7 +1275,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                 tap(
                     rc => {
                         this.refreshSearch().subscribe();
-                        // console.log('PageBuilder.Delete => entity deleted: ' + rc);
+                        // console.log('PageManager.Delete => entity deleted: ' + rc);
                         // this.removeEntity(data);
                     },
                     err => (errHandler ? errHandler(err) : undefined)
@@ -1350,7 +1350,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.exitSubject.next(entity);
     }
 
-    public setActiveBuilder(apb: PageBuilder<any>): void {
+    public setActiveBuilder(apb: PageManager<any>): void {
         if (this.parentBuilder) {
             this.parentBuilder.setActiveBuilder(apb);
         } else if (this.activeBuilderSubject) {
@@ -1365,29 +1365,29 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public findRelatedEntity<R>(relation: PageRelation, id: any): Observable<R> {
-        // console.log('PageBuilder.find entity');
+        // console.log('PageManager.find entity');
         const response = this.datasource.findEntity<R>(relation, id).pipe(
             map(res => res.body),
             tap(result => {
-                // console.log('PageBuilder.find => entity found: ' + result);
+                // console.log('PageManager.find => entity found: ' + result);
             })
         );
         return response;
     }
 
     public findRelatedEntities<R>(relation: PageRelation): Observable<Array<R>> {
-        // console.log('PageBuilder.findAllEntities');
+        // console.log('PageManager.findAllEntities');
         const response = this.datasource.findAllEntities<R>(relation).pipe(
             map(res => res.body),
             tap(results => {
-                // console.log('PageBuilder.findAllEntities => entities found: ' + (results ? results.length : 0));
+                // console.log('PageManager.findAllEntities => entities found: ' + (results ? results.length : 0));
             })
         );
         return response;
     }
 
     public navigate(criteria: Criteria, page: number): Observable<Array<T>> {
-        // console.warn(`PageBuilder.navigate => page: ${page}`);
+        // console.warn(`PageManager.navigate => page: ${page}`);
         if (page !== this.config.previousPage) {
             this.config.previousPage = page;
             return this.transition(criteria);

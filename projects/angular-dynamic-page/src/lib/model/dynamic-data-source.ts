@@ -4,7 +4,7 @@ import { HttpResponse, HttpErrorResponse, HttpEvent, HttpHeaders } from '@angula
 import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { PageBuilder } from './page-builder';
+import { PageManager } from './page-manager';
 import { ColumnMetadata } from './column-metadata';
 import { ColumnType } from './column-type.enum';
 import { PageRelation } from './page-relation';
@@ -32,7 +32,7 @@ export class DynamicDataSource<T> implements DataSource<T> {
         private qualifier: string,
         private dynamicConfig: IDynamicConfig,
         private dynamicDataService: DynamicDataService,
-        private builder: PageBuilder<T>
+        private builder: PageManager<T>
     ) {
         this.datePipe = new DatePipe('en-US');
         this.columns = [];

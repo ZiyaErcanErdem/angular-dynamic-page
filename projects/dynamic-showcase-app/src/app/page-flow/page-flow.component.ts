@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   BasePageView,
-  PageBuilder,
+  PageManager,
   GenericDynamicAction,
   Theme,
   QueryMode,
@@ -25,7 +25,7 @@ import { FlowExecution } from '../model/flow-execution.model';
 })
 export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnDestroy {
   private registeredActions: Array<GenericDynamicAction<any>> = [];
-  public pageBuilder: PageBuilder<Flow>;
+  public pageBuilder: PageManager<Flow>;
 
   constructor(
     private dynamicService: DynamicService,

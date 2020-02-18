@@ -1,4 +1,4 @@
-import { PageBuilder } from './page-builder';
+import { PageManager } from './page-manager';
 import { Criteria } from './criteria';
 import { Condition } from './condition.enum';
 import { Predicate } from './predicate';
@@ -37,7 +37,7 @@ export class PredicateBuilder<T> {
 }
 export class CriteriaBuilder<T> {
     constructor(
-        private builder: PageBuilder<T>,
+        private builder: PageManager<T>,
         private queryBuilder: QueryBuilder<T>,
         private parent: CriteriaBuilder<T>,
         private criteria: Criteria
@@ -156,7 +156,7 @@ export class QueryBuilder<T> {
     private rootCriteria: Criteria;
     private rootCriteriaBuilder: CriteriaBuilder<T>;
 
-    constructor(private builder: PageBuilder<T>) {
+    constructor(private builder: PageManager<T>) {
         this.rootCriteria = new Criteria(Condition.AND);
         this.rootCriteriaBuilder = new CriteriaBuilder<T>(this.builder, this, null, this.rootCriteria);
     }

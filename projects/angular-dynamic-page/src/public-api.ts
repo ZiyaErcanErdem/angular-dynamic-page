@@ -49,7 +49,7 @@ export * from './lib/components/dynamic-editor/dynamic-form-button/dynamic-form-
 export * from './lib/components/dynamic-editor/dynamic-form-input/dynamic-form-input.component';
 
 export * from './lib/model/base-page-view';
-export * from './lib/model/page-builder';
+export * from './lib/model/page-manager';
 export * from './lib/model/page-relation';
 export * from './lib/model/column-metadata';
 export * from './lib/model/criteria';

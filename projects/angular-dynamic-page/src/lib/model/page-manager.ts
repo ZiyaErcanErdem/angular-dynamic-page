@@ -40,34 +40,34 @@ export interface IDynamicStorageProvider {
   observe(key: string): Observable<any>;
 }
 
-export interface PageBuilder<T> {
+export interface PageManager<T> {
   readonly qualifier: string;
   readonly dynamicConfig: IDynamicConfig;
   readonly config: PageConfig<any>;
 
-  withRouter(router: Router): PageBuilder<T>;
-  withRoute(route: ActivatedRoute): PageBuilder<T>;
-  withDialog(dialog: DynamicPopoverService): PageBuilder<T>;
-  withDataProvider(dataProvider: DynamicDataService): PageBuilder<T>;
-  withViewerTrigger(viewerTrigger: 'manual' | 'auto'): PageBuilder<T>;
-  withViewer(viewMode: PageViewMode, viewer?: DynamicPortalView<any>): PageBuilder<T>;
-  withPageConfiguration(configFn: (config: PageConfig<T>) => PageConfig<T>): PageBuilder<T>;
-  withMetamodelProvider(metamodelProvider: DynamicMetamodelService): PageBuilder<T>;
-  withMetamodelConfiguration(metamodelConfigFn: (col: ColumnMetadata, parent?: ColumnMetadata) => void): PageBuilder<T>;
-  withRelationConfiguration(relationConfigFn: (relation: PageRelation) => PageRelation): PageBuilder<T>;
-  withDefaultQuery(defaultQueryProviderFn: (qb: CriteriaBuilder<T>, parentData?: any) => void): PageBuilder<T>;
-  withDefaultQueryConstraint(defaultQueryConstraintProviderFn: (qb: CriteriaBuilder<T>) => void): PageBuilder<T>;
-  withSortingSample(...samples: Array<new () => any >): PageBuilder<T>;
-  withDataActionController(dataActionControllerFn: (actionType: DataActionType, data: T) => Promise<boolean>): PageBuilder<T>;
-  withDataAuthorizer<A>(dataAuthorizer: DynamicDataAuthorizer<T, A>): PageBuilder<T>;
-  withStorageProvider(storage: IDynamicStorageProvider): PageBuilder<T>;
-  withGridColumns(...cols: string[]): PageBuilder<T>;
-  withCompactColumns(...cols: string[]): PageBuilder<T>;
+  withRouter(router: Router): PageManager<T>;
+  withRoute(route: ActivatedRoute): PageManager<T>;
+  withDialog(dialog: DynamicPopoverService): PageManager<T>;
+  withDataProvider(dataProvider: DynamicDataService): PageManager<T>;
+  withViewerTrigger(viewerTrigger: 'manual' | 'auto'): PageManager<T>;
+  withViewer(viewMode: PageViewMode, viewer?: DynamicPortalView<any>): PageManager<T>;
+  withPageConfiguration(configFn: (config: PageConfig<T>) => PageConfig<T>): PageManager<T>;
+  withMetamodelProvider(metamodelProvider: DynamicMetamodelService): PageManager<T>;
+  withMetamodelConfiguration(metamodelConfigFn: (col: ColumnMetadata, parent?: ColumnMetadata) => void): PageManager<T>;
+  withRelationConfiguration(relationConfigFn: (relation: PageRelation) => PageRelation): PageManager<T>;
+  withDefaultQuery(defaultQueryProviderFn: (qb: CriteriaBuilder<T>, parentData?: any) => void): PageManager<T>;
+  withDefaultQueryConstraint(defaultQueryConstraintProviderFn: (qb: CriteriaBuilder<T>) => void): PageManager<T>;
+  withSortingSample(...samples: Array<new () => any >): PageManager<T>;
+  withDataActionController(dataActionControllerFn: (actionType: DataActionType, data: T) => Promise<boolean>): PageManager<T>;
+  withDataAuthorizer<A>(dataAuthorizer: DynamicDataAuthorizer<T, A>): PageManager<T>;
+  withStorageProvider(storage: IDynamicStorageProvider): PageManager<T>;
+  withGridColumns(...cols: string[]): PageManager<T>;
+  withCompactColumns(...cols: string[]): PageManager<T>;
   findColumn(columnPath: string): ColumnMetadata;
   getAssociationColumns(): Array<ColumnMetadata>;
 
-  top(): PageBuilder<any>;
-  parent(): PageBuilder<any>;
+  top(): PageManager<any>;
+  parent(): PageManager<any>;
   ready(): Observable<boolean>;
   metamodel(): Observable<PageMetamodel>;
   query(): Observable<Criteria>;
@@ -80,7 +80,7 @@ export interface PageBuilder<T> {
   formItemChange(...formItems: string[]): Observable<{form: FormGroup, control: AbstractControl, name: string, value: any}>;
   portal(): Observable<DynamicPortalView<any>>;
   relationPages(): Observable<Array<RelationPageBuilder>>;
-  activeBuilder(): Observable<PageBuilder<any>>;
+  activeBuilder(): Observable<PageManager<any>>;
   onNotification(): Observable<any>;
   onExit(): Observable<T>;
 
@@ -89,7 +89,7 @@ export interface PageBuilder<T> {
   setView(view: DynamicPortalView<any>): void;
   registerAction(action: DynamicAction<any>): boolean;
   unregisterAction(action: DynamicAction<any>): void;
-  setActiveBuilder(apb: PageBuilder<any>): void;
+  setActiveBuilder(apb: PageManager<any>): void;
   setForm(form: FormGroup): void;
 
   gridColumns(): Observable<Array<ColumnMetadata>>;
@@ -146,7 +146,7 @@ export interface PageBuilder<T> {
   isDestroyed(): boolean;
   isChild(): boolean;
 
-  createInstanceFor<R>(qualifier: string, parent?: PageBuilder<any>): PageBuilder<R>;
+  createInstanceFor<R>(qualifier: string, parent?: PageManager<any>): PageManager<R>;
   createSelectorBuilder(qualifier: string, accessPath: string): DynamicSelectorBuilder<any>;
   createRelationPageBuilder(relation: PageRelation): RelationPageBuilder;
 
@@ -161,7 +161,7 @@ export interface PageBuilder<T> {
   createTemplatePortal(template: TemplateRef<any>, context?: any): DynamicPortalView<any>;
 
   openEditor(mode: EditorMode): PopoverRef<any, any>;
-  openDynamicPage(builder: PageBuilder<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any>;
+  openDynamicPage(builder: PageManager<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any>;
   openSelector(selector: DynamicSelectorModel<any>): void;
 
   newPredicate(): Predicate;

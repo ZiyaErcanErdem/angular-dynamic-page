@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { BasePortal } from '../../model/base-portal';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Theme } from '../../model/theme.enum';
 import { PageMode } from '../../model/page-mode.enum';
 import { DynamicAction, ActionScope } from '../../model/dynamic-action';
@@ -17,7 +17,7 @@ export class DynamicPortalComponent extends BasePortal implements OnInit, OnDest
   @Input()
   title: string;
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
   ready = false;

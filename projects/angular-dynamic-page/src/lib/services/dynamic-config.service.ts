@@ -1,6 +1,6 @@
 import { Injectable, InjectionToken, Inject } from '@angular/core';
 import { IDynamicConfig } from '../model/dynamic-config';
-import { IDynamicStorageProvider } from '../model/page-builder';
+import { IDynamicStorageProvider } from '../model/page-manager';
 import { LocalStorageService } from 'ngx-webstorage';
 
 export interface DynamicRegistryConfiguration {

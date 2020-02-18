@@ -2,7 +2,7 @@ import { Component, OnInit, Input, OnChanges, OnDestroy, Output, EventEmitter, O
 import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, FormArray } from '@angular/forms';
 import { BasePortal } from '../../model/base-portal';
 import { Theme } from '../../model/theme.enum';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { EditorMode } from '../../model/editor-mode.enum';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GenericDynamicAction, ActionScope, DynamicActionBuilder, ActionType } from '../../model/dynamic-action';
@@ -44,7 +44,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   @Input()
   updateOn: 'change' | 'blur' | 'submit';
   @Input()
-  public builder: PageBuilder<any>;
+  public builder: PageManager<any>;
   @Input()
   get mode() {
       return this.editorMode;
@@ -63,7 +63,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   editorReady: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   private editorMode: EditorMode;
-  public activeChildBuilder: PageBuilder<any>;
+  public activeChildBuilder: PageManager<any>;
 
   private formReadySubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private registeredActions: Array<GenericDynamicAction<any>> = [];
@@ -96,7 +96,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       return this.form.getRawValue();
   }
 
-  constructor(private fb: FormBuilder, @Optional() private popoverRef: PopoverRef<{ builder: PageBuilder<any>; mode: EditorMode }, any>) {
+  constructor(private fb: FormBuilder, @Optional() private popoverRef: PopoverRef<{ builder: PageManager<any>; mode: EditorMode }, any>) {
       super();
       this.formOptions = { updateOn: 'blur' };
       this.childBuilders = new Array<RelationPageBuilder>();

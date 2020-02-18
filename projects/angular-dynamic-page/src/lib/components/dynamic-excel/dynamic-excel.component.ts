@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, ElementRef, Optional } from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
-import { PageBuilder } from '../../model/page-builder';
+import { PageManager } from '../../model/page-manager';
 import { Theme } from '../../model/theme.enum';
 import { PageConfig } from '../../model/page-config';
 import { GenericDynamicAction, DynamicActionBuilder, ActionType, ActionScope } from '../../model/dynamic-action';
@@ -16,7 +16,7 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class DynamicExcelComponent extends DynamicBaseComponent implements OnInit, OnDestroy {
   @Input()
-  builder: PageBuilder<any>;
+  builder: PageManager<any>;
   @Input()
   theme: Theme = Theme.dark;
 
@@ -39,7 +39,7 @@ export class DynamicExcelComponent extends DynamicBaseComponent implements OnIni
   public uploading = false;
   public uploadSuccessful = false;
 
-  constructor(@Optional() private popoverRef: PopoverRef<PageBuilder<any>, any>) {
+  constructor(@Optional() private popoverRef: PopoverRef<PageManager<any>, any>) {
       super();
       this.isUploaderVisible = true;
       this.downloadInfo = null;

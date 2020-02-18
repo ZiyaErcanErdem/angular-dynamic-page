@@ -2,18 +2,18 @@ import { Input, OnDestroy, OnInit, Directive } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BasePanelView } from '../../../model/base-panel-view';
-import { PageBuilder } from '../../../model/page-builder';
+import { PageManager } from '../../../model/page-manager';
 
 // @Directive()
 export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnInit, OnDestroy {
     @Input()
-    set builder(value: PageBuilder<any>) {
+    set builder(value: PageManager<any>) {
         this.pageBuilder = value;
         this.activePageBuilder = this.pageBuilder;
     }
 
-    private pageBuilder: PageBuilder<any>;
-    private activePageBuilder: PageBuilder<any>;
+    private pageBuilder: PageManager<any>;
+    private activePageBuilder: PageManager<any>;
     private data: T;
     public formValue: any;
     private form: FormGroup;
@@ -22,7 +22,7 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
         super();
     }
 
-    get activeBuilder(): PageBuilder<any> {
+    get activeBuilder(): PageManager<any> {
         return this.activePageBuilder ? this.activePageBuilder : this.pageBuilder;
     }
 
@@ -131,7 +131,7 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
         this.activePageBuilder = undefined;
     }
 
-    private monitorBuilder(b: PageBuilder<any>): void {
+    private monitorBuilder(b: PageManager<any>): void {
         this.unmonitorBuilder();
         if (this.isInScope(b.qualifier)) {
             this.collect = b.data().subscribe(d => {
