@@ -44,15 +44,15 @@ export interface PageConfig<T> {
 
     queryMode: QueryMode;
     allowEmptyCriteria: boolean;
-    toI18n: (enumLabel: string, prefix?: string, uncapitalizeFirstLetter?: boolean) => string;
-    toI18nEnum: (enumLabel: string, prefix?: string) => string;
-    toI18nEntity: (entityLabel: string, prefix?: string) => string;
-    capitalizeFirstLetter: (txt: string) => string;
-    uncapitalizeFirstLetter: (txt: string) => string;
-    getClassName: (id: string) => string;
-    getOperators: (cmd: ColumnMetadata) => Array<OperatorContext>;
-    getColumnType: (cmd: ColumnMetadata, operator: Operator) => ColumnType;
-    getInputType: (cmd: ColumnMetadata, operator: Operator) => InputType;
-    getOptions: (cmd: ColumnMetadata) => Array<OptionContext>;
-    getDefaultOperator: (cmd: ColumnMetadata) => Operator;
+    toI18n(enumLabel: string, prefix?: string, uncapitalizeFirstLetter?: boolean): string;
+    toI18nEnum(enumLabel: string, prefix?: string): string;
+    toI18nEntity(entityLabel: string, prefix?: string): string;
+    capitalizeFirstLetter(txt: string): string;
+    uncapitalizeFirstLetter(txt: string): string;
+    getClassName(id: string): string;
+    getOperators(cmd: ColumnMetadata): Array<OperatorContext>;
+    getColumnType(cmd: ColumnMetadata, operator: Operator): ColumnType;
+    getInputType(cmd: ColumnMetadata, operator: Operator): InputType;
+    getOptions(cmd: ColumnMetadata): Array<OptionContext>;
+    getDefaultOperator(cmd: ColumnMetadata): Operator;
 }
