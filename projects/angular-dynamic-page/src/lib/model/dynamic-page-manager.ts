@@ -47,7 +47,7 @@ import { DynamicEditorComponent } from '../components/dynamic-editor/dynamic-edi
 import { DynamicPageComponent } from '../components/dynamic-page/dynamic-page.component';
 import { PopoverConfig } from './popover-config';
 
-export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageManager<T> {
+export class DynamicPageManager<T> extends DynamicBaseComponent implements PageManager<T> {
     private router: Router;
     private dialog: DynamicPopoverService;
     private provider: DynamicDataService;
@@ -640,7 +640,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageM
     }
 
     public createInstanceFor(qualifier: string, parent?: PageManager<any>): PageManager<any> {
-        const instance = new GenericPageBuilder<any>(qualifier, this.dynamicConfig, parent);
+        const instance = new DynamicPageManager<any>(qualifier, this.dynamicConfig, parent);
         instance.withStorageProvider(this.storage);
         return instance;
     }

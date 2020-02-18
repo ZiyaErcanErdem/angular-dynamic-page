@@ -59,7 +59,7 @@ export * from './lib/model/relation-type.enum';
 export * from './lib/model/query-mode.enum';
 export * from './lib/model/page-view-mode.enum';
 export * from './lib/model/data-action-type.enum';
-export * from './lib/model/generic-page-builder';
+export * from './lib/model/dynamic-page-manager';
 
 export * from './lib/model/dynamic-action';
 export * from './lib/model/theme.enum';

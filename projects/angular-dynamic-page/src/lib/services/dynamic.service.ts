@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DynamicConfigService } from './dynamic-config.service';
 import { PageManager, IDynamicStorageProvider } from '../model/page-manager';
-import { GenericPageBuilder } from '../model/generic-page-builder';
+import { DynamicPageManager } from '../model/dynamic-page-manager';
 import { IDynamicConfig } from '../model/dynamic-config';
 
 @Injectable({
@@ -19,7 +19,7 @@ export class DynamicService {
     const storageProvider: IDynamicStorageProvider = this.dynamicConfigService.getStorageProvider();
     const dynamicConfig: IDynamicConfig = this.dynamicConfigService.getConfig(appId);
 
-    const pageBuilder: PageManager<T> = new GenericPageBuilder<T>(qualifier, dynamicConfig);
+    const pageBuilder: PageManager<T> = new DynamicPageManager<T>(qualifier, dynamicConfig);
     pageBuilder.withStorageProvider(storageProvider);
     return pageBuilder;
   }
