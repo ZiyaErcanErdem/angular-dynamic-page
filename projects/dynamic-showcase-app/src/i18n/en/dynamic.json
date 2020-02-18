@@ -1,0 +1,24 @@
+{
+  "dynamic": {
+    "page": {
+      "Agent": "Agent",
+      "EndpointProperty": "Endpoint Property",
+      "Endpoint": "Endpoint",
+      "FlowExecution": "Flow Execution",
+      "TaskExecution": "Task Execution",
+      "ActionExecution": "Action Execution",
+      "ActionParam": "Action Param",
+      "ActionScript": "Action Script",
+      "EventTrigger": "Event Trigger",
+      "Flow": "Flow",
+      "Task": "Task",
+      "Action": "Action",
+      "ScriptParam": "Script Param",
+      "CheckScript": "Check Script",
+      "ContentMapper": "Content Mapper",
+      "FieldMapping": "Field Mapping",
+      "Content": "Content",
+      "ContentValidationError": "Content Validation Error"
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { TableField } from '../../../model/table-field';
+import { TableField } from '../model/table-field';
 
 @Component({
   selector: 'zee-table-cell-view',

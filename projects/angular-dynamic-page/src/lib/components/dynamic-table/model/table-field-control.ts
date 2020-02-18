@@ -1,9 +1,9 @@
 import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { SelectionModel, DataSource } from '@angular/cdk/collections';
-import { DynamicBaseComponent } from './dynamic-base-component';
 import { TableDataSource } from './table-data-source';
-import { DynamicAction } from './dynamic-action';
 import { TableField, TableFieldSelection } from './table-field';
+import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
+import { DynamicAction } from '../../../model/dynamic-action';
 
 export interface TableSortContext {
     direction: string;

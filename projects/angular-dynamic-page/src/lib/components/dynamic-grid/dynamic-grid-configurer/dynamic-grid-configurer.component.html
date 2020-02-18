@@ -10,7 +10,7 @@
                         <div class="form-check" (click)="$event.stopPropagation();">
                             <input class="form-check-input form-check-input-sm" type="checkbox" #cntrl value="selected" (change)="reconfigure($event, cmd)"
                                 [checked]="isSelected(cmd)" [attr.id]="dropdownId+'-'+cmd.path">
-                            <label class="form-check-label form-check-label-sm" [attr.for]="dropdownId+'-'+cmd.path">{{ cmd.group }}.{{ cmd.label | translate }}</label>
+                            <label class="form-check-label form-check-label-sm" [attr.for]="dropdownId+'-'+cmd.path">{{ ('dynamic.page.' + cmd.qualifier) | translate }} -> {{ cmd.label | translate }}</label>
                         </div>
                     </div>
                 </div>

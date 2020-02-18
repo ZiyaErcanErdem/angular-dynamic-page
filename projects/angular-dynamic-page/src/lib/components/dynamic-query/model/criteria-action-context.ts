@@ -1,5 +1,5 @@
-import { Predicate } from './predicate';
-import { Criteria } from './criteria';
+import { Predicate } from '../../../model/predicate';
+import { Criteria } from '../../../model/criteria';
 
 
 export interface CriteriaActionContext {

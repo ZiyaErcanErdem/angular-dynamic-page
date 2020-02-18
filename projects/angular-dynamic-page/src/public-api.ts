@@ -11,6 +11,7 @@ export * from './lib/dynamic/dynamic.module';
 export * from './lib/dynamic-core/dynamic-core.module';
 
 export * from './lib/services/dynamic.service';
+export * from './lib/services/dynamic-popover.service';
 
 export * from './lib/components/dynamic-button/dynamic-button.module';
 export * from './lib/components/dynamic-button/dynamic-button.component';
@@ -49,6 +50,8 @@ export * from './lib/components/dynamic-editor/dynamic-form-input/dynamic-form-i
 
 export * from './lib/model/base-page-view';
 export * from './lib/model/page-builder';
+export * from './lib/model/page-relation';
+export * from './lib/model/column-metadata';
 export * from './lib/model/criteria';
 export * from './lib/model/condition.enum';
 export * from './lib/model/operator.enum';
@@ -63,7 +66,7 @@ export * from './lib/model/theme.enum';
 
 export * from './lib/model/dynamic-util';
 
-export * from './lib/model/table-field-control';
-export * from './lib/model/table-field';
+export * from './lib/components/dynamic-table/model/table-field-control';
+export * from './lib/components/dynamic-table/model/table-field';
 
 export * from './lib/model/dynamic-config';

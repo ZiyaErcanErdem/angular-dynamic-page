@@ -120,9 +120,11 @@ export class GenericPageConfig<T> implements PageConfig<T> {
     }
 
     public toI18nEntity(entityLabel: string, prefix?: string): string {
+        /*
         if (!this.dynamicConfig.microserviceName) {
             entityLabel = this.uncapitalizeFirstLetter(entityLabel);
         }
+        */
         const i18nEntityPrefix = prefix ? prefix : this.toI18nEntityPrefix();
         if (!entityLabel || entityLabel.startsWith(i18nEntityPrefix)) {
             return entityLabel;
@@ -162,9 +164,9 @@ export class GenericPageConfig<T> implements PageConfig<T> {
     private toI18nEntityPrefix(): string {
         let prefix = '';
         if (this.dynamicConfig && this.dynamicConfig.i18nAppName) {
-            prefix = 'global.menu.entities.' + this.dynamicConfig.i18nAppName;
+            prefix = 'dynamic.page.' + this.dynamicConfig.i18nAppName;
         } else {
-            prefix = 'global.menu.entities';
+            prefix = 'dynamic.page';
         }
         return prefix;
     }

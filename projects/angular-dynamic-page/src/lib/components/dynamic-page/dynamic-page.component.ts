@@ -203,7 +203,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
 
   private openImportExportDialog() {
       // 'dynamic.action.excel'
-      const dialogRef = this.builder.openDialog<PageBuilder<any>, any>(DynamicExcelComponent, this.builder, this.theme);
+      const dialogRef = this.builder.openDialog<PageBuilder<any>, any>(DynamicExcelComponent, this.builder, {theme: this.theme});
   }
 
   private registerAction(action: GenericDynamicAction<any>) {

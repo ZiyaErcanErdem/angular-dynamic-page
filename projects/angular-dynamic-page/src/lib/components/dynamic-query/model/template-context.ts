@@ -1,5 +1,5 @@
 import { TemplateType } from './template-type.enum';
-import { Predicate } from './predicate';
+import { Predicate } from '../../../model/predicate';
 
 
 export class TemplateContext {

@@ -1,14 +1,12 @@
-import { ColumnMetadata } from './column-metadata';
+import { ColumnMetadata } from '../../../model/column-metadata';
 
-
-export class ColumnContext {
+export class ExpressionContext {
     name: string;
-    path: string;
+    value?: string;
     metadata: ColumnMetadata;
 
     constructor(cmd: ColumnMetadata) {
         this.metadata = cmd;
         this.name = cmd.name;
-        this.path = cmd.path;
     }
 }

@@ -60,7 +60,7 @@ export class DynamicPopoverComponent implements OnInit, OnDestroy {
       if (!this.config) {
           return 'dynamic-dialog-container';
       }
-      switch (this.config.type) {
+      switch (this.popoverType) {
           case 'tooltip': {
               return 'dynamic-popup-container';
           }
@@ -91,7 +91,7 @@ export class DynamicPopoverComponent implements OnInit, OnDestroy {
   constructor(private popoverRef: PopoverRef<any, any>) {}
 
   close(data?: any) {
-      switch (this.config.type) {
+      switch (this.popoverType) {
           case 'dialog':
           case 'popup':
           case 'tooltip': {
@@ -115,7 +115,7 @@ export class DynamicPopoverComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.content = this.popoverRef.content;
-      this.popoverType = this.popoverRef.config.type;
+      this.popoverType = this.popoverRef.type;
       this.config = this.popoverRef.config;
 
       if (typeof this.content === 'string') {

@@ -2,12 +2,10 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
 import { PageBuilder } from '../../../model/page-builder';
 import { EditorMode } from '../../../model/editor-mode.enum';
-import { FormItemConfig } from '../../../model/form-item-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { ColumnMetadata } from '../../../model/column-metadata';
 import { PageMetamodel } from '../../../model/page-metamodel';
 import { PageRelation } from '../../../model/page-relation';
-import { FormFieldConfig } from '../../../model/form-field-config';
 import { PageConfig } from '../../../model/page-config';
 import { ColumnType } from '../../../model/column-type.enum';
 import { BuilderType } from '../../../model/builder-type.enum';
@@ -16,6 +14,8 @@ import { CriteriaBuilder } from '../../../model/query-builder';
 import { Operator } from '../../../model/operator.enum';
 import { Condition } from '../../../model/condition.enum';
 import { PageViewMode } from '../../../model/page-view-mode.enum';
+import { FormItemConfig } from '../model/form-item-config';
+import { FormFieldConfig } from '../model/form-field-config';
 
 @Component({
   selector: 'zee-dynamic-form-association',
@@ -31,12 +31,12 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
   itemConfig: FormItemConfig;
 
   group: FormGroup;
-  parentColumn: ColumnMetadata;
+  column: ColumnMetadata;
   parentMetamodel: PageMetamodel;
   pageMetamodel: PageMetamodel;
   pageRelation: PageRelation;
 
-  idColumnName: string;
+  key: string;
   idItemConfig: FormItemConfig;
   idField: FormFieldConfig;
   idColumn: ColumnMetadata;
@@ -48,7 +48,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
 
   entities: Array<any>;
   ready = false;
-  isChild: boolean;
+  _isChild: boolean;
 
   private associationBuilder: PageBuilder<any>;
   private config: PageConfig<any>;
@@ -56,7 +56,25 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
   constructor() {
       super();
       this.entities = [];
-      this.isChild = false;
+      this._isChild = false;
+  }
+
+  get qualifier(): string {
+    return this.column ? this.column.qualifier : this.itemConfig.field.metadata.qualifier;
+}
+
+  get isChild(): boolean {
+      if (this._isChild && this.mode !== EditorMode.VIEW && this.column) {
+        const topQualifier = this.builder.top().qualifier;
+        const currentQualifier = this.pageMetamodel.qualifier;
+        return topQualifier === currentQualifier;
+      } else {
+          return this._isChild;
+      }   
+  }
+ 
+  get editable(): boolean {
+    return (this.mode === EditorMode.CREATE || this.mode === EditorMode.EDIT);
   }
 
   get control(): AbstractControl {
@@ -64,31 +82,34 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
   }
 
   get required(): boolean | null {
-      const val = this.parentColumn.minValue;
-      return !this.parentColumn.nullable ? true : null;
+      const val = this.column.min;
+      return !this.column.nullable ? true : null;
   }
 
-  get minValue(): number | null {
-      const val = this.idColumn.minValue;
+  get min(): number | null {
+      const val = this.idColumn.min;
       return this.idColumn.columnType === ColumnType.NUMBER && val && val > 0 ? val : null;
   }
 
   ngOnInit() {
       this.group = this.itemConfig.group;
-      this.parentColumn = this.itemConfig.parentColumn;
-      this.pageMetamodel = this.itemConfig.parentColumn.metamodel;
-      this.isChild = this.builder.isChild();
+      this.column = this.itemConfig.parentColumn;
+      if (!this.column && this.itemConfig.field) {
+        this.column = this.itemConfig.field.metadata;
+      }
+      this.pageMetamodel = this.column.metamodel;
+      this._isChild = this.builder.isChild();
 
       this.collect = this.builder.ready().subscribe(isReady => {
           this.config = this.builder.config;
           this.collect = this.builder.metamodel().subscribe((pmd: PageMetamodel) => {
               this.parentMetamodel = pmd;
-              this.pageRelation = pmd.getRelation(this.itemConfig.parentColumn.metamodel.group);
+              this.pageRelation = this.column.relation;
               this.pageMetamodel = this.pageRelation.metamodel;
 
-              this.idColumnName = this.pageMetamodel.idColumnName;
-              if (this.idColumnName) {
-                  this.idItemConfig = this.itemConfig.items.find(ic => ic.field.metadata.name === this.idColumnName);
+              this.key = this.pageMetamodel.key;
+              if (this.key) {
+                  this.idItemConfig = this.itemConfig.items.find(ic => ic.field.metadata.name === this.key);
                   if (this.idItemConfig) {
                       this.idField = this.idItemConfig.field;
                   }
@@ -109,25 +130,33 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
               }
 
               if (this.builder.isChild()) {
-                  this.collect = this.builder
-                      .parent()
-                      .data()
-                      .subscribe(parentData => {
-                          this.setAssociationValue(parentData);
-                      });
+                const dataBuilder = this.getBuilderOf(this.pageMetamodel.qualifier);
+                if (dataBuilder) {
+                    const isOwnData = this.pageMetamodel.qualifier === dataBuilder.qualifier;
+                    this.collect = dataBuilder
+                        .data()
+                        .subscribe(parentData => {
+                            this.setAssociationValue(parentData, isOwnData);
+                        });
+                }
               }
-              /*
-              if (this.pageRelation && this.mode !== EditorMode.VIEW) {
-                  this.collect = this.builder.findRelatedEntities(this.pageRelation).subscribe((data) => {
-                      this.entities = data;
-                  });
-              } else if (this.pageRelation && this.mode === EditorMode.VIEW) {
-
-              }
-              */
           });
           this.ready = isReady;
       });
+  }
+
+  private getBuilderOf(qualifier: string): PageBuilder<any> {
+        if (this.mode !== EditorMode.CREATE) {
+            return this.builder;
+        }
+        let builder = this.builder;
+        while (null != builder) {
+            if (builder.qualifier === qualifier) {
+                return builder;
+            }
+            builder = builder.parent();
+        }
+        return null;
   }
 
   public hasValue(): boolean {
@@ -152,12 +181,16 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
       }
   }
 
-  private setAssociationValue(val: any) {
+  private setAssociationValue(val: any, isOwnerData: boolean) {
       if (this.mode === EditorMode.VIEW) {
           return;
       }
+      // this.group.reset();
       if (val) {
-          this.group.patchValue(val);
+          const data = isOwnerData ? val : val[this.column.name];
+          if (data) {
+            this.group.patchValue(data);
+          }
       }
   }
 
@@ -174,7 +207,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
           return this.associationBuilder;
       }
       this.associationBuilder = this.builder
-          .createInstanceFor(this.pageMetamodel.qualifier)
+          .createInstanceFor(this.pageMetamodel.qualifier, this.builder.parent())
           .withMetamodelConfiguration(cmd => this.configurePopupMetamodel(cmd))
           .withPageConfiguration(config => this.configurePopupConfig(config))
           .withRelationConfiguration(relation => this.configurePopupRelation(relation))
@@ -200,7 +233,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
           if (sub) {
               sub.unsubscribe();
           }
-          this.setAssociationValue(result ? result.data : undefined);
+          this.setAssociationValue(result ? result.data : undefined, true);
       });
   }
 

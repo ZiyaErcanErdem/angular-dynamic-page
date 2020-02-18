@@ -136,16 +136,17 @@ export class DynamicDataSource<T> implements DataSource<T> {
 
     createEntity(relation: PageRelation, entity: T): Observable<HttpResponse<T>> {
         // console.log('DynamicDataSource#createEntity');
-        this.enhanceEntity<T>(relation, entity);
+        
+        const copy = this.enhanceEntity<T>(relation, entity);
         return this.dynamicDataService
-            .createEntity<T>(relation, entity)
+            .createEntity<T>(relation, copy)
             .pipe(map(res => res.clone(this.modifyEntity<T>(relation, res.body))));
     }
 
     updateEntity(relation: PageRelation, entity: T): Observable<HttpResponse<T>> {
         // console.log('DynamicDataSource#updateEntity');
-        this.enhanceEntity<T>(relation, entity);
-        return this.dynamicDataService.updateEntity(relation, entity, this.dynamicConfig.microserviceName)
+        const copy = this.enhanceEntity<T>(relation, entity);
+        return this.dynamicDataService.updateEntity(relation, copy, this.dynamicConfig.microserviceName)
                   .pipe(map(res => res.clone(this.modifyEntity<T>(relation, res.body))));
     }
 
@@ -238,36 +239,47 @@ export class DynamicDataSource<T> implements DataSource<T> {
         return data;
     }
 
-    private enhance<R>(cols: Array<ColumnMetadata>, data: R): void {
+    private enhance<R>(cols: Array<ColumnMetadata>, data: R): R {
         if (!cols) {
-            return;
+            return data;
         }
+        const copy = {...data};
         cols.forEach(cmd => {
             if (cmd.columnType === ColumnType.DATE) {
                 const val = data[cmd.name];
                 if (val) {
-                    data[cmd.name] = new Date(val).toISOString();
+                    copy[cmd.name] = new Date(val).toISOString();
                 }
             } else if (cmd.columnType === ColumnType.ASSOCIATION) {
                 const relationCols = cmd.metamodel ? cmd.metamodel.getColumns() : undefined;
+                const idColumn = cmd.metamodel ? cmd.metamodel.key : undefined;
                 const val = data[cmd.name];
                 if (relationCols && val) {
-                    this.enhance(relationCols, val);
+                    if (idColumn) {
+                        const idVal = val[idColumn];
+                        if (!idVal) {
+                            copy[cmd.name] = null;
+                            return copy;
+                        }
+                    }
+                    copy[cmd.name] = this.enhance(relationCols, val);
                 }
             }
         });
+        return copy;
     }
 
     private enhanceEntities<R>(relation: PageRelation, data: R[]): void {
         const original: R[] = data;
         for (let i = 0; i < original.length; i++) {
-            this.enhanceEntity<R>(relation, original[i]);
+            original[i] = this.enhanceEntity<R>(relation, original[i]);
         }
     }
-    private enhanceEntity<R>(relation: PageRelation, data: R): void {
+    private enhanceEntity<R>(relation: PageRelation, data: R): R {
         if (relation && relation.metamodel) {
-            this.enhance<R>(relation.metamodel.getColumns(), data);
+            return this.enhance<R>(relation.metamodel.getColumns(), data);
         }
+        return data;
     }
 
     private modifyEntities<R>(relation: PageRelation, data: R[]): R[] {

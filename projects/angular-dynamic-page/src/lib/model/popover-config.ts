@@ -1,9 +1,7 @@
-import { PopoverType } from './popover-type';
 import { DynamicAction } from './dynamic-action';
 import { Theme } from './theme.enum';
 
 export type PopoverConfig = {
-    type: PopoverType;
     title?: string;
     i18n?: boolean;
     actions?: Array<DynamicAction<any>>;

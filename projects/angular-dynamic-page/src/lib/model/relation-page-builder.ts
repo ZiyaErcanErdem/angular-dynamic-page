@@ -143,7 +143,7 @@ export class RelationPageBuilder {
                 if (!this.parentMetamodel) {
                     return;
                 }
-                const predicatePath = this.parentMetamodel.group + '.' + this.parentMetamodel.idColumnName;
+                const predicatePath = this.parentMetamodel.group + '.' + this.parentMetamodel.key;
                 query
                     .withCondition(Condition.AND)
                     .hide()

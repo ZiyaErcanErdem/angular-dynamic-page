@@ -1,12 +1,17 @@
 import { ColumnMetadata } from './column-metadata';
 import { RelationType } from './relation-type.enum';
 import { PageRelation } from './page-relation';
+import { ColumnType } from './column-type.enum';
+import { Operator } from './operator.enum';
 
 export class PageMetamodel {
+    public readonly parent: PageMetamodel;
     qualifier: string;
-    relType: RelationType;
-    idColumnName: string;
     group: string;
+    path: string;
+    relType: RelationType;
+    key: string;
+    
     level: number;
 
     private columns: Array<ColumnMetadata>;
@@ -16,58 +21,144 @@ export class PageMetamodel {
     private relationMap: Map<string, PageRelation>;
     private relationList: Array<PageRelation>;
 
-    constructor(source: any) {
+    constructor(source: any, parent: PageMetamodel, parentColumn?: ColumnMetadata) {
+        this.parent = parent;
+        this.parse({...source}, parentColumn);
+    }
+
+    private parse(source: any, parentColumn?: ColumnMetadata): void {
+
+        const operators = source.operators ? this.parseOperators(source.operators) : undefined;;
+        const sourceColumns =  source.columns;
+        const sourceAliases = source.aliases;
+
+        delete source.columns;
+        delete source.operator;
+        delete source.aliases;
+
         Object.assign(this, source);
-        this.columns = Array<ColumnMetadata>();
-        this.aliases = Array<string>();
+
         this.relationMap = new Map<string, PageRelation>();
         this.relationList = new Array<PageRelation>();
 
-        this.selfRelation = new PageRelation(this.relType, this.group, this.qualifier);
-        this.selfRelation.metamodel = this;
+        this.selfRelation = new PageRelation(this, this.parent);
         this.relationMap.set(this.selfRelation.group, this.selfRelation);
+        this.relationMap.set(this.selfRelation.path, this.selfRelation);
         this.relationList.push(this.selfRelation);
 
-        for (let i = 0; i < source.columns.length; i++) {
-            const cmd: ColumnMetadata = Object.assign({}, source.columns[i]);
-            this.addColumn(cmd);
+        this.columns =  Array.from(sourceColumns).filter(c => !!c['name']).map(c => this.createColumnMetadata(c, operators, parentColumn));
+        this.aliases = Array.from(sourceAliases).map(a => `${a}`);
+
+    }
+
+    private parseOperators(ops: any): Map<ColumnType, Array<Operator>> {
+        const operators = new Map<ColumnType, Array<Operator>>();
+        if (ops) {
+            Object.keys(ops).forEach( key => {
+                const val = ops[key];            
+                if (val) {
+                    const colType: ColumnType = ColumnType[key];
+                    if (colType) {
+                        operators.set(colType, Array.from(val));
+                    }                
+                }            
+            });
         }
-        this.addAlias(source.group);
-        for (let i = 0; i < source.aliases.length; i++) {
-            const alias: string = source.aliases[i];
-            this.addAlias(alias);
+        return operators;
+    }
+
+    private createColumnMetadata(source: any, operators: Map<ColumnType, Array<Operator>>, parentColumn?: ColumnMetadata): ColumnMetadata {
+
+        const cmdSource = {...source};
+        const features: string = cmdSource.features;
+        delete cmdSource.features;
+
+        const cmd: ColumnMetadata = Object.assign({}, cmdSource);
+
+        cmd.parent = this;
+        cmd.parentColumn = parentColumn;
+        cmd.qualifier = this.qualifier;
+        cmd.group = this.group;
+        cmd.level = this.level;
+        if(!cmd.path) {
+            cmd.path = `${(this.path && this.path.length > 0 ? this.path + '.' : '')}${cmd.name}` ;
         }
+        if(!cmd.relType) {
+            cmd.relType = cmd.metamodel ? cmd.metamodel.relType : this.relType ;
+        }
+        if(!cmd.label) {
+            cmd.label = `${cmd.qualifier}.${cmd.name}` ;
+        }
+        if (operators) {
+            cmd.operators = operators.get(cmd.columnType);
+        }
+
+        this.setColumnDefaults(cmd);
+        
+        if (features) {
+            this.enhanceFeatures(cmd, features);
+        }
+        
+        if (cmd.metamodel) {
+            cmd.metamodel = new PageMetamodel(cmd.metamodel, this, cmd);
+            cmd.relation = new PageRelation(cmd.metamodel, this);
+            cmd.relation.connector = cmd;
+            this.addRelation(cmd.relation);
+        } else if (!this.defaultColumn) {
+            this.defaultColumn = cmd;
+        }
+
+        return cmd;
+    }
+
+    private setColumnDefaults(cmd: ColumnMetadata): void {
+        if(ColumnType.ENUM === cmd.columnType) {
+            cmd.defaultOperator = Operator.EQ;
+            if (cmd.options && cmd.options.length > 0) {
+                cmd.defaultValue = cmd.options[0].value;
+            }
+		}else if(ColumnType.NUMBER == cmd.columnType || ColumnType.DOUBLE == cmd.columnType) {
+			cmd.defaultValue = 0;
+			cmd.defaultOperator = Operator.GT;
+		}else if(ColumnType.DATE == cmd.columnType) {
+			cmd.defaultValue = null;
+			cmd.defaultOperator = Operator.GT;
+		}else if(ColumnType.STRING == cmd.columnType) {
+			cmd.defaultValue = '';
+			cmd.defaultOperator = Operator.LIKE;
+		}else if(ColumnType.BOOLEAN == cmd.columnType) {
+			cmd.defaultValue = false;
+			cmd.defaultOperator = Operator.EQ;
+		}
+    }
+
+    private enhanceFeatures(cmd: ColumnMetadata, features: string): void {
+
+        if (!features) {
+            return;
+        }
+
+        //   0     1      2    3    4    5     6
+        // |null|search|list|view|edit|ignore|isId
+         
+        const arrFeatures = features.split('|');
+        cmd.nullable = arrFeatures[0] === '1' ? true : false;
+        cmd.searchable = arrFeatures[1] === '1' ? true : false;
+        cmd.listable = arrFeatures[2] === '1' ? true : false;
+        cmd.viewable = arrFeatures[3] === '1' ? true : false;
+        cmd.editable = arrFeatures[4] === '1' ? true : false;
+        cmd.ignorable = arrFeatures[5] === '1' ? true : false;
+        cmd.idColumn = arrFeatures[6] === '1' ? true : false;
     }
 
     public getColumns(): Array<ColumnMetadata> {
         return this.columns;
     }
 
-    public addColumn(cmd: ColumnMetadata): void {
-        if (!cmd || !cmd.path) {
-            return;
-        }
-        if (cmd.metamodel) {
-            cmd.metamodel = new PageMetamodel(cmd.metamodel);
-            const pageRel = new PageRelation(cmd.metamodel.relType, cmd.metamodel.group, cmd.metamodel.qualifier);
-            pageRel.metamodel = cmd.metamodel;
-            pageRel.connector = cmd;
-            this.addRelation(pageRel);
-        } else if (!this.defaultColumn) {
-            this.defaultColumn = cmd;
-        }
-        this.columns.push(cmd);
-    }
-
-    public addAlias(alias: string): void {
-        if (!alias || this.aliases.includes(alias)) {
-            return;
-        }
-        this.aliases.push(alias);
-    }
 
     private addRelation(relation: PageRelation): void {
         this.relationMap.set(relation.group, relation);
+        this.relationMap.set(relation.path, relation);
         this.relationList.push(relation);
 
         const excludes = new Array<string>();
@@ -78,6 +169,7 @@ export class PageMetamodel {
                 this.relationMap.set(rel.group, rel);
                 this.relationList.push(rel);
             }
+            this.relationMap.set(rel.path, rel);
         });
     }
 
@@ -122,55 +214,24 @@ export class PageMetamodel {
         return this.columns.includes(col);
     }
 
-    public findColumn(columnPath: string, ignores?: Array<string>): ColumnMetadata {
+    public findColumn(columnPath: string): ColumnMetadata {
         if (!columnPath) {
             return null;
         }
-        let searchPath = columnPath;
-        const alias = this.aliases.find(a => searchPath.startsWith(a + '.'));
-        if (alias) {
-            searchPath = searchPath.substr(alias.length + 1);
-        }
-        let col = this.columns.find(c => c.path === searchPath || c.path === columnPath);
+        const paths = columnPath.split('.');
+        paths.pop();
+        const relationPath = paths.join('.');
 
-        if (col) {
+        const rel = this.relationMap.get(relationPath);
+        if (rel) {
+            const col = rel.metamodel.columns.find(c => c.path === columnPath);
             return col;
         }
-
-        const ignoreMetaModels = ignores ? ignores : new Array<string>();
-        ignoreMetaModels.push(searchPath + '#' + this.qualifier);
-
-        if (!col) {
-            for (let i = 0; i < this.relationList.length; i++) {
-                const rel = this.relationList[i];
-                if (ignoreMetaModels.includes(searchPath + '#' + rel.qualifier)) {
-                    continue;
-                }
-                col = rel.metamodel.findColumn(searchPath, ignoreMetaModels);
-                if (col) {
-                    return col;
-                }
-            }
-            /*
-            this.relationList.forEach(rel => {
-                if (col || ignoreMetaModels.includes(rel.qualifier)) {
-                    return;
-                }
-                col = rel.metamodel.findColumn(columnPath, ignoreMetaModels);
-            });
-            */
-        }
-        return col;
+        return null;
     }
 
     public findRelation(col: ColumnMetadata): PageRelation {
-        let colRelation: PageRelation;
-        this.relationList.forEach(rel => {
-            if (!colRelation && rel.metamodel.containsColumn(col)) {
-                colRelation = rel;
-            }
-        });
-        return colRelation;
+        return col.relation ? col.relation : col.parentColumn ? col.parentColumn.relation : col.parent.selfRelation;
     }
 
     public getDefaultColumn(): ColumnMetadata {
@@ -182,5 +243,9 @@ export class PageMetamodel {
             });
         }
         return this.defaultColumn;
+    }
+
+    public getInstanceId(): string {
+        return `${this.parent ? this.parent.getInstanceId() + '.' : ''}${this.qualifier}`;
     }
 }

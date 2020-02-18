@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
-import { TableField } from '../../../model/table-field';
-import { TableFieldControl, TableSortContext } from '../../../model/table-field-control';
+import { TableField } from '../model/table-field';
+import { TableFieldControl, TableSortContext } from '../model/table-field-control';
 
 @Component({
   selector: 'zee-table-sort-header',

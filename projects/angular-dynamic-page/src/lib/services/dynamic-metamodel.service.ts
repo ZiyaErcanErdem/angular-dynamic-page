@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 export class DynamicMetamodelService {
   private microserviceName = '';
   private serverApiUrl = '/';
-  private metamodelPath = '/search/metamodel';
+  private dynamicMetamodelPath = '/dynamic/metamodel';
 
   private cache: Map<string, PageMetamodel>;
 
@@ -57,23 +57,24 @@ export class DynamicMetamodelService {
     const dynamicUrl = this.apiUriOf(microservice);
     metamodelPathPrefix = metamodelPathPrefix ? metamodelPathPrefix : '';
     return this.http
-      .get<PageMetamodel>(`${dynamicUrl}${metamodelPathPrefix}${this.metamodelPath}/${qualifier}`, { observe: 'response' })
+      .get<PageMetamodel>(`${dynamicUrl}${metamodelPathPrefix}${this.dynamicMetamodelPath}/${qualifier}`, { observe: 'response' })
       .pipe(map((res: HttpResponse<PageMetamodel>) => this.convertResponse(res, microservice)));
   }
 
   private convertResponse(res: HttpResponse<PageMetamodel>, microservice?: string): HttpResponse<PageMetamodel> {
-    this.cacheMetamodel(res.body, microservice);
+    // this.cacheMetamodel(res.body, microservice);
     const body: PageMetamodel = this.convert(res.body);
+    this.cacheMetamodel(body, microservice);
     return res.clone({ body });
   }
   /**
    * Convert a returned JSON object to PageMetamodel.
    */
   private convert(qmd: PageMetamodel): PageMetamodel {
-    if (!qmd) {
+    if (!qmd || !!qmd.parent) {
       return qmd;
     }
-    const copy: PageMetamodel = new PageMetamodel(qmd);
+    const copy: PageMetamodel = new PageMetamodel(qmd, null);
     return copy;
   }
 }

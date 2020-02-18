@@ -19,7 +19,7 @@ export class DynamicMissingTranslationHandler implements MissingTranslationHandl
 }
 
 export function translatePartialLoader(http: HttpClient) {
-  return new TranslateHttpLoader(http, 'assets/i18n/', `/dynamic.json`);
+  return new TranslateHttpLoader(http, 'i18n/', '.json');
 }
 
 export function missingTranslationHandler() {

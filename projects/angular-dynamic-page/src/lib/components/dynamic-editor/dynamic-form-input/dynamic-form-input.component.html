@@ -32,7 +32,7 @@
                     <input *ngIf="!isLargeText" class="form-control form-control-sm" [id]="metadata.path" [type]="inputType"
                         [attr.placeholder]="field.placeholder"
                         [readonly]="readonlyItem"
-                        [class.required]="required" [minlength]="minLength" [maxlength]="maxLength" [min]="minValue" [max]="maxValue"
+                        [class.required]="required" [minlength]="minLength" [maxlength]="maxLength" [min]="min" [max]="max"
                         [formControlName]="metadata.name" />                                
                     <textarea  *ngIf="isLargeText" rows="3" class="form-control form-control-sm" [id]="metadata.path" 
                         [attr.placeholder]="field.placeholder"
@@ -61,10 +61,10 @@
                         {{ 'dynamic.validation.maxlength' | translate:{ min: maxLength } }}
                     </small>
                     <small class="form-text text-danger" [hidden]="!control?.errors?.min">
-                        {{ 'dynamic.validation.min' | translate:{ min: minValue } }}
+                        {{ 'dynamic.validation.min' | translate:{ min: min } }}
                     </small>
                     <small class="form-text text-danger" [hidden]="!control?.errors?.max">
-                        {{ 'dynamic.validation.max' | translate:{ max: maxValue } }}
+                        {{ 'dynamic.validation.max' | translate:{ max: max } }}
                     </small>
                 </div>
             </div>

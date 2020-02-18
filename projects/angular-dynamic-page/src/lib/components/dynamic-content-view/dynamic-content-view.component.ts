@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, Optional } from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
 import { Observable } from 'rxjs';
-import { ContentContext } from '../../model/content-context';
+import { ContentContext } from './model/content-context';
 import { ColumnMetadata } from '../../model/column-metadata';
 import { PageMetamodel } from '../../model/page-metamodel';
 import { DynamicMetamodelService } from '../../services/dynamic-metamodel.service';
@@ -133,7 +133,7 @@ export class DynamicContentViewComponent extends DynamicBaseComponent implements
           cmd.label = this.toI18n(cmd.label);
           cmd.metamodel.getColumns().forEach(col => this.addI18n(col));
       } else if (cmd.idColumn) {
-          cmd.label = this.toI18n(cmd.label, 'dynamic.field.', true);
+          cmd.label = this.toI18n('id', 'dynamic.field.', true);
       } else {
           cmd.label = this.toI18n(cmd.label);
       }

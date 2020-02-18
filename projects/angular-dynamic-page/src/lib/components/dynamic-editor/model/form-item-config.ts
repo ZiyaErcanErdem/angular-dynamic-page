@@ -1,6 +1,6 @@
-import { ColumnMetadata } from './column-metadata';
 import { FormGroup, FormArray } from '@angular/forms';
 import { FormFieldConfig } from './form-field-config';
+import { ColumnMetadata } from '../../../model/column-metadata';
 
 export interface FormItemConfig {
     group: FormGroup;

@@ -1,12 +1,12 @@
 import { Directive, OnChanges, OnInit, OnDestroy, Input, ComponentRef, ComponentFactoryResolver, ViewContainerRef, Type } from '@angular/core';
-import { FormField } from '../../../model/form-field';
 import { PageBuilder } from '../../../model/page-builder';
-import { FormFieldConfig } from '../../../model/form-field-config';
 import { FormGroup } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { DynamicFormButtonComponent } from '../dynamic-form-button/dynamic-form-button.component';
 import { DynamicFormInputComponent } from '../dynamic-form-input/dynamic-form-input.component';
 import { DynamicFormSelectComponent } from '../dynamic-form-select/dynamic-form-select.component';
+import { FormField } from '../model/form-field';
+import { FormFieldConfig } from '../model/form-field-config';
 
 const components: { [type: string]: Type<FormField> } = {
   button: DynamicFormButtonComponent,

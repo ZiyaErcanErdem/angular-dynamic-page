@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
-import { TableFieldControl } from '../../../model/table-field-control';
+import { TableFieldControl } from '../model/table-field-control';
 
 @Component({
   selector: 'zee-table-pagination',

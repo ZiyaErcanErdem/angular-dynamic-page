@@ -30,19 +30,29 @@
 
 <div class="content" role="main">
 
-  <zee-dynamic-panel class="mb-2 w-100" [theme]="endpointTheme" [title]="'Endpoint Page'" >
-    <zee-dynamic-page class="mb-2 w-100" [builder]="endpointPageBuilder" [theme]="endpointTheme" ></zee-dynamic-page>
+  <zee-dynamic-panel class="mb-2 w-100" [theme]="theme" [title]="'My Panel Title'" [panelState]="'COLLAPSED'" [actions]="themeActions">
+    <div *ngIf="false" class="d-flex align-content-center">
+      <ng-container *ngIf="themeActions">
+        <ng-container *ngFor="let action of themeActions;">
+            <zee-dynamic-button *ngIf="action.visible" class="p-0 pl-2 align-self-center" [action]="action"></zee-dynamic-button>
+        </ng-container>
+      </ng-container>
+    </div>
   </zee-dynamic-panel>
 
-  <zee-dynamic-panel class="mb-2 w-100" [theme]="agentTheme" [title]="'Agent Page'" >
-    <zee-dynamic-page class="mb-2 w-100" [builder]="agentPageBuilder" [theme]="agentTheme" ></zee-dynamic-page>
+
+
+  <zee-dynamic-panel class="mb-2 w-100" [theme]="theme" [title]="'Endpoint Page'" >
+    <zee-dynamic-page class="mb-2 w-100" [builder]="endpointPageBuilder" [theme]="theme" ></zee-dynamic-page>
+  </zee-dynamic-panel>
+
+  <zee-dynamic-panel class="mb-2 w-100" [theme]="theme" [title]="'Agent Page'" >
+    <zee-dynamic-page class="mb-2 w-100" [builder]="agentPageBuilder" [theme]="theme" ></zee-dynamic-page>
   </zee-dynamic-panel>
  
+  <app-page-task class="mb-2 w-100"></app-page-task>
 
-  <zee-dynamic-panel class="mb-2 w-100" [theme]="theme" [title]="'My Panel Title'" [actions]="actions">
-    <zee-dynamic-button class="p-0 pl-1 align-self-center" [action]="buttonAction"> BLA BLA</zee-dynamic-button>
-  </zee-dynamic-panel>
-
+  <app-page-flow class="mb-2 w-100"></app-page-flow>
 
   <zee-dynamic-table class="mb-2 w-100" [control]="control" [theme]="theme" [title]="title" (rowSelect)="rowSelected($event)"></zee-dynamic-table>
 

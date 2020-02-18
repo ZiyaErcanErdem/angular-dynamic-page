@@ -4,7 +4,7 @@ import { ControlValueAccessor } from '@angular/forms';
 import { PageBuilder } from '../../model/page-builder';
 import { Criteria } from '../../model/criteria';
 import { Condition } from '../../model/condition.enum';
-import { TemplateContext } from '../../model/template-context';
+import { TemplateContext } from './model/template-context';
 import { Theme } from '../../model/theme.enum';
 import { CriteriaActionDirective } from './directives/criteria-action.directive';
 import { CriteriaConditionDirective } from './directives/criteria-condition.directive';
@@ -13,21 +13,20 @@ import { PredicateOperatorDirective } from './directives/predicate-operator.dire
 import { RemovePredicateDirective } from './directives/remove-predicate.directive';
 import { PredicateInputDirective } from './directives/predicate-input.directive';
 import { ColumnMetadata } from '../../model/column-metadata';
-import { ExpressionContext } from '../../model/expression-context';
+import { ExpressionContext } from './model/expression-context';
 import { PageConfig } from '../../model/page-config';
 import { PageRelation } from '../../model/page-relation';
 import { DynamicUtil } from '../../model/dynamic-util';
-import { TemplateType } from '../../model/template-type.enum';
-import { RelationType } from '../../model/relation-type.enum';
+import { TemplateType } from './model/template-type.enum';
 import { Predicate } from '../../model/predicate';
 import { InputType } from '../../model/input-type.enum';
 import { Operator } from '../../model/operator.enum';
-import { CriteriaActionContext } from '../../model/criteria-action-context';
-import { RemovePredicateContext } from '../../model/remove-predicate-context';
-import { PredicateFieldContext } from '../../model/predicate-field-context';
-import { ColumnContext } from '../../model/column-context';
-import { PredicateOperatorContext } from '../../model/predicate-operator-context';
-import { PredicateInputContext } from '../../model/predicate-input-context';
+import { CriteriaActionContext } from './model/criteria-action-context';
+import { RemovePredicateContext } from './model/remove-predicate-context';
+import { PredicateFieldContext } from './model/predicate-field-context';
+import { ColumnContext } from './model/column-context';
+import { PredicateOperatorContext } from './model/predicate-operator-context';
+import { PredicateInputContext } from './model/predicate-input-context';
 import { OperatorContext } from '../../model/operator-context';
 import { ColumnType } from '../../model/column-type.enum';
 import { OptionContext } from '../../model/option-context';
@@ -71,7 +70,6 @@ export class DynamicQueryComponent extends DynamicBaseComponent implements Contr
   public config: PageConfig<any>;
 
   public relations: Array<PageRelation>;
-  private defaultRelation: PageRelation;
   ready = false;
 
   public disabled: boolean;
@@ -108,7 +106,6 @@ export class DynamicQueryComponent extends DynamicBaseComponent implements Contr
               this.config = this.builder.config;
               this.collect = this.builder.metamodel().subscribe(pmm => {
                   this.relations = pmm.getRelations().filter(r => r.searchable);
-                  this.defaultRelation = this.relations.find(pr => pr.relationType === RelationType.SELF);
               });
               this.collect = this.builder.searchColumns().subscribe(cols => (this.columns = cols), err => console.warn(err));
               if (!this.templateContext) {
@@ -126,7 +123,6 @@ export class DynamicQueryComponent extends DynamicBaseComponent implements Contr
       this.expressionMap = undefined;
       this.config = undefined;
       this.relations = undefined;
-      this.defaultRelation = undefined;
       this.defaultTemplateTypes = undefined;
   }
 

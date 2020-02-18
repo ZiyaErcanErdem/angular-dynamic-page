@@ -1,6 +1,6 @@
 {
   "name": "angular-dynamic-page",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Angular dynamic CRUD page generation from JPA metamodel",
   "author": "Ziya Ercan Erdem",
   "keywords": [

@@ -1,7 +1,7 @@
-import { Predicate } from './predicate';
+import { ColumnMetadata } from '../../../model/column-metadata';
+import { Predicate } from '../../../model/predicate';
+import { PageRelation } from '../../../model/page-relation';
 import { ColumnContext } from './column-context';
-import { PageRelation } from './page-relation';
-import { ColumnMetadata } from './column-metadata';
 
 export interface PredicateFieldContext {
     changeField: (col: ColumnMetadata, predicate: Predicate) => void;

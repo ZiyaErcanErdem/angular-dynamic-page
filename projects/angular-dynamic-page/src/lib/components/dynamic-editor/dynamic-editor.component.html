@@ -10,7 +10,7 @@
 
     <zee-dynamic-page *ngIf="activeChildBuilder && (mode === 'CHILD')" [builder]='activeChildBuilder' [theme]="theme"></zee-dynamic-page>
 
-    <ng-container *ngIf="false && (mode === 'EDIT' || mode === 'CREATE')">
+    <ng-container *ngIf="false && (mode !== 'VIEW')">
         <div> {{ valid }}</div>
         <div>
             <textarea class='query-view'>{{ value | json }}</textarea>

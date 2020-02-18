@@ -45,6 +45,7 @@ import { DynamicDataService } from '../services/dynamic-data.service';
 import { DynamicMetamodelService } from '../services/dynamic-metamodel.service';
 import { DynamicEditorComponent } from '../components/dynamic-editor/dynamic-editor.component';
 import { DynamicPageComponent } from '../components/dynamic-page/dynamic-page.component';
+import { PopoverConfig } from './popover-config';
 
 export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageBuilder<T> {
     private router: Router;
@@ -167,6 +168,10 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.collect = this.data().subscribe(data => this.manageViewMode(data));
     }
 
+    public getStorageId(): string {
+        return `${this.parentBuilder ? this.parentBuilder.getStorageId() + '.' : ''}${this.pageMetamodel.getInstanceId()}`;
+    }
+
     public delegateEntityUpdate(delegate: (entity: T) => Observable<T>): void {
         this.entityUpdateDelegate = delegate;
     }
@@ -227,7 +232,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                         col.selector.builder.destroy();
                         col.selector.builder = undefined;
                     }
-                    col.selector = undefined;
+                    //col.selector = undefined;
                 }
             });
         }
@@ -249,7 +254,6 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         }
 
         this.metadataProvider = undefined;
-        this._config = undefined;
         this.lastQuery = undefined;
         this.defaultQuery = undefined;
 
@@ -279,6 +283,8 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             this._dataSelection.clear();
             this._dataSelection = undefined;
         }
+
+        this._config = undefined;
     }
 
     public isDestroyed(): boolean {
@@ -291,6 +297,10 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
 
     public parent(): PageBuilder<any> {
         return this.parentBuilder;
+    }
+
+    public top(): PageBuilder<any> {
+        return this.isChild() ? this.parentBuilder.top() : this;
     }
 
     public withMetamodelProvider(metadataProvider: DynamicMetamodelService): PageBuilder<T> {
@@ -573,33 +583,17 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.changeViewMode(preferredViewerMode);
     }
 
-    public openDialog<C, R>(
-        content: PopoverContent,
-        context: C,
-        theme?: Theme,
-        actions?: Array<DynamicAction<any>>,
-        title?: string,
-        i18n?: boolean
-    ): PopoverRef<C, R> {
-        const ref = this.dialog.openDialog<C, R>(content, context, theme, actions, title, undefined, i18n);
-        return ref;
+    public openDialog<C, R>(content: PopoverContent,context: C, config: PopoverConfig = {}): PopoverRef<C, R> {
+        return this.dialog.openDialog<C, R>(content, context, config);
     }
 
-    public openPopup<C, R>(
-        origin: HTMLElement,
-        content: PopoverContent,
-        context: C,
-        theme?: Theme,
-        actions?: Array<DynamicAction<any>>,
-        title?: string
-    ): PopoverRef<C, R> {
-        const ref = this.dialog.openPopup<C, R>(origin, content, context, theme, actions, title);
-        return ref;
+    public openPopup<C, R>(origin: HTMLElement, content: PopoverContent, context: C, config: PopoverConfig = {}): PopoverRef<C, R> {
+        return this.dialog.openPopup<C, R>(origin, content, context, config);
     }
 
-    public openAlert(message: string, params?: any, title?: string, disableI18n?: boolean): Promise<any> {
+    public openAlert(message: string, config: PopoverConfig = {}): Promise<any> {
         const promise = new Promise<any>((resolve, reject) => {
-            const ref = this.dialog.openAlert(message, title, null, !disableI18n, params);
+            const ref = this.dialog.openAlert(message, config);
             ref.afterClosed$.subscribe(result => {
                 resolve(result ? result.data : false);
             });
@@ -607,9 +601,9 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return promise;
     }
 
-    public openConfirmation(message: string, params?: any, title?: string, disableI18n?: boolean): Promise<boolean> {
+    public openConfirmation(message: string, config: PopoverConfig = {}): Promise<boolean> {
         const promise = new Promise<boolean>((resolve, reject) => {
-            const ref = this.dialog.openConfirmation(message, title, null, !disableI18n, params);
+            const ref = this.dialog.openConfirmation(message, config);
             ref.afterClosed$.subscribe(result => {
                 resolve(result ? result.data : false);
             });
@@ -635,18 +629,13 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         const title = this.config.pageTitle;
         const i18n = title ? true : false;
         const ref = this.openDialog<{ builder: PageBuilder<any>; mode: EditorMode }, any>(
-            DynamicEditorComponent,
-            ctx,
-            theme,
-            actions,
-            title,
-            i18n
+            DynamicEditorComponent, ctx, {theme, actions, title, i18n}
         );
         return ref;
     }
 
     public openDynamicPage(builder: PageBuilder<any>, theme: Theme, title?: string, i18n?: boolean): PopoverRef<any, any> {
-        const ref = this.openDialog<PageBuilder<any>, any>(DynamicPageComponent, builder, theme, null, title, i18n);
+        const ref = this.openDialog<PageBuilder<any>, any>(DynamicPageComponent, builder, {theme, title, i18n});
         return ref;
     }
 
@@ -693,7 +682,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         if (selector.builder && !selector.builder.isDestroyed()) {
             return selector.builder;
         }
-        selector.builder = this.createInstanceFor(selector.qualifier)
+        selector.builder = this.createInstanceFor(selector.qualifier, this)
             .withPageConfiguration(config => {
                 config.pageType = PageType.SELECTOR;
                 config.queryMode = selector.queryMode ? selector.queryMode : QueryMode.EXAMPLE;
@@ -970,7 +959,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                 col.listable = false;
                 listableCols.push(col);
             } else if (col.relType === RelationType.INNER && col.metamodel) {
-                const rel = this.pageMetamodel.getRelation(col.metamodel.group);
+                const rel = col.relation; // this.pageMetamodel.getRelation(col.metamodel.group);
                 this.buildListableGridColumns(listableCols, col.metamodel.getColumns(), rel);
             }
         });
@@ -1000,7 +989,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             cmd.label = this.config.toI18n(cmd.label);
             cmd.metamodel.getColumns().forEach(col => this.addI18n(col));
         } else if (cmd.idColumn) {
-            cmd.label = this.config.toI18n(cmd.label, 'dynamic.field.', true);
+            cmd.label = this.config.toI18n('id', 'dynamic.field.', true);
         } else {
             cmd.label = this.config.toI18n(cmd.label);
         }
@@ -1128,7 +1117,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             if (entityId) {
                 const q = this.prepareDeleteQuestion();
                 if (q) {
-                    return this.openConfirmation(q, { id: entityId }, 'dynamic.delete.title');
+                    return this.openConfirmation(q, {i18nParams: { id: entityId }, title: 'dynamic.delete.title'});
                 }
             }
         }
@@ -1226,7 +1215,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
 
     public create(entity: T, errHandler?: (err: any) => void): Observable<T> {
         return this.executeAction(entity, DataActionType.BEFORE_CREATE, data => {
-            const selfRel = this.pageMetamodel.getRelations().find(r => r.relationType === RelationType.SELF);
+            const selfRel = this.pageMetamodel.getSelfRelation();
             const response = this.datasource.createEntity(selfRel, data).pipe(
                 map(res => res.body),
                 tap(
@@ -1257,7 +1246,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                 );
                 return delegatedResponse;
             } else {
-                const selfRel = this.pageMetamodel.getRelations().find(r => r.relationType === RelationType.SELF);
+                const selfRel = this.pageMetamodel.getSelfRelation();
                 const response = this.datasource.updateEntity(selfRel, data).pipe(
                     map(res => res.body),
                     tap(
@@ -1277,7 +1266,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
 
     public delete(entity: T, errHandler?: (err: any) => void): Observable<boolean> {
         return this.executeAction(entity, DataActionType.BEFORE_DELETE, data => {
-            const selfRel = this.pageMetamodel.getRelations().find(r => r.relationType === RelationType.SELF);
+            const selfRel = this.pageMetamodel.getSelfRelation();
             const response = this.datasource.deleteEntity(selfRel, data['id']).pipe(
                 map(res => res.body),
                 tap(
@@ -1404,6 +1393,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public sortWith(ctx: SortContext, criteria: Criteria): Observable<Array<T>> {
+        this.setPageMode(PageMode.GRID);
         this.config.predicate = this.toPath(ctx.column);
         this.config.reverse = ctx.direction === 'desc' ? true : false;
         if (this.datasource) {
@@ -1491,6 +1481,9 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     private successVisitor(data: T[], headers?: HttpHeaders, authMap?: Map<number, any>): T[] {
+        if(this.isDestroyed()) {
+            return data;
+        }
         if (headers) {
             this.config.links = this.provider.parseLink(headers.get('link'));
             this.config.totalItems = headers.get('X-Total-Count');
@@ -1770,7 +1763,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     private keyOfSetting(key?: string): string {
-        return `${this.qualifier}.${key ? key : 'none'}`;
+        return `${this.getStorageId()}.${key ? key : 'none'}`;
     }
 
     private resetCriteriaInternal(q: Criteria | Predicate): void {

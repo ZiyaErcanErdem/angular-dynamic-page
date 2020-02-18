@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, OnDestroy, EventEmitter, Input } from '@angular/core';
 import { BasePanelView } from '../../model/base-panel-view';
-import { TableField } from '../../model/table-field';
-import { TableFieldControl } from '../../model/table-field-control';
+import { TableField } from './model/table-field';
+import { TableFieldControl } from './model/table-field-control';
 import { DynamicUtil } from '../../model/dynamic-util';
 import { Theme } from '../../model/theme.enum';
 import { DynamicAction, GenericDynamicAction, DynamicActionBuilder, ActionType, ActionScope } from '../../model/dynamic-action';

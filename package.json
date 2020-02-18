@@ -28,7 +28,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.2.1",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "angular-dynamic-page": "0.0.2",
+    "angular-dynamic-page": "0.0.3",
     "bootstrap": "^4.4.1",
     "moment": "^2.24.0",
     "ngx-webstorage": "5.0.0",
@@ -37,6 +37,7 @@
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
+    "@angular-builders/custom-webpack": "8.4.1",
     "@angular-devkit/build-angular": "~0.900.1",
     "@angular-devkit/build-ng-packagr": "~0.900.1",
     "@angular/cli": "^9.0.1",
@@ -46,6 +47,7 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "^12.11.1",
     "codelyzer": "^5.1.2",
+    "copy-webpack-plugin": "^5.1.1",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
@@ -53,6 +55,7 @@
     "karma-coverage-istanbul-reporter": "~2.0.1",
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
+    "merge-jsons-webpack-plugin": "^1.0.20",
     "ng-packagr": "^9.0.0",
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",

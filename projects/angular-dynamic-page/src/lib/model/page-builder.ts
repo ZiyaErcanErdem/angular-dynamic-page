@@ -31,6 +31,7 @@ import { IDynamicConfig } from './dynamic-config';
 import { DynamicPopoverService } from '../services/dynamic-popover.service';
 import { DynamicDataService } from '../services/dynamic-data.service';
 import { DynamicMetamodelService } from '../services/dynamic-metamodel.service';
+import { PopoverConfig } from './popover-config';
 
 export interface IDynamicStorageProvider {
   store(key: string, value: any): void;
@@ -64,6 +65,7 @@ export interface PageBuilder<T> {
   findColumn: (columnPath: string) => ColumnMetadata;
   getAssociationColumns: () => Array<ColumnMetadata>;
 
+  top: () => PageBuilder<any>;
   parent: () => PageBuilder<any>;
   ready: () => Observable<boolean>;
   metamodel: () => Observable<PageMetamodel>;
@@ -149,25 +151,10 @@ export interface PageBuilder<T> {
 
   openViewer: (preferredViewerMode?: EditorMode) => void;
 
-  openDialog: <C, R>(
-    content: PopoverContent,
-    context: C,
-    theme?: Theme,
-    actions?: Array<DynamicAction<any>>,
-    title?: string,
-    i18n?: boolean
-  ) => PopoverRef<C, R>;
-  openPopup: <C, R>(
-    origin: HTMLElement,
-    content: PopoverContent,
-    context: C,
-    theme?: Theme,
-    actions?: Array<DynamicAction<any>>,
-    title?: string,
-    i18n?: boolean
-  ) => PopoverRef<C, R>;
-  openAlert: (message: string, params?: object, title?: string, disableI18n?: boolean) => Promise<any>;
-  openConfirmation: (message: string, params?: object, title?: string, disableI18n?: boolean) => Promise<boolean>;
+  openDialog: <C, R>(content: PopoverContent,context: C, config: PopoverConfig) => PopoverRef<C, R>;
+  openPopup: <C, R>(origin: HTMLElement, content: PopoverContent, context: C, config: PopoverConfig) => PopoverRef<C, R>;
+  openAlert: (message: string, config: PopoverConfig) => Promise<any>;
+  openConfirmation(message: string, config: PopoverConfig): Promise<boolean>;
 
   createComponentPortal: (component: ComponentType<any>) => DynamicPortalView<any>;
   createTemplatePortal: (template: TemplateRef<any>, context?: any) => DynamicPortalView<any>;
@@ -183,6 +170,7 @@ export interface PageBuilder<T> {
   removePredicate: (predicate: Predicate, parent: Criteria) => void;
   resetQuery: () => Criteria;
 
+  getStorageId: () => string;
   storeSetting: (key: string, value: any) => void;
   retrieveSetting: (key: string) => any;
   clearSetting: (key?: string) => void;

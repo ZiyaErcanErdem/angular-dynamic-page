@@ -31,7 +31,8 @@ export const createRequestOption = (req?: any): HttpParams => {
 export class DynamicDataService {
   private microserviceName = '';
   private serverApiUrl = '/';
-  private dynamicPath = '';
+  private dynamicSearchPath = '';
+  private dynamicExcelPath = '';
 
   constructor(
     private appConfigService: DynamicConfigService, 
@@ -41,7 +42,8 @@ export class DynamicDataService {
   ) {
     this.microserviceName = this.appConfigService.getConfig().microserviceName;
     this.serverApiUrl = this.appConfigService.getConfig().serverApiUrl || '/';
-    this.dynamicPath = `/search/dynamic`;
+    this.dynamicSearchPath = `/dynamic/search`;
+    this.dynamicExcelPath = `/dynamic/excel`;
 
   }
 
@@ -55,8 +57,8 @@ export class DynamicDataService {
   }
 
   createEntity<T>(relation: PageRelation, entity: T, microservice?: string): Observable<HttpResponse<T>> {
-    if (entity && relation && relation.metamodel && relation.metamodel.idColumnName) {
-      const idAttr = relation.metamodel.idColumnName;
+    if (entity && relation && relation.metamodel && relation.metamodel.key) {
+      const idAttr = relation.metamodel.key;
       delete entity[idAttr];
     }
     const dynamicUrl = this.apiUriOf(microservice);
@@ -105,7 +107,7 @@ export class DynamicDataService {
         const options = createRequestOption(req);
         dynamicPathPrefix = dynamicPathPrefix ? dynamicPathPrefix : '';
         return this.http
-            .get<T[]>(`${dynamicUrl}${dynamicPathPrefix}${this.dynamicPath}/${qualifier}`, { params: options, observe: 'response' })
+            .get<T[]>(`${dynamicUrl}${dynamicPathPrefix}${this.dynamicSearchPath}/${qualifier}`, { params: options, observe: 'response' })
             .pipe(map((res: HttpResponse<T[]>) => this.convertArrayResponse<T>(res, modifier)));
     }*/
 
@@ -114,7 +116,7 @@ export class DynamicDataService {
     const options = createRequestOption(req);
     dynamicPathPrefix = dynamicPathPrefix ? dynamicPathPrefix : '';
     return this.http
-      .get<T[]>(`${dynamicUrl}${dynamicPathPrefix}${this.dynamicPath}/${qualifier}`, { params: options, observe: 'response' })
+      .get<T[]>(`${dynamicUrl}${dynamicPathPrefix}${this.dynamicSearchPath}/${qualifier}`, { params: options, observe: 'response' })
       .pipe(map((res: HttpResponse<T[]>) => this.convertArrayResponse(res, modifier)));
   }
 
@@ -128,7 +130,7 @@ export class DynamicDataService {
     const qualifier = ctx.qualifier;
     const options = createRequestOption(req);
     const dynamicPathPrefix = ctx.provider ? ctx.provider : '';
-    const reqURI = `${dynamicUrl}${dynamicPathPrefix}${this.dynamicPath}/${qualifier}`;
+    const reqURI = `${dynamicUrl}${dynamicPathPrefix}${this.dynamicSearchPath}/${qualifier}`;
     const payload = this.serializeDynamicAuthorizableSearchRequest(ctx);
     return this.http
       .post<DynamicAuthorizedSearchResponse<T, A>>(reqURI, payload, { params: options, observe: 'response' })
@@ -137,7 +139,7 @@ export class DynamicDataService {
 
   public importExcelData(qualifier: string, formData: FormData, microservice?: string): Observable<HttpEvent<{}>> {
     const dynamicUrl = this.apiUriOf(microservice);
-    const url = `${dynamicUrl}/excel/import/${qualifier}`;
+    const url = `${dynamicUrl}${this.dynamicExcelPath}/import/${qualifier}`;
     const req = new HttpRequest('POST', url, formData, {
       reportProgress: true,
       responseType: 'blob' as 'json'
@@ -150,7 +152,7 @@ export class DynamicDataService {
     const dynamicUrl = this.apiUriOf(microservice);
     const options = createRequestOption(req);
     const resource = await this.http
-      .get<Blob>(`${dynamicUrl}/excel/template/${qualifier}`, {
+      .get<Blob>(`${dynamicUrl}${this.dynamicExcelPath}/template/${qualifier}`, {
         params: options,
         observe: 'body',
         responseType: 'blob' as 'json'
@@ -164,7 +166,7 @@ export class DynamicDataService {
     const dynamicUrl = this.apiUriOf(microservice);
     const options = createRequestOption(req);
     const resource = await this.http
-      .get<Blob>(`${dynamicUrl}/excel/export/${qualifier}`, {
+      .get<Blob>(`${dynamicUrl}${this.dynamicExcelPath}/export/${qualifier}`, {
         params: options,
         observe: 'body',
         responseType: 'blob' as 'json'

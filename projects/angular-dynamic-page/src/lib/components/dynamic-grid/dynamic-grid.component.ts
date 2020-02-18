@@ -31,6 +31,7 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
   mode: PageMode;
   gridViewMode: GridViewMode;
   ready = false;
+  idColumn: ColumnMetadata;
 
   private _displayedColumns: Array<string>;
 
@@ -142,6 +143,9 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
   }
 
   private setupDisplayedColumns(): void {
+      if (!this.idColumn) {
+        this.idColumn = this.columns.filter(col => col.idColumn && col.qualifier === this.builder.qualifier).reduce((acc, col) => acc = col);
+      }
       if (this.mode === PageMode.GRID) {
           if (this.builder.gridColumnsSelection().selected) {
               this._displayedColumns = this.builder
@@ -156,10 +160,15 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
               this._displayedColumns = this.columns.filter(col => col.showWhenCompact).map(cmd => cmd.path);
           }
       }
-      if (this.gridViewMode !== GridViewMode.MINIMIZED && this._displayedColumns.length === 0) {
-          this._displayedColumns = this.columns.filter(col => col.idColumn).map(cmd => cmd.path);
+      if (this.gridViewMode !== GridViewMode.MINIMIZED && this._displayedColumns.length === 0 && this.idColumn) {
+          this._displayedColumns = [this.idColumn.path];
       }
-      this._displayedColumns.push('gridActions');
+      if (this.gridViewMode === GridViewMode.MINIMIZED) {
+        this._displayedColumns.push('idColumn');
+      } else {
+        this._displayedColumns.push('gridActions');
+      }
+      
   }
 
   public handleGridSelect(row: any, event: MouseEvent): void {

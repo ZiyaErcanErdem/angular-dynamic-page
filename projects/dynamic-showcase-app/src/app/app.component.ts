@@ -14,9 +14,9 @@ import {
   Condition,
   Operator,
   PageViewMode,
-  DataActionType
+  DataActionType                                                                    
  } from 'angular-dynamic-page';
-import { TableFieldControl, TableField } from 'angular-dynamic-page';
+                                                                                                    import { TableFieldControl, TableField } from 'angular-dynamic-page';
 import { BasePageView } from 'angular-dynamic-page';
 import { DynamicService } from 'angular-dynamic-page';
 import { TranslateService } from '@ngx-translate/core';
@@ -39,11 +39,14 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
   buttonAction: GenericDynamicAction<any>;
   actions: Array<DynamicAction<any>> = [];
 
+  toogle = true;
+
   query: Criteria;
 
   public control: TableFieldControl<any>;
 
   private registeredActions: Array<GenericDynamicAction<any>> = [];
+  themeActions: Array<DynamicAction<any>> = [];
 
   public agentPageBuilder: PageBuilder<Agent>;
   public endpointPageBuilder: PageBuilder<Endpoint>;
@@ -51,17 +54,18 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
   constructor(private dynamicService: DynamicService, private translateService: TranslateService) {
     super();
 
-    this.theme = Theme.dark;
-    this.agentTheme = Theme.primary;
-    this.endpointTheme = Theme.dark;
+    this.theme = Theme.primary;
+    this.agentTheme = Theme.warning;
+    this.endpointTheme = Theme.success;
 
     this.control = new TableFieldControl<any>('Content');
 
     this.translateService.setDefaultLang('en');
-    this.translateService.use('tr');
+    this.translateService.use('en');
   }
 
   ngOnInit() {
+    this.themeActions = this.buildThemeActions();
     this.buildTable();
     this.registerActions();
     this.prepareAgentBuilder();
@@ -101,7 +105,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
       config.itemsPerPage = 20;
       config.canDownloadExcel = true;
       config.canUploadExcel = true;
-      config.pageTheme = this.agentTheme;
+      // config.pageTheme = this.theme;
       config.canCreate = true;
       config.canEdit = true;
       config.canDelete = true;
@@ -109,7 +113,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     })
     .withDataActionController((a, d) => {
       if (a === DataActionType.BEFORE_DELETE) {
-        return this.agentPageBuilder.openConfirmation('Alooo Agent Silinecek. Okey Mi?', null, 'Onay Istiyorum', true);
+        return this.agentPageBuilder.openConfirmation('Alooo Agent Silinecek. Okey Mi?', {title: 'Onay Istiyorum', i18n: false});
       }
       return Promise.resolve(true);
     })
@@ -146,15 +150,15 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
       .withCompactColumns('id', 'endpointName')
       .withPageConfiguration(config => {
         config.queryMode = QueryMode.CRITERIA;
-        config.itemsPerPage = 20;
+        config.itemsPerPage = 10;
         config.canDownloadExcel = true;
         config.canUploadExcel = true;
-        config.pageTheme = this.endpointTheme;
+        // config.pageTheme = this.theme;
         return config;
       })
       .withDataActionController((a, d) => {
         if (a === DataActionType.BEFORE_DELETE) {
-          return this.endpointPageBuilder.openConfirmation('Alooo Endpoint Silinecek. Okey Mi?', null, 'Onay Istiyorum', true);
+          return this.endpointPageBuilder.openConfirmation('Alooo Endpoint Silinecek. Okey Mi?', {title: 'Onay Istiyorum', i18n: false, minWidth: "500px"});
         }
         return Promise.resolve(true);
       })
@@ -179,7 +183,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
           relation.descriptionColumnName = 'endpointName';
         } else {
           if (relation.qualifier !== 'ActionScript' && relation.qualifier !== 'CheckScript') {
-            relation.searchable = false;
+            relation.searchable = true;
           }
         }
         return relation;
@@ -208,7 +212,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     .withIconClass('filter')
     .withHandler((comp, d) => {
         comp.disabled = true;
-        console.log('Hello clicked')
+        console.log('Hello clicked');
+        this.toogle = !this.toogle;
         comp.disabled = false;
     })
     .build();
@@ -267,5 +272,32 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
 
   rowSelected(evt: any) {
     console.log(evt);
+  }
+
+  private buildThemeActions(): Array<DynamicAction<any>> {
+    return [
+      this.createThemeAction(Theme.dark, 'dark'),
+      this.createThemeAction(Theme.primary, 'primary'),
+      this.createThemeAction(Theme.secondary, 'secondary'),
+      this.createThemeAction(Theme.info, 'info'),
+      this.createThemeAction(Theme.success, 'success'),
+      this.createThemeAction(Theme.warning, 'warning'),
+      this.createThemeAction(Theme.danger, 'danger'),
+      this.createThemeAction(Theme.light, 'light')
+    ];
+  }
+
+  private createThemeAction(theme: Theme, label: string): DynamicAction<Theme> {
+    return new DynamicActionBuilder<Theme>(`theme.${label}`, ActionType.CUSTOM)
+    .withScope(ActionScope.PAGE)
+    .withLabel(label).withI18n(false).withPayload(theme)
+    .withButtonClass(DynamicUtil.buttonThemeFor(theme))
+    //.withIconClass('file-excel')
+    .withHandler((comp, d) => {
+        comp.disabled = true;
+        this.theme = d;
+        comp.disabled = false;
+    })
+    .build();
   }
 }

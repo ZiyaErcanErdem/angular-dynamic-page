@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormField } from '../../../model/form-field';
 import { PageBuilder } from '../../../model/page-builder';
-import { FormFieldConfig } from '../../../model/form-field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { ColumnMetadata } from '../../../model/column-metadata';
+import { FormField } from '../model/form-field';
+import { FormFieldConfig } from '../model/form-field-config';
 
 @Component({
   selector: 'zee-dynamic-form-select',

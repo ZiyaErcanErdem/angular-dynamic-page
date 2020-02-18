@@ -1,5 +1,5 @@
 import { ValidatorFn } from '@angular/forms';
-import { ColumnMetadata } from './column-metadata';
+import { ColumnMetadata } from '../../../model/column-metadata';
 
 export interface FormFieldConfig {
     metadata: ColumnMetadata;

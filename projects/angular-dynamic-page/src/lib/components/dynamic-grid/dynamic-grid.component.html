@@ -14,10 +14,18 @@
                 <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell dyn-header-cell-action text-right mr-auto">
                     <zee-dynamic-grid-configurer [builder]="builder" [theme]="theme"></zee-dynamic-grid-configurer>
                 </cdk-header-cell>
-                <cdk-cell *cdkCellDef="let row" class="dyn-cell dyn-cell-action text-right ml-auto ">
+                <cdk-cell *cdkCellDef="let row" class="dyn-cell dyn-cell-action ml-auto">
                     <zee-dynamic-grid-actions *ngIf="isSelected(row)" [builder]="builder"></zee-dynamic-grid-actions>
                 </cdk-cell>
             </ng-container>
+
+            <ng-container cdkColumnDef="idColumn">
+                <cdk-header-cell *cdkHeaderCellDef class="dyn-header-cell dyn-header-cell-action text-right mr-auto">
+                    <zee-dynamic-grid-configurer [builder]="builder" [theme]="theme"></zee-dynamic-grid-configurer>
+                </cdk-header-cell>
+                <cdk-cell *cdkCellDef="let row" class="dyn-cell" [fxFlex]="calcColWidth(idColumn)">{{row[idColumn.path]}}</cdk-cell>
+            </ng-container>  
+
             <cdk-header-row *cdkHeaderRowDef="displayedColumns" [ngClass]="gridHeaderRowTheme"></cdk-header-row>
             <cdk-row *cdkRowDef="let row; columns: displayedColumns;"
                         class="dyn-row" [ngClass] = "{'bg-secondary text-white': isSelected(row)}"

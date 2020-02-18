@@ -31,16 +31,17 @@
             &:before {
                 content: attr(data-title);
                 position: absolute;
-                top: 0.5em;
+                top: 1em;
+                bottom: 1em;
                 left: 0;
                 width: 100%;
-                min-height: 6em;
+                min-height: 5em;
                 line-height: 2em;
                 padding-top: 1.5em;
                 opacity: 1;
                 visibility: visible;
                 text-align: center;
-                border: 0.25em dashed currentColor;
+                border: .15em dashed currentColor;
                 transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
                 overflow: hidden;
             }

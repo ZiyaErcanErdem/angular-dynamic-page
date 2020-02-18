@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DynamicBaseComponent } from '../../../model/dynamic-base-component';
-import { FormField } from '../../../model/form-field';
 import { PageBuilder } from '../../../model/page-builder';
-import { FormFieldConfig } from '../../../model/form-field-config';
 import { FormGroup, AbstractControl } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';
 import { ColumnMetadata } from '../../../model/column-metadata';
 import { ColumnType } from '../../../model/column-type.enum';
+import { FormField } from '../model/form-field';
+import { FormFieldConfig } from '../model/form-field-config';
 
 @Component({
   selector: 'zee-dynamic-form-input',
@@ -54,13 +54,13 @@ export class DynamicFormInputComponent extends DynamicBaseComponent implements O
       return this.inputType === 'text' && val && val > 0 && val < 9999999 ? val : null;
   }
 
-  get minValue(): number | null {
-      const val = this.metadata.minValue;
+  get min(): number | null {
+      const val = this.metadata.min;
       return this.inputType === 'number' && val && val > 0 ? val : null;
   }
 
-  get maxValue(): number | null {
-      const val = this.metadata.maxValue;
+  get max(): number | null {
+      const val = this.metadata.max;
       return this.inputType === 'number' && val && val > 0 && val < 999999999999999999 ? val : null;
   }
 

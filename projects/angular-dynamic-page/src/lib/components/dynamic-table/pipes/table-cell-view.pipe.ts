@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { TableField } from '../../../model/table-field';
 import { DatePipe } from '@angular/common';
+import { TableField } from '../model/table-field';
 
 @Pipe({
   name: 'tableCellView'

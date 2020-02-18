@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PageBuilder } from '../../../model/page-builder';
 import { EditorMode } from '../../../model/editor-mode.enum';
-import { FormItemConfig } from '../../../model/form-item-config';
-import { FormFieldConfig } from '../../../model/form-field-config';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { ColumnType } from '../../../model/column-type.enum';
+import { FormItemConfig } from '../model/form-item-config';
+import { FormFieldConfig } from '../model/form-field-config';
 
 @Component({
   selector: 'zee-dynamic-form-item',

@@ -3,9 +3,8 @@ import { DynamicBaseComponent } from '../../model/dynamic-base-component';
 import { Theme } from '../../model/theme.enum';
 import { GenericDynamicAction, DynamicAction, DynamicActionBuilder, ActionType, ActionScope } from '../../model/dynamic-action';
 import { DynamicUtil } from '../../model/dynamic-util';
-import { ComponentType } from '@angular/cdk/portal';
+import { ComponentType, PortalInjector } from '@angular/cdk/portal';
 import { ElementContext } from './model/element-context';
-import { DynamicPortalInjector } from '../../model/dynamic-portal-injector';
 import { EditorEvent } from './model/editor-event';
 import { EditorAction } from './model/editor-action.enum';
 import { IDynamicElement } from './model/dynamic-element';
@@ -277,7 +276,7 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
 
   private createInjector(context: ElementContext<any>): Injector {
       const tokens = new WeakMap([[ElementContext, context]]);
-      return new DynamicPortalInjector(this.injector, tokens);
+      return new PortalInjector(this.injector, tokens);
   }
 
   private inspectViewType(): void {

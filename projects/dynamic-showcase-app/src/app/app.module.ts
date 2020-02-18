@@ -14,6 +14,8 @@ import { DynamicPortalModule } from 'angular-dynamic-page';
 import { TranslateModule, TranslateLoader, MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { PageTaskComponent } from './page-task/page-task.component';
+import { PageFlowComponent } from './page-flow/page-flow.component';
 
 export class DynamicMissingTranslationHandler implements MissingTranslationHandler {
   constructor() {}
@@ -34,7 +36,9 @@ export function missingTranslationHandler() {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PageTaskComponent,
+    PageFlowComponent
   ],
   imports: [
     BrowserModule,
@@ -60,7 +64,7 @@ export function missingTranslationHandler() {
         {
           serverApiUrl: 'http://localhost:8590/',
           applicationId: 'Corecon',
-          i18nPrefix: '',
+          i18nPrefix: 'coreconApp',
           i18nAppName: '',
           appPathPrefix: ''
         }

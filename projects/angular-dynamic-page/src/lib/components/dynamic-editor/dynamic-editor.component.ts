@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, OnDestroy, Output, EventEmitter, Optional } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn } from '@angular/forms';
+import { FormControl, FormGroup, FormBuilder, Validators, ValidatorFn, FormArray } from '@angular/forms';
 import { BasePortal } from '../../model/base-portal';
 import { Theme } from '../../model/theme.enum';
 import { PageBuilder } from '../../model/page-builder';
@@ -7,14 +7,14 @@ import { EditorMode } from '../../model/editor-mode.enum';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GenericDynamicAction, ActionScope, DynamicActionBuilder, ActionType } from '../../model/dynamic-action';
 import { RelationPageBuilder } from '../../model/relation-page-builder';
-import { FormItemConfig } from '../../model/form-item-config';
+import { FormItemConfig } from './model/form-item-config';
 import { ColumnMetadata } from '../../model/column-metadata';
 import { PageConfig } from '../../model/page-config';
 import { PopoverRef } from '../../model/popover-ref';
 import { PageMode } from '../../model/page-mode.enum';
 import { RelationType } from '../../model/relation-type.enum';
 import { ColumnType } from '../../model/column-type.enum';
-import { FormFieldConfig } from '../../model/form-field-config';
+import { FormFieldConfig } from './model/form-field-config';
 import { DynamicUtil } from '../../model/dynamic-util';
 import { PageRelation } from '../../model/page-relation';
 import { GridViewMode } from '../../model/grid-view-mode.enum';
@@ -83,6 +83,8 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   private formOptions: { updateOn?: 'change' | 'blur' | 'submit' };
 
   public config: PageConfig<any>;
+
+  private readonly MAX_PROCESSING_LEVEL = 2;
 
   get changes() {
       return this.form.valueChanges;
@@ -224,6 +226,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
               const associatedControl = form.get(col.name);
               if (associatedControl) {
                   associatedControl.reset();
+                  associatedControl.updateValueAndValidity({});
               }
           }
       });
@@ -238,17 +241,44 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       });
   }
 
+  private createItemConfigFor(column: ColumnMetadata, parentColumn: ColumnMetadata, group: FormGroup): FormItemConfig {
+
+    let groups: FormArray = null;
+    let hasChilds = false;
+    const items = new Array<FormItemConfig>();
+    group = group || (new FormGroup({}, this.formOptions));
+
+    if (column && column.columnType === ColumnType.ASSOCIATION) {
+        if (column.relType === RelationType.OUTER) {
+            groups = this.fb.array([]);
+            groups.push(group);
+        }
+        hasChilds = true;
+    }
+    return {
+        group,
+        groups,
+        parentColumn,
+        field: null,
+        items,
+        isArray: !!groups,
+        hasChilds
+    };
+  }
+
   private buildForm(cols: Array<ColumnMetadata>): void {
       this._formReady = false;
       this.items = [];
       if (this.form) {
           this.form.reset();
-          this.removeAllFormFields();
-          this.form.reset();
+          // this.removeAllFormFields();
+          // this.form.reset();
       }
       this.form = undefined;
       this.columns = cols;
-      const form = new FormGroup({}, this.formOptions);
+
+      const topFormItemConfig = this.createItemConfigFor(null, null, null);  
+
       cols.forEach(column => {
           if (column.relType === RelationType.OUTER) {
               // We are not supporting outer joins!
@@ -258,9 +288,12 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
               // Skip ignorable columns (which are annotated as JsonIgnore)
               return;
           }
-          this.buildItem(form, null, column);
+          this.buildItem(topFormItemConfig, column);
       });
-      this.form = form;
+
+      this.form = topFormItemConfig.group;
+      this.items = topFormItemConfig.items;
+
       this._formReady = true;
       this.formReadySubject.next(this._formReady);
       this.ready = true;
@@ -270,93 +303,73 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       Promise.resolve(true).then(() => this.editorReady.emit(this._formReady));
   }
 
-  buildItem(parent: FormGroup, parentConfig: FormItemConfig, column: ColumnMetadata, parentCol?: ColumnMetadata) {
-      if (column.columnType === ColumnType.ASSOCIATION) {
-          if (!column.metamodel || column.metamodel.level > 2) {
-              return;
-          }
-      }
+  buildItem(parentItemConfig: FormItemConfig, column: ColumnMetadata) {
+    if (column.columnType === ColumnType.ASSOCIATION) {
+        if (!column.metamodel || column.metamodel.level > this.MAX_PROCESSING_LEVEL) {
+            return;
+        }
+    }
 
-      if (column.ignorable) {
-          // Skip ignorable columns (which are annotated as JsonIgnore)
-          return;
-      }
+    if (column.ignorable) {
+        // Skip ignorable columns (which are annotated as JsonIgnore)
+        return;
+    }
 
-      let itemConfig: FormItemConfig = parentConfig;
+    if (column.relType === RelationType.OUTER) {
+        // Skip OuterJoins. Currently we do not support FormArray
+        return;
+    }
 
-      if (!itemConfig) {
-          itemConfig = {
-              group: parent,
-              groups: null,
-              parentColumn: parentCol,
-              field: null,
-              items: null,
-              isArray: false,
-              hasChilds: false
-          };
-          this.items.push(itemConfig);
-      }
+    const parentColumn = parentItemConfig.field ? parentItemConfig.field.metadata : null;
+    const fieldConfig = this.buildField(column, parentColumn);
 
-      if (column.columnType === ColumnType.ASSOCIATION) {
-          if (column.metamodel && column.metamodel.level < 3) {
-              if (column.relType === RelationType.INNER) {
-                  itemConfig.group = new FormGroup({}, this.formOptions);
-                  itemConfig.hasChilds = true;
-                  itemConfig.isArray = false;
-                  itemConfig.parentColumn = column;
+    if (column.columnType === ColumnType.ASSOCIATION) {
+        if (column.metamodel) {
 
-                  itemConfig.items = new Array<FormItemConfig>();
-                  const cols = column.metamodel.getColumns();
-                  cols.forEach(col => {
-                      this.buildItem(itemConfig.group, itemConfig, col, column);
-                  });
+            const currentItemConfig: FormItemConfig = this.createItemConfigFor(column, parentColumn, null);            
+            currentItemConfig.field = fieldConfig;
 
-                  parent.addControl(column.name, itemConfig.group);
-              } else {
-                  itemConfig.groups = this.fb.array([]);
-                  itemConfig.hasChilds = true;
-                  itemConfig.isArray = true;
-                  itemConfig.parentColumn = column;
-                  // parent.addControl(column.name, itemConfig.groups);
+            if (column.relType === RelationType.INNER) {
+                const cols = column.metamodel.getColumns();
+                cols.forEach(col => {
+                    this.buildItem(currentItemConfig, col);
+                });
 
-                  itemConfig.items = new Array<FormItemConfig>();
-                  column.metamodel.getColumns();
-              }
-          }
-      } else {
-          const fieldConfig = this.buildField(column, itemConfig);
-          if (itemConfig.items) {
-              const childItemConfig = {
-                  group: itemConfig.group,
-                  groups: itemConfig.groups,
-                  parentColumn: parentCol,
-                  field: fieldConfig,
-                  items: null,
-                  isArray: false,
-                  hasChilds: false
-              };
-              itemConfig.items.push(childItemConfig);
-          } else {
-              itemConfig.field = fieldConfig;
-          }
-          const control = this.createControl(fieldConfig);
-          parent.addControl(column.name, control);
-      }
-      return itemConfig;
-  }
+                parentItemConfig.items.push(currentItemConfig);
+                parentItemConfig.group.addControl(column.name, currentItemConfig.group);
+            } else {
+                const cols = column.metamodel.getColumns();
+                cols.forEach(col => {
+                    this.buildItem(currentItemConfig, col);
+                });
+                // Skip OuterJoins now
+                // parentItemConfig.items.push(currentItemConfig);
+                // parentItemConfig.group.addControl(column.name, currentItemConfig.groups);                
+            }
+        }
+    } else {
+        const currentItemConfig: FormItemConfig = this.createItemConfigFor(column, parentColumn, parentItemConfig.group);
+        currentItemConfig.field = fieldConfig;
+        parentItemConfig.items.push(currentItemConfig);
+
+        const control = this.createControl(fieldConfig);
+        parentItemConfig.group.addControl(column.name, control);
+    }
+    return parentItemConfig;
+}
 
   createControl(field: FormFieldConfig): FormControl {
       const { disabled, validation, value } = field;
       return this.fb.control({ disabled, value }, validation);
   }
 
-  private buildField(cmd: ColumnMetadata, itemConfig: FormItemConfig): FormFieldConfig {
+  private buildField(cmd: ColumnMetadata, parentColumn: ColumnMetadata): FormFieldConfig {
       const field: FormFieldConfig = {
           metadata: cmd,
           disabled: this.isDisabled(cmd),
           placeholder: '',
           type: this.convertToInputType(cmd),
-          validation: this.setValidators(cmd, itemConfig),
+          validation: this.setValidators(cmd, parentColumn),
           value: cmd.defaultValue
       };
       return field;
@@ -400,23 +413,16 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       return inputType;
   }
 
-  private isRequired(cmd: ColumnMetadata, itemConfig: FormItemConfig): boolean {
-      if (!cmd.nullable) {
-          if (cmd.relType === RelationType.INNER) {
-              if (cmd.idColumn && itemConfig && itemConfig.parentColumn) {
-                  return !itemConfig.parentColumn.nullable;
-              }
-          }
-      }
-      return !cmd.nullable;
+  private isRequired(cmd: ColumnMetadata, parentColumn: ColumnMetadata): boolean {
+    return parentColumn ? !parentColumn.nullable : !cmd.nullable;
   }
 
-  private setValidators(cmd: ColumnMetadata, itemConfig: FormItemConfig): Array<ValidatorFn> {
+  private setValidators(cmd: ColumnMetadata, parentColumn: ColumnMetadata): Array<ValidatorFn> {
       const validators: Array<ValidatorFn> = new Array<ValidatorFn>();
       if (this.mode === EditorMode.VIEW) {
           return validators;
       }
-      if (this.isRequired(cmd, itemConfig)) {
+      if (this.isRequired(cmd, parentColumn)) {
           validators.push(Validators.required);
           if (cmd.columnType === ColumnType.ENUM) {
               validators.push(isEnumUnknown);
@@ -431,11 +437,11 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       if (cmd.maxLength && cmd.maxLength > 0 && cmd.maxLength < 9999999) {
           validators.push(Validators.maxLength(cmd.maxLength));
       }
-      if (cmd.minValue && cmd.minValue > 0) {
-          validators.push(Validators.min(cmd.minValue));
+      if (cmd.min && cmd.min > 0) {
+          validators.push(Validators.min(cmd.min));
       }
-      if (cmd.maxValue && cmd.maxValue > 0 && cmd.maxValue < 999999999999999999) {
-          validators.push(Validators.max(cmd.maxValue));
+      if (cmd.max && cmd.max > 0 && cmd.max < 999999999999999999) {
+          validators.push(Validators.max(cmd.max));
       }
       return validators;
   }
@@ -580,10 +586,14 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   }
 
   private isDisabledAction(action: GenericDynamicAction<any>): boolean {
-      if (action.id === 'editor.create.cancel') {
-          return false;
-      }
-      return !this.valid;
+        if (action.id === 'editor.create.cancel') {
+            return false;
+        }
+        if (action.id === 'editor.create') {
+        return false;
+        }
+        
+        return !this.valid;
   }
 
   private isVisibleAction(action: GenericDynamicAction<any>): boolean {
@@ -652,7 +662,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       const appName = this.config.dynamicConfig.i18nAppName;
       const label = relation.pageTitle
           ? relation.pageTitle
-          : 'global.menu.entities.' + (appName ? appName + relation.qualifier : this.uncapitalizeFirstLetter(relation.qualifier));
+          : 'dynamic.page.' + (appName ? appName + relation.qualifier : relation.qualifier);
       return label;
   }
 
