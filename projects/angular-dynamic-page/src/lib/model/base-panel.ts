@@ -3,7 +3,7 @@ import { PanelState } from './panel-state.enum';
 import { DynamicAction } from './dynamic-action';
 
 
-@Directive()
+// @Directive()
 export class BasePanel implements OnInit {
     @Input()
     title: string;

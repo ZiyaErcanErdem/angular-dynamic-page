@@ -15,7 +15,7 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
   builder: PageBuilder<any>;
 
   private pageConfig: PageConfig<any>;
-  private _actionSubscription: Subscription;
+  private actionSubscription: Subscription;
   actions: Array<DynamicAction<any>> = [];
 
   constructor() {
@@ -24,8 +24,8 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
 
   private buildActions(): void {
       this.pageConfig = this.builder.config;
-      if (!this._actionSubscription) {
-          this._actionSubscription = this.builder.actions().subscribe(actionList => {
+      if (!this.actionSubscription) {
+          this.actionSubscription = this.builder.actions().subscribe(actionList => {
               this.actions = actionList
                   .filter(a => this.canOperate(a))
                   .sort((a, b) => -1 * (a.order > b.order ? 1 : a.order === b.order ? 0 : -1));
@@ -60,9 +60,9 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
 
   ngOnDestroy() {
       super.ngOnDestroy();
-      if (this._actionSubscription) {
-          const s = this._actionSubscription;
-          this._actionSubscription = undefined;
+      if (this.actionSubscription) {
+          const s = this.actionSubscription;
+          this.actionSubscription = undefined;
           s.unsubscribe();
       }
       if (this.actions) {

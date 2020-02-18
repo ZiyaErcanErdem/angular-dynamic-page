@@ -5,58 +5,58 @@ import { TableSortContext, TablePageContext, TablePaginator } from './table-fiel
 import { TableField } from './table-field';
 
 export class TableDataSource<R> extends DataSource<R> {
-    private _data: BehaviorSubject<R[]>;
-    private _renderData = new BehaviorSubject<R[]>([]);
-    private _filter = new BehaviorSubject<string>('');
+    private dataSubject: BehaviorSubject<R[]>;
+    private activeDataSubject = new BehaviorSubject<R[]>([]);
+    private tableFilter = new BehaviorSubject<string>('');
+    private sortContext: TableSortContext | null;
+    private tablePaginator: TablePaginator | null;
 
-    _renderChangesSubscription = Subscription.EMPTY;
+    renderChangesSubscription = Subscription.EMPTY;
 
     filteredData: R[];
-
-    get data() {
-        return this._data.value;
-    }
-    set data(data: R[]) {
-        this._data.next(data);
-    }
-
-    get filter(): string {
-        return this._filter.value;
-    }
-    set filter(filter: string) {
-        this._filter.next(filter);
-    }
-
-    get sort(): TableSortContext | null {
-        return this._sort;
-    }
-    set sort(sort: TableSortContext | null) {
-        this._sort = sort;
-        this._updateChangeSubscription();
-    }
-    private _sort: TableSortContext | null;
-
-    get paginator(): TablePaginator | null {
-        return this._paginator;
-    }
-    set paginator(paginator: TablePaginator | null) {
-        this._paginator = paginator;
-        this._updateChangeSubscription();
-    }
-    private _paginator: TablePaginator | null;
-
-    
-    constructor(initialData: R[] = []) {
-        super();
-        this._data = new BehaviorSubject<R[]>(initialData);
-        this._updateChangeSubscription();
-    }
 
     sortingDataAccessor: ((data: R, field: TableField<any>) => string | number) = (data: R, field: TableField<any>): string | number => {
         const value = field.read(data);
         // const value = (data as { [key: string]: any })[field.name];
         return field.type === 'number' ? Number(value) : value;
-    };
+    }
+
+    get data() {
+        return this.dataSubject.value;
+    }
+    set data(data: R[]) {
+        this.dataSubject.next(data);
+    }
+
+    get filter(): string {
+        return this.tableFilter.value;
+    }
+    set filter(filter: string) {
+        this.tableFilter.next(filter);
+    }
+
+    get sort(): TableSortContext | null {
+        return this.sortContext;
+    }
+    set sort(sort: TableSortContext | null) {
+        this.sortContext = sort;
+        this._updateChangeSubscription();
+    }
+
+    get paginator(): TablePaginator | null {
+        return this.tablePaginator;
+    }
+    set paginator(paginator: TablePaginator | null) {
+        this.tablePaginator = paginator;
+        this._updateChangeSubscription();
+    }
+
+    constructor(initialData: R[] = []) {
+        super();
+        this.dataSubject = new BehaviorSubject<R[]>(initialData);
+        this._updateChangeSubscription();
+    }
+
 
     public sortData: ((data: R[], sort: TableSortContext) => R[]) = (data: R[], sort: TableSortContext): R[] => {
         const field = sort.field;
@@ -84,7 +84,7 @@ export class TableDataSource<R> extends DataSource<R> {
 
             return comparatorResult * (direction === 'asc' ? 1 : -1);
         });
-    };
+    }
 
     private stringify(data: any): string {
         if (data === undefined || data === null) {
@@ -105,25 +105,25 @@ export class TableDataSource<R> extends DataSource<R> {
         const dataStr = this.stringify(data);
         const transformedFilter = filter.trim().toLowerCase();
         return dataStr.includes(transformedFilter);
-    };
+    }
 
     private _updateChangeSubscription() {
-        const sortChange: Observable<TableSortContext | null | void> = this._sort ? of(this._sort) : of(null);
-        const pageChange: Observable<TablePageContext | null | void> = this._paginator ? merge(this._paginator.page) : of(null);
+        const sortChange: Observable<TableSortContext | null | void> = this.sortContext ? of(this.sortContext) : of(null);
+        const pageChange: Observable<TablePageContext | null | void> = this.tablePaginator ? merge(this.tablePaginator.page) : of(null);
 
-        const dataStream = this._data;
-        const filteredData = combineLatest(dataStream, this._filter).pipe(map(([data]) => this._filterData(data)));
-        const orderedData = combineLatest(filteredData, sortChange).pipe(map(([data]) => this._orderData(data)));
-        const paginatedData = combineLatest(orderedData, pageChange).pipe(map(([data]) => this._pageData(data)));
+        const dataStream = this.dataSubject;
+        const filteredData = combineLatest([dataStream, this.tableFilter]).pipe(map(([data]) => this._filterData(data)));
+        const orderedData = combineLatest([filteredData, sortChange]).pipe(map(([data]) => this._orderData(data)));
+        const paginatedData = combineLatest([orderedData, pageChange]).pipe(map(([data]) => this._pageData(data)));
 
-        this._renderChangesSubscription.unsubscribe();
-        this._renderChangesSubscription = paginatedData.subscribe(data => this._renderData.next(data));
+        this.renderChangesSubscription.unsubscribe();
+        this.renderChangesSubscription = paginatedData.subscribe(data => this.activeDataSubject.next(data));
     }
 
     private _filterData(data: R[]) {
         this.filteredData = !this.filter ? data : data.filter(obj => this.filterPredicate(obj, this.filter));
 
-        if (this._paginator) {
+        if (this.tablePaginator) {
             this._updatePaginator(this.filteredData.length);
         }
 
@@ -139,12 +139,12 @@ export class TableDataSource<R> extends DataSource<R> {
     }
 
     private _pageData(data: R[]): R[] {
-        if (!this._paginator) {
+        if (!this.tablePaginator) {
             return data;
         }
 
-        const startIndex = this._paginator.pageIndex * this._paginator.pageSize;
-        return data.slice().splice(startIndex, this._paginator.pageSize);
+        const startIndex = this.tablePaginator.pageIndex * this.tablePaginator.pageSize;
+        return data.slice().splice(startIndex, this.tablePaginator.pageSize);
     }
 
     private _updatePaginator(filteredDataLength: number) {
@@ -173,22 +173,22 @@ export class TableDataSource<R> extends DataSource<R> {
     }
 
     public connect() {
-        return this._renderData;
+        return this.activeDataSubject;
     }
 
     public disconnect() {}
 
     public destroy() {
-        this._data = this.destroySubject(this._data);
-        this._renderData = this.destroySubject(this._renderData);
-        this._filter = this.destroySubject(this._filter);
+        this.dataSubject = this.destroySubject(this.dataSubject);
+        this.activeDataSubject = this.destroySubject(this.activeDataSubject);
+        this.tableFilter = this.destroySubject(this.tableFilter);
 
-        if (this._renderChangesSubscription) {
-            this._renderChangesSubscription.unsubscribe();
-            this._renderChangesSubscription = undefined;
+        if (this.renderChangesSubscription) {
+            this.renderChangesSubscription.unsubscribe();
+            this.renderChangesSubscription = undefined;
         }
 
-        this._paginator = undefined;
+        this.tablePaginator = undefined;
         this.filteredData = undefined;
     }
 }

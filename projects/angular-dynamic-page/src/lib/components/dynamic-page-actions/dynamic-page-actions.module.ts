@@ -11,10 +11,10 @@ import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 @NgModule({
   declarations: [DynamicPageActionsComponent],
   imports: [
-    CommonModule, 
-    DynamicCoreModule, 
-    DynamicPanelModule, 
-    DynamicQueryModule, 
+    CommonModule,
+    DynamicCoreModule,
+    DynamicPanelModule,
+    DynamicQueryModule,
     DynamicButtonModule
   ],
   exports: [DynamicPageActionsComponent]

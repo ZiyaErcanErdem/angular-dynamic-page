@@ -17,161 +17,159 @@ export interface TablePageContext {
 }
 
 export class TablePaginator {
-    private _page: TablePageContext;
-    private _pageChangeSubject: BehaviorSubject<TablePageContext>;
+    private pageContext: TablePageContext;
+    private pageChangeSubject: BehaviorSubject<TablePageContext>;
 
     get pageIndex(): number {
-        return this._page.pageIndex;
+        return this.pageContext.pageIndex;
     }
 
     set pageIndex(newPageIndex: number) {
-        const oldPage = this._page;
-        this._page = {
+        const oldPage = this.pageContext;
+        this.pageContext = {
             pageIndex: newPageIndex,
             pageSize: oldPage.pageSize,
             dataSize: oldPage.dataSize
         };
-        this._pageChangeSubject.next(this._page);
+        this.pageChangeSubject.next(this.pageContext);
     }
 
     get pageSize(): number {
-        return this._page.pageSize;
+        return this.pageContext.pageSize;
     }
 
     set pageSize(newPageSize: number) {
-        const oldPage = this._page;
-        this._page = {
+        const oldPage = this.pageContext;
+        this.pageContext = {
             pageIndex: oldPage.pageIndex,
             pageSize: newPageSize,
             dataSize: oldPage.dataSize
         };
-        this._pageChangeSubject.next(this._page);
+        this.pageChangeSubject.next(this.pageContext);
     }
 
     get dataSize(): number {
-        return this._page.dataSize;
+        return this.pageContext.dataSize;
     }
 
     set dataSize(newDataSize: number) {
-        const oldPage = this._page;
-        this._page = {
+        const oldPage = this.pageContext;
+        this.pageContext = {
             pageIndex: oldPage.pageIndex,
             pageSize: oldPage.pageSize,
             dataSize: newDataSize
         };
-        this._pageChangeSubject.next(this._page);
+        this.pageChangeSubject.next(this.pageContext);
     }
 
     get page(): Observable<TablePageContext> {
-        return this._pageChangeSubject.asObservable();
+        return this.pageChangeSubject.asObservable();
     }
 
     constructor() {
-        this._page = {
+        this.pageContext = {
             pageIndex: 0,
             pageSize: 10,
             dataSize: 0
         };
-        this._pageChangeSubject = new BehaviorSubject<TablePageContext>(this._page);
+        this.pageChangeSubject = new BehaviorSubject<TablePageContext>(this.pageContext);
     }
 
     public destroy(): void {
-        if (this._pageChangeSubject) {
-            if (!this._pageChangeSubject.isStopped) {
-                this._pageChangeSubject.complete();
+        if (this.pageChangeSubject) {
+            if (!this.pageChangeSubject.isStopped) {
+                this.pageChangeSubject.complete();
             }
-            this._pageChangeSubject = undefined;
+            this.pageChangeSubject = undefined;
         }
     }
 }
 
 export class TableFieldControl<R> extends DynamicBaseComponent {
     set data(value: Array<R>) {
-        Promise.resolve(true).then(() => (this._dataSource$.data = value));
+        Promise.resolve(true).then(() => (this.tableDataSource$.data = value));
     }
 
     get data(): Array<R> {
-        return this._dataSource$ ? this._dataSource$.filteredData : [];
+        return this.tableDataSource$ ? this.tableDataSource$.filteredData : [];
     }
 
     get paginator(): TablePaginator {
-        return this._paginator ? this._paginator : null;
+        return this.tablePaginator ? this.tablePaginator : null;
     }
 
     get fields(): Array<TableField<R>> {
-        return this._fields ? this._fields : [];
+        return this.tableFields ? this.tableFields : [];
     }
 
     get dataSource$(): DataSource<R> {
-        return this._dataSource$;
+        return this.tableDataSource$;
     }
 
     get displayedColumns$(): BehaviorSubject<Array<string>> {
-        return this._displayedColumns$;
+        return this.tableDisplayedColumns$;
     }
 
     get predicate(): string {
-        return this._predicate;
+        return this.tablePredicate;
     }
 
     get reverse(): boolean {
-        return this._reverse;
+        return this.tableReverse;
     }
 
     get selection(): Observable<R> {
-        return this._selectedDataSubject.asObservable();
+        return this.selectionSubject.asObservable();
     }
 
     get actions(): Array<DynamicAction<any>> {
-        return this._actions;
+        return this.tableActions;
     }
 
     get hasHeader(): boolean {
-        return !!(this.title || (this._actions && this._actions.length > 0));
+        return !!(this.title || (this.tableActions && this.tableActions.length > 0));
     }
 
     public title: string;
-    private _hasHeader: boolean;
-    private _paginator: TablePaginator;
+    private tablePaginator: TablePaginator;
 
-    private _fields: Array<TableField<R>>;
-    private _dataSource$: TableDataSource<R>;
-    private _displayedColumns$: BehaviorSubject<Array<string>>;
-    private _actions: Array<DynamicAction<any>>;
-    private _sortChangedSubject: Subject<TableSortContext>;
+    private tableFields: Array<TableField<R>>;
+    private tableDataSource$: TableDataSource<R>;
+    private tableDisplayedColumns$: BehaviorSubject<Array<string>>;
+    private tableActions: Array<DynamicAction<any>>;
+    private sortChangedSubject: Subject<TableSortContext>;
 
-    private _i18nPrefix: string;
+    private i18nPrefix: string;
 
-    private _predicate: string;
-    private _reverse: boolean;
-    private _dataSelection: SelectionModel<R>;
-    private _selectedDataSubject: BehaviorSubject<R>;
+    private tablePredicate: string;
+    private tableReverse: boolean;
+    private tableDataSelection: SelectionModel<R>;
+    private selectionSubject: BehaviorSubject<R>;
 
-    private _dataSorter: (data: Array<R>, ctx: TableSortContext) => Array<R>;
+    private dataSorter: (data: Array<R>, ctx: TableSortContext) => Array<R>;
 
     public filteredValue: string;
 
     constructor(title?: string) {
         super();
-        this._hasHeader = false;
         this.title = title ? title : '';
-        this._paginator = new TablePaginator();
-        this._predicate = undefined;
-        this._reverse = false;
-        this._fields = [];
-        this._actions = [];
-        this._dataSource$ = new TableDataSource<R>([]);
-        this._dataSource$.paginator = this._paginator;
-        this._displayedColumns$ = new BehaviorSubject<Array<string>>([]);
-        this._sortChangedSubject = new Subject<TableSortContext>();
-        this._dataSelection = new SelectionModel<R>(false, [], true);
-        this._selectedDataSubject = new BehaviorSubject<R>(undefined);
+        this.tablePaginator = new TablePaginator();
+        this.tablePredicate = undefined;
+        this.tableReverse = false;
+        this.tableFields = [];
+        this.tableActions = [];
+        this.tableDataSource$ = new TableDataSource<R>([]);
+        this.tableDataSource$.paginator = this.tablePaginator;
+        this.tableDisplayedColumns$ = new BehaviorSubject<Array<string>>([]);
+        this.sortChangedSubject = new Subject<TableSortContext>();
+        this.tableDataSelection = new SelectionModel<R>(false, [], true);
+        this.selectionSubject = new BehaviorSubject<R>(undefined);
 
-        this.collect = this._dataSelection.changed.subscribe(changes => {
-            if (this._dataSelection.selected && this._dataSelection.selected.length > 0) {
-                this._selectedDataSubject.next(this._dataSelection.selected[0]);
+        this.collect = this.tableDataSelection.changed.subscribe(changes => {
+            if (this.tableDataSelection.selected && this.tableDataSelection.selected.length > 0) {
+                this.selectionSubject.next(this.tableDataSelection.selected[0]);
             } else {
-                this._selectedDataSubject.next(undefined);
+                this.selectionSubject.next(undefined);
             }
         });
     }
@@ -179,63 +177,63 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     public destroy(): void {
         this.clean();
 
-        if (this._paginator) {
-            this._paginator.destroy();
-            this._paginator = undefined;
+        if (this.tablePaginator) {
+            this.tablePaginator.destroy();
+            this.tablePaginator = undefined;
         }
 
-        if (this._dataSource$) {
-            this._dataSource$.paginator = undefined;
-            this._dataSource$.destroy();
-            this._dataSource$ = undefined;
+        if (this.tableDataSource$) {
+            this.tableDataSource$.paginator = undefined;
+            this.tableDataSource$.destroy();
+            this.tableDataSource$ = undefined;
         }
 
-        this._displayedColumns$ = this.destroySubject(this._displayedColumns$);
-        this._sortChangedSubject = this.destroySubject(this._sortChangedSubject);
-        this._selectedDataSubject = this.destroySubject(this._selectedDataSubject);
+        this.tableDisplayedColumns$ = this.destroySubject(this.tableDisplayedColumns$);
+        this.sortChangedSubject = this.destroySubject(this.sortChangedSubject);
+        this.selectionSubject = this.destroySubject(this.selectionSubject);
 
-        if (this._dataSelection) {
-            this._dataSelection.clear();
-            this._dataSelection = undefined;
+        if (this.tableDataSelection) {
+            this.tableDataSelection.clear();
+            this.tableDataSelection = undefined;
         }
 
-        if (this._fields) {
-            this._fields.forEach(f => f.destroy());
-            this._fields = undefined;
+        if (this.tableFields) {
+            this.tableFields.forEach(f => f.destroy());
+            this.tableFields = undefined;
         }
 
-        this._dataSorter = undefined;
-        this._actions = undefined;
+        this.dataSorter = undefined;
+        this.tableActions = undefined;
     }
 
     public withSorter(sorter: (data: Array<R>, ctx: TableSortContext) => Array<R>): TableFieldControl<R> {
-        this._dataSorter = sorter;
+        this.dataSorter = sorter;
         return this;
     }
 
     public withI18nPrefix(prefix: string): TableFieldControl<R> {
-        this._i18nPrefix = prefix;
+        this.i18nPrefix = prefix;
         return this;
     }
 
     public toggleSelection(row: R): void {
         if (row) {
             if (this.isSelected(row)) {
-                this._dataSelection.clear();
+                this.tableDataSelection.clear();
             } else {
-                this._dataSelection.toggle(row);
+                this.tableDataSelection.toggle(row);
             }
         } else {
-            this._dataSelection.clear();
+            this.tableDataSelection.clear();
         }
     }
 
     public isSelected(row: R): boolean {
-        return this._dataSelection.isSelected(row);
+        return this.tableDataSelection.isSelected(row);
     }
 
     public clearSelection(): void {
-        return this._dataSelection.clear();
+        return this.tableDataSelection.clear();
     }
 
     private refreshDisplayedColumns(): void {
@@ -244,11 +242,11 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public addAction(action: DynamicAction<any>): TableFieldControl<R> {
-        if (!action || this._actions.includes(action)) {
+        if (!action || this.tableActions.includes(action)) {
             return this;
         }
-        this._actions.push(action);
-        this._actions = this._actions.sort((a, b) => -1 * (a.order > b.order ? 1 : a.order === b.order ? 0 : -1));
+        this.tableActions.push(action);
+        this.tableActions = this.tableActions.sort((a, b) => -1 * (a.order > b.order ? 1 : a.order === b.order ? 0 : -1));
         return this;
     }
 
@@ -256,8 +254,8 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
         if (this.fields.some(f => f.name === field.name)) {
             return field;
         }
-        if (this._i18nPrefix && field.label && !field.i18n) {
-            field.label = this._i18nPrefix + '.' + field.label;
+        if (this.i18nPrefix && field.label && !field.i18n) {
+            field.label = this.i18nPrefix + '.' + field.label;
             field.i18n = true;
         }
         this.fields.push(field);
@@ -266,7 +264,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public setFieldSelection(name: string, selection: Array<TableFieldSelection>): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             if (f.name === name) {
                 f.selection = selection ? selection : [];
             }
@@ -275,7 +273,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public hide(name: string): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             if (f.name === name) {
                 f.hide();
             }
@@ -285,7 +283,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public hideAll(): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             f.hide();
             return f;
         });
@@ -293,7 +291,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public show(name: string): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             if (f.name === name) {
                 f.show();
             }
@@ -303,7 +301,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public showAll(): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             f.show();
             return f;
         });
@@ -311,7 +309,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public readonly(name: string, isReadonly: boolean): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             if (f.name === name) {
                 f.readonly(isReadonly);
             }
@@ -321,7 +319,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public readonlyAll(isReadonly: boolean): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             f.readonly(isReadonly);
             return f;
         });
@@ -329,7 +327,7 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public setLabel(name: string, lbl: string): void {
-        this._fields = this.fields.map(f => {
+        this.tableFields = this.fields.map(f => {
             if (f.name === name) {
                 f.label = lbl ? lbl : '';
             }
@@ -339,24 +337,24 @@ export class TableFieldControl<R> extends DynamicBaseComponent {
     }
 
     public sortWith(sort: TableSortContext): void {
-        this._predicate = sort.field.name;
-        this._reverse = sort.direction === 'desc' ? true : false;
-        if (this._sortChangedSubject) {
-            this._sortChangedSubject.next(sort);
+        this.tablePredicate = sort.field.name;
+        this.tableReverse = sort.direction === 'desc' ? true : false;
+        if (this.sortChangedSubject) {
+            this.sortChangedSubject.next(sort);
         }
-        if (this._dataSorter) {
-            this.data = this._dataSorter(this.data, sort) || [];
+        if (this.dataSorter) {
+            this.data = this.dataSorter(this.data, sort) || [];
         } else {
-            this._dataSource$.sort = sort;
+            this.tableDataSource$.sort = sort;
         }
     }
 
     public sortChanged(): Observable<TableSortContext> {
-        return this._sortChangedSubject.asObservable();
+        return this.sortChangedSubject.asObservable();
     }
 
     public filter(): void {
-        this._dataSource$.filter = this.filteredValue;
+        this.tableDataSource$.filter = this.filteredValue;
     }
 
     private destroySubject(subject: Subject<any>): any {

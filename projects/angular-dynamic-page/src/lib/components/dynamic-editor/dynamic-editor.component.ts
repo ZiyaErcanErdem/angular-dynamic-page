@@ -47,29 +47,29 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   public builder: PageBuilder<any>;
   @Input()
   get mode() {
-      return this._mode;
+      return this.editorMode;
   }
   set mode(val) {
       this.cachedData = undefined;
-      this._mode = val;
-      if (this._mode !== EditorMode.CREATE) {
-          this.originalMode = this._mode;
+      this.editorMode = val;
+      if (this.editorMode !== EditorMode.CREATE) {
+          this.originalMode = this.editorMode;
       }
   }
 
   @Output()
-  submit: EventEmitter<any> = new EventEmitter<any>();
+  pageSubmit: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   editorReady: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  private _mode: EditorMode;
+  private editorMode: EditorMode;
   public activeChildBuilder: PageBuilder<any>;
 
   private formReadySubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private registeredActions: Array<GenericDynamicAction<any>> = [];
   private formData: any;
   private cachedData: any;
-  private _formReady = false;
+  private formReady = false;
 
   private childBuilders: Array<RelationPageBuilder>;
   private originalMode: EditorMode;
@@ -167,14 +167,14 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
 
   private changeMode(newMode: EditorMode): void {
       this.stopFormMonitoring();
-      this._formReady = false;
+      this.formReady = false;
       if (newMode === EditorMode.CREATE) {
-          this._mode = newMode;
+          this.editorMode = newMode;
           this.setFormData(undefined);
           this.buildForm(this.columns);
       } else {
           if (newMode && this.cachedData) {
-              this._mode = newMode;
+              this.editorMode = newMode;
               this.buildForm(this.columns);
               this.setFormData(this.cachedData);
           } else {
@@ -192,7 +192,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
 
   private setFormData(d: any): void {
       this.formData = d;
-      if (this._formReady && this.formData) {
+      if (this.formReady && this.formData) {
           const ed = this.enhanceFormData(this.formData);
           this.form.patchValue(ed);
           this.patchEmptyAssociations(ed, this.form);
@@ -267,7 +267,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   }
 
   private buildForm(cols: Array<ColumnMetadata>): void {
-      this._formReady = false;
+      this.formReady = false;
       this.items = [];
       if (this.form) {
           this.form.reset();
@@ -277,7 +277,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       this.form = undefined;
       this.columns = cols;
 
-      const topFormItemConfig = this.createItemConfigFor(null, null, null);  
+      const topFormItemConfig = this.createItemConfigFor(null, null, null);
 
       cols.forEach(column => {
           if (column.relType === RelationType.OUTER) {
@@ -294,13 +294,13 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       this.form = topFormItemConfig.group;
       this.items = topFormItemConfig.items;
 
-      this._formReady = true;
-      this.formReadySubject.next(this._formReady);
+      this.formReady = true;
+      this.formReadySubject.next(this.formReady);
       this.ready = true;
       if (this.builder) {
           this.builder.setForm(this.form);
       }
-      Promise.resolve(true).then(() => this.editorReady.emit(this._formReady));
+      Promise.resolve(true).then(() => this.editorReady.emit(this.formReady));
   }
 
   buildItem(parentItemConfig: FormItemConfig, column: ColumnMetadata) {
@@ -326,7 +326,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
     if (column.columnType === ColumnType.ASSOCIATION) {
         if (column.metamodel) {
 
-            const currentItemConfig: FormItemConfig = this.createItemConfigFor(column, parentColumn, null);            
+            const currentItemConfig: FormItemConfig = this.createItemConfigFor(column, parentColumn, null);
             currentItemConfig.field = fieldConfig;
 
             if (column.relType === RelationType.INNER) {
@@ -344,7 +344,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
                 });
                 // Skip OuterJoins now
                 // parentItemConfig.items.push(currentItemConfig);
-                // parentItemConfig.group.addControl(column.name, currentItemConfig.groups);                
+                // parentItemConfig.group.addControl(column.name, currentItemConfig.groups);
             }
         }
     } else {
@@ -551,7 +551,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
                   this.collect = this.builder.delete(this.value, err => this.handleActionError(comp, 'delete', err)).subscribe(
                       deleted => {
                           if (deleted) {
-                              this._mode = EditorMode.VIEW;
+                              this.editorMode = EditorMode.VIEW;
                               this.builder.setPageMode(PageMode.GRID);
                           }
                           this.setActionStates();
@@ -592,7 +592,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
         if (action.id === 'editor.create') {
         return false;
         }
-        
+
         return !this.valid;
   }
 
@@ -673,11 +673,11 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   private activateRelatedPage(cb: RelationPageBuilder): void {
       if (cb) {
           this.originalMode = this.mode;
-          this._mode = EditorMode.CHILD;
+          this.editorMode = EditorMode.CHILD;
           this.activeChildBuilder = cb.build();
           this.builder.setGridViewMode(GridViewMode.MINIMIZED);
       } else {
-          this._mode = this.originalMode;
+          this.editorMode = this.originalMode;
           this.activeChildBuilder = undefined;
           this.builder.setActiveBuilder(this.builder);
           this.builder.setGridViewMode(GridViewMode.COMPACT);
@@ -724,7 +724,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   handleSubmit(event: Event) {
       event.preventDefault();
       event.stopPropagation();
-      this.submit.emit(this.value);
+      this.pageSubmit.emit(this.value);
   }
 
   setValue(name: string, value: any) {

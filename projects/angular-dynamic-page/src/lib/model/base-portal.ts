@@ -5,7 +5,7 @@ import { DynamicBaseComponent } from './dynamic-base-component';
 import { DynamicPortalView, DynamicViewType } from './dynamic-portal-view';
 
 
-@Directive()
+// @Directive()
 export class BasePortal extends DynamicBaseComponent {
     @ViewChild(CdkPortalOutlet)
     portalOutlet: CdkPortalOutlet;

@@ -14,10 +14,10 @@ import { DynamicPaginationModule } from '../dynamic-pagination/dynamic-paginatio
 
 @NgModule({
   declarations: [
-    DynamicTableComponent, 
-    TableCellViewPipe, 
-    TableCellViewComponent, 
-    TablePaginationComponent, 
+    DynamicTableComponent,
+    TableCellViewPipe,
+    TableCellViewComponent,
+    TablePaginationComponent,
     TableSortHeaderComponent
   ],
   imports: [

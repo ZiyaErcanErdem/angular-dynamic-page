@@ -10,10 +10,10 @@ export class PopoverRef<C, R = any> {
     public afterClosed$: Observable<PopoverCloseEvent<R>>;
 
     constructor(
-        public readonly type: PopoverType, 
-        public readonly config: PopoverConfig, 
-        public overlay: OverlayRef, 
-        public content: PopoverContent, 
+        public readonly type: PopoverType,
+        public readonly config: PopoverConfig,
+        public overlay: OverlayRef,
+        public content: PopoverContent,
         public context: C
     ) {
         this.afterClosed = new Subject<PopoverCloseEvent<R>>();

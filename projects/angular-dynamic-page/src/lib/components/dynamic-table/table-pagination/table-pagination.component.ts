@@ -11,11 +11,11 @@ export class TablePaginationComponent extends DynamicBaseComponent implements On
   @Input()
   control: TableFieldControl<any>;
 
-  private _pageNum: number;
+  private pageNumber: number;
 
   constructor() {
       super();
-      this._pageNum = 1;
+      this.pageNumber = 1;
   }
 
   get activated(): boolean {
@@ -23,13 +23,13 @@ export class TablePaginationComponent extends DynamicBaseComponent implements On
   }
 
   get pageIndex(): number {
-      return this.activated ? this.control.paginator.pageIndex + 1 : this._pageNum;
+      return this.activated ? this.control.paginator.pageIndex + 1 : this.pageNumber;
   }
 
   set pageIndex(value: number) {
-      this._pageNum = value;
+      this.pageNumber = value;
       if (this.activated) {
-          this.control.paginator.pageIndex = this._pageNum - 1;
+          this.control.paginator.pageIndex = this.pageNumber - 1;
       }
   }
 

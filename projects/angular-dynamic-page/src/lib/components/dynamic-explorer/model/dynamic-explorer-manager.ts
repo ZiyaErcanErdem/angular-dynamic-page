@@ -80,51 +80,51 @@ export interface IDynamicExplorerManager<T> {
 }
 
 export class DynamicExplorerManager<T> extends DynamicBaseComponent implements IDynamicExplorerManager<T> {
-    private _elementsSubject: BehaviorSubject<Array<IDynamicElement<T>>>;
-    private _elementsMap: Map<string, IDynamicElement<T>>;
-    private _elementSelection: SelectionModel<IDynamicElement<any>>;
-    private _contentSelectionSubject: Subject<IDynamicElementContent<T>>;
-    private _selection: BehaviorSubject<IDynamicElement<any>>;
-    private _contentProvider: IExplorerContentProvider<T>;
-    private _editable: boolean;
+    private elementsSubject: BehaviorSubject<Array<IDynamicElement<T>>>;
+    private elementsMap: Map<string, IDynamicElement<T>>;
+    private elementSelection: SelectionModel<IDynamicElement<any>>;
+    private contentSelectionSubject: Subject<IDynamicElementContent<T>>;
+    private selection: BehaviorSubject<IDynamicElement<any>>;
+    private contentProvider: IExplorerContentProvider<T>;
+    private editable: boolean;
 
-    private _navigationEnabled: boolean;
-    private _root: IDynamicElement<any>;
-    private _currentTop: BehaviorSubject<IDynamicElement<any>>;
+    private navigationEnabled: boolean;
+    private rootElement: IDynamicElement<any>;
+    private currentTopElement: BehaviorSubject<IDynamicElement<any>>;
 
     get root(): IDynamicElement<any> {
-        return this._root;
+        return this.rootElement;
     }
 
     get currentTop(): Observable<IDynamicElement<any>> {
-        return this._currentTop.asObservable();
+        return this.currentTopElement.asObservable();
     }
 
     get selectedElement(): IDynamicElement<any> {
-        return this._selection.value;
+        return this.selection.value;
     }
 
     constructor(public label: string, enableNavigation?: boolean) {
         super();
-        this._navigationEnabled = !!enableNavigation;
-        this._editable = false;
+        this.navigationEnabled = !!enableNavigation;
+        this.editable = false;
         this.createRoot();
-        this._elementsSubject = new BehaviorSubject([]);
-        this._elementsMap = new Map<string, IDynamicElement<T>>();
-        this._contentSelectionSubject = new Subject<IDynamicElementContent<T>>();
-        this._elementSelection = new SelectionModel<IDynamicElement<any>>(false, [], true);
-        this._selection = new BehaviorSubject<IDynamicElement<any>>(null);
-        this.collect = this._elementSelection.changed.subscribe(changes => {
-            if (this._elementSelection.hasValue()) {
-                const sel = this._elementSelection.selected[0];
-                if (sel !== this._selection.value) {
-                    this._selection.next(sel);
-                    this._contentSelectionSubject.next(sel.content);
+        this.elementsSubject = new BehaviorSubject([]);
+        this.elementsMap = new Map<string, IDynamicElement<T>>();
+        this.contentSelectionSubject = new Subject<IDynamicElementContent<T>>();
+        this.elementSelection = new SelectionModel<IDynamicElement<any>>(false, [], true);
+        this.selection = new BehaviorSubject<IDynamicElement<any>>(null);
+        this.collect = this.elementSelection.changed.subscribe(changes => {
+            if (this.elementSelection.hasValue()) {
+                const sel = this.elementSelection.selected[0];
+                if (sel !== this.selection.value) {
+                    this.selection.next(sel);
+                    this.contentSelectionSubject.next(sel.content);
                 }
             } else {
-                if (this._selection.value) {
-                    this._selection.next(null);
-                    this._contentSelectionSubject.next(null);
+                if (this.selection.value) {
+                    this.selection.next(null);
+                    this.contentSelectionSubject.next(null);
                 }
             }
         });
@@ -135,29 +135,29 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
         rootContent.formatter = {
             label: 'label'
         };
-        this._root = new DynamicElement<any>(rootContent);
-        this._root.icon = 'sitemap';
-        this._currentTop = new BehaviorSubject<IDynamicElement<any>>(this._root);
+        this.rootElement = new DynamicElement<any>(rootContent);
+        this.rootElement.icon = 'sitemap';
+        this.currentTopElement = new BehaviorSubject<IDynamicElement<any>>(this.rootElement);
     }
 
     public isCurrentTop(elm: IDynamicElement<any>): boolean {
-        if (!this._currentTop || !this._currentTop.value) {
+        if (!this.currentTopElement || !this.currentTopElement.value) {
             return false;
         }
-        return this._currentTop.value === elm;
+        return this.currentTopElement.value === elm;
     }
 
     public withContentProvider(contentProvider: IExplorerContentProvider<T>): IDynamicExplorerManager<T> {
-        this._contentProvider = contentProvider;
+        this.contentProvider = contentProvider;
         return this;
     }
 
     public addData(...ctx: IExplorerDataContext<T>[]): IDynamicExplorerManager<T> {
-        if (this._contentProvider) {
+        if (this.contentProvider) {
             if (ctx) {
                 this.refreshTitle();
                 ctx.forEach(c => {
-                    const content = this._contentProvider.get(c);
+                    const content = this.contentProvider.get(c);
                     this.addContent(content);
                 });
             }
@@ -166,11 +166,11 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public removeData(...ctx: IExplorerDataContext<T>[]): IDynamicExplorerManager<T> {
-        if (this._contentProvider) {
+        if (this.contentProvider) {
             if (ctx) {
                 this.refreshTitle();
                 ctx.forEach(c => {
-                    const content = this._contentProvider.get(c);
+                    const content = this.contentProvider.get(c);
                     this.removeContent(content);
                 });
             }
@@ -191,12 +191,12 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public setEditable(editable: boolean): IDynamicExplorerManager<T> {
-        this._editable = editable;
+        this.editable = editable;
         return this;
     }
 
     public isEditable(): boolean {
-        return this._editable;
+        return this.editable;
     }
 
     public addElementAction(uniqueId: string, action: DynamicAction<any>): IDynamicExplorerManager<T> {
@@ -215,73 +215,73 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public createContent(type: string, parent: IDynamicElementContent<T>): IDynamicElementContent<T> {
-        if (this._contentProvider) {
-            return this._contentProvider.create(type, parent);
+        if (this.contentProvider) {
+            return this.contentProvider.create(type, parent);
         }
         return null;
     }
 
     public notifyContentCreated(type: string | number, data: T): void {
-        if (this._contentProvider) {
-            this._contentProvider.notifyCreated(type, data);
+        if (this.contentProvider) {
+            this.contentProvider.notifyCreated(type, data);
         }
     }
     public notifyContentUpdated(type: string | number, data: T): void {
-        if (this._contentProvider) {
-            this._contentProvider.notifyUpdated(type, data);
+        if (this.contentProvider) {
+            this.contentProvider.notifyUpdated(type, data);
         }
     }
     public notifyContentDeleted(type: string | number, data: T): void {
-        if (this._contentProvider) {
-            this._contentProvider.notifyDeleted(type, data);
+        if (this.contentProvider) {
+            this.contentProvider.notifyDeleted(type, data);
         }
     }
 
     public reset(): void {
         this.navigateTo(this.root);
-        if (this._elementsMap) {
-            this._elementsMap.forEach((value: IDynamicElement<any>) => value.destroy());
-            this._elementsMap.clear();
+        if (this.elementsMap) {
+            this.elementsMap.forEach((value: IDynamicElement<any>) => value.destroy());
+            this.elementsMap.clear();
         }
-        this._elementSelection.clear();
-        this._elementsSubject.next([]);
+        this.elementSelection.clear();
+        this.elementsSubject.next([]);
     }
 
     public destroy(): void {
         super.clean();
-        if (this._elementsMap) {
-            this._elementsMap.forEach((value: IDynamicElement<any>) => value.destroy());
-            this._elementsMap.clear();
-            this._elementsMap = undefined;
+        if (this.elementsMap) {
+            this.elementsMap.forEach((value: IDynamicElement<any>) => value.destroy());
+            this.elementsMap.clear();
+            this.elementsMap = undefined;
         }
-        if (this._elementsSubject) {
-            this._elementsSubject.complete();
-            this._elementsSubject = undefined;
+        if (this.elementsSubject) {
+            this.elementsSubject.complete();
+            this.elementsSubject = undefined;
         }
-        if (this._elementSelection) {
-            this._elementSelection.clear();
-            this._elementSelection = undefined;
+        if (this.elementSelection) {
+            this.elementSelection.clear();
+            this.elementSelection = undefined;
         }
-        if (this._currentTop) {
-            this._currentTop.complete();
-            this._currentTop = undefined;
+        if (this.currentTopElement) {
+            this.currentTopElement.complete();
+            this.currentTopElement = undefined;
         }
-        if (this._selection) {
-            this._selection.complete();
-            this._selection = undefined;
+        if (this.selection) {
+            this.selection.complete();
+            this.selection = undefined;
         }
-        if (this._contentSelectionSubject) {
-            this._contentSelectionSubject.complete();
-            this._contentSelectionSubject = undefined;
+        if (this.contentSelectionSubject) {
+            this.contentSelectionSubject.complete();
+            this.contentSelectionSubject = undefined;
         }
     }
 
     private republishElements(): void {
-        if (!this._elementsMap || !this._elementsSubject) {
+        if (!this.elementsMap || !this.elementsSubject) {
             return;
         }
-        const elms = Array.from(this._elementsMap.values());
-        this._elementsSubject.next(elms);
+        const elms = Array.from(this.elementsMap.values());
+        this.elementsSubject.next(elms);
     }
 
     private setupParentElement(elm: IDynamicElement<any>): void {
@@ -296,7 +296,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public contentSelection(): Observable<IDynamicElementContent<T>> {
-        return this._contentSelectionSubject.asObservable().pipe(distinctUntilChanged());
+        return this.contentSelectionSubject.asObservable().pipe(distinctUntilChanged());
     }
 
     public getContent(uniqueId: string): IDynamicElementContent<T> {
@@ -316,12 +316,12 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public addContent(content: IDynamicElementContent<T>): DynamicElement<T> {
-        if (!content || !this._elementsSubject) {
+        if (!content || !this.elementsSubject) {
             return null;
         }
         const elm = new DynamicElement<T>(content);
-        if (this._contentProvider) {
-            this._contentProvider.configure(elm);
+        if (this.contentProvider) {
+            this.contentProvider.configure(elm);
         }
         elm.view = elm.view ? elm.view : BaseElementViewComponent;
         this.add(elm);
@@ -329,7 +329,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public removeContent(content: IDynamicElementContent<T>): void {
-        if (!content || !this._elementsSubject) {
+        if (!content || !this.elementsSubject) {
             return null;
         }
         const elm = this.get(DynamicElement.generateUniqueId(content.id, content.type));
@@ -347,22 +347,22 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public selected(uniqueId: string): Observable<boolean> {
-        return this._selection.pipe(
+        return this.selection.pipe(
             map(selElm => (selElm ? selElm.uniqueId === uniqueId : false)),
             filter(s => s === true)
         );
     }
 
     public isSelected(elm: IDynamicElement<any>): boolean {
-        return this._elementSelection ? this._elementSelection.isSelected(elm) : false;
+        return this.elementSelection ? this.elementSelection.isSelected(elm) : false;
     }
 
     public deselect(elm: IDynamicElement<any>): void {
-        this._elementSelection.deselect(elm);
+        this.elementSelection.deselect(elm);
     }
 
     public hasSelection(): boolean {
-        return this._elementSelection ? this._elementSelection.hasValue() : false;
+        return this.elementSelection ? this.elementSelection.hasValue() : false;
     }
 
     public getSelection(): IDynamicElement<any> {
@@ -371,7 +371,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
 
     public select(elm: IDynamicElement<any>): void {
         if (elm && !this.isSelected(elm)) {
-            this._elementSelection.toggle(elm);
+            this.elementSelection.toggle(elm);
             if (this.selectedElement) {
                 this.selectedElement.expand();
             }
@@ -388,38 +388,38 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public get(uniqueId: string): IDynamicElement<any> {
-        if (!uniqueId || !this._elementsMap) {
+        if (!uniqueId || !this.elementsMap) {
             return undefined;
         }
-        return this._elementsMap.get(uniqueId);
+        return this.elementsMap.get(uniqueId);
     }
 
     public add(elm: IDynamicElement<T>): void {
-        if (!elm || !this._elementsMap) {
+        if (!elm || !this.elementsMap) {
             return;
         }
         this.setupParentElement(elm);
-        this._elementsMap.set(elm.uniqueId, elm);
+        this.elementsMap.set(elm.uniqueId, elm);
         this.republishElements();
     }
     public delete(uniqueId: string): void {
-        if (!uniqueId || !this._elementsMap) {
+        if (!uniqueId || !this.elementsMap) {
             return;
         }
-        this._elementsMap.delete(uniqueId);
+        this.elementsMap.delete(uniqueId);
         this.republishElements();
     }
 
     public update(uniqueId: string, update: Partial<IDynamicElement<T>>): void {
         let source = this.get(uniqueId);
         source = Object.assign(source, update);
-        this._elementsMap.set(source.uniqueId, source);
+        this.elementsMap.set(source.uniqueId, source);
         this.republishElements();
     }
 
     public getChildTypesOf(type: string | number): Array<ChildType> {
-        if (this._contentProvider) {
-            return this._contentProvider.getChildTypesOf(type);
+        if (this.contentProvider) {
+            return this.contentProvider.getChildTypesOf(type);
         }
         return null;
     }
@@ -433,24 +433,24 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
 
         // console.log('Editor event fired : ' + event.type);
         if (event.type === EditorAction.CREATE_CHILD) {
-            if (this._contentProvider && elm) {
-                const childContent = this._contentProvider.createChild(event.extra, elm.content);
+            if (this.contentProvider && elm) {
+                const childContent = this.contentProvider.createChild(event.extra, elm.content);
                 if (childContent) {
                     const childElm = this.addContent(childContent);
                     this.select(childElm);
                 }
             }
         } else if (event.type === EditorAction.CREATE) {
-            if (this._contentProvider && elm) {
-                const newContent = this._contentProvider.create(elm.type, elm.content.parent);
+            if (this.contentProvider && elm) {
+                const newContent = this.contentProvider.create(elm.type, elm.content.parent);
                 if (newContent) {
                     const newElm = this.addContent(newContent);
                     this.select(newElm);
                 }
             }
         } else if (event.type === EditorAction.EDIT) {
-            if (this._contentProvider && elm) {
-                const updatedContent = this._contentProvider.update(elm.content);
+            if (this.contentProvider && elm) {
+                const updatedContent = this.contentProvider.update(elm.content);
                 if (updatedContent) {
                     elm.content = updatedContent;
                     this.update(elmUniqueId, elm);
@@ -458,9 +458,9 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
                 }
             }
         } else if (event.type === EditorAction.DELETE) {
-            if (this._contentProvider && elm) {
+            if (this.contentProvider && elm) {
                 const parentElm = elm.parent;
-                this._contentProvider.delete(elm.content);
+                this.contentProvider.delete(elm.content);
                 this.delete(elmUniqueId);
                 this.select(parentElm);
             }
@@ -468,7 +468,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public isNavigationEnabled(): boolean {
-        return this._navigationEnabled;
+        return this.navigationEnabled;
     }
 
     public navigateById(id: string | number, type: string | number): void {
@@ -480,7 +480,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
         if (!target) {
             return;
         }
-        this._currentTop.next(target);
+        this.currentTopElement.next(target);
         this.select(target);
     }
 
@@ -501,7 +501,7 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
     }
 
     public childsOf(uniqueId: string): Observable<IDynamicElement<any>[]> {
-        return this._elementsSubject.pipe(map((value: IDynamicElement<any>[]) => this.filterChildOf(uniqueId, value)));
+        return this.elementsSubject.pipe(map((value: IDynamicElement<any>[]) => this.filterChildOf(uniqueId, value)));
     }
 
     private filterChildOf(uniqueId: string, elements: Array<IDynamicElement<any>>): Array<IDynamicElement<any>> {

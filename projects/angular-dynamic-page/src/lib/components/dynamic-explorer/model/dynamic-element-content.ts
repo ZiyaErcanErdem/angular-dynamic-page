@@ -29,32 +29,32 @@ export interface IDynamicElementContent<T> {
 }
 
 export class DynamicElementContent<T> implements IDynamicElementContent<T> {
-    private _id: string | number;
-    private _parent?: IDynamicElementContent<T>;
-    private _index: number;
-    private _sequence: number;
+    private elementId: string | number;
+    private elementParent?: IDynamicElementContent<T>;
+    private elementIndex: number;
+    private elementSequence: number;
 
     public formatter?: IViewFormatter<T>;
 
     get id(): string | number {
-        return this._id ? this._id : this.index;
+        return this.elementId ? this.elementId : this.index;
     }
 
     set id(val: string | number) {
-        this._id = val;
+        this.elementId = val;
     }
 
     get parent(): IDynamicElementContent<T> {
-        return this._parent;
+        return this.elementParent;
     }
 
     set parent(val: IDynamicElementContent<T>) {
-        this._parent = val;
+        this.elementParent = val;
         this.setup();
     }
 
     get index(): number {
-        return this._index;
+        return this.elementIndex;
     }
 
     constructor(
@@ -64,8 +64,8 @@ export class DynamicElementContent<T> implements IDynamicElementContent<T> {
         public parentType?: string | number,
         public parentId?: string | number
     ) {
-        this._id = id;
-        this._sequence = 0;
+        this.elementId = id;
+        this.elementSequence = 0;
         this.setup();
     }
 
@@ -83,14 +83,14 @@ export class DynamicElementContent<T> implements IDynamicElementContent<T> {
         if (this.parent) {
             return this.parent.sequence();
         } else {
-            this._sequence++;
-            return this._sequence;
+            this.elementSequence++;
+            return this.elementSequence;
         }
     }
 
     private setup() {
         const curSequence = this.generateSequence();
-        this._sequence = curSequence;
-        this._index = this._sequence;
+        this.elementSequence = curSequence;
+        this.elementIndex = this.elementSequence;
     }
 }

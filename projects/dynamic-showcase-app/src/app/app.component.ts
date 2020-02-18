@@ -1,24 +1,24 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { 
-  Theme, 
-  GenericDynamicAction, 
-  DynamicActionBuilder, 
-  ActionType, 
-  ActionScope, 
-  DynamicUtil, 
+import {
+  Theme,
+  GenericDynamicAction,
+  DynamicActionBuilder,
+  ActionType,
+  ActionScope,
+  DynamicUtil,
   DynamicAction,
   Criteria,
   PageBuilder,
   QueryMode,
-  RelationType, 
   Condition,
   Operator,
   PageViewMode,
-  DataActionType                                                                    
- } from 'angular-dynamic-page';
-                                                                                                    import { TableFieldControl, TableField } from 'angular-dynamic-page';
-import { BasePageView } from 'angular-dynamic-page';
-import { DynamicService } from 'angular-dynamic-page';
+  DataActionType,
+  TableFieldControl,
+  TableField,
+  BasePageView,
+  DynamicService
+} from 'angular-dynamic-page';
 import { TranslateService } from '@ngx-translate/core';
 import { Agent } from './model/agent.model';
 import { Endpoint } from './model/endpoint.model';
@@ -69,7 +69,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     this.buildTable();
     this.registerActions();
     this.prepareAgentBuilder();
-    this.prepareEndpointBuilder();  
+    this.prepareEndpointBuilder();
   }
 
   ngOnDestroy() {
@@ -158,7 +158,11 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
       })
       .withDataActionController((a, d) => {
         if (a === DataActionType.BEFORE_DELETE) {
-          return this.endpointPageBuilder.openConfirmation('Alooo Endpoint Silinecek. Okey Mi?', {title: 'Onay Istiyorum', i18n: false, minWidth: "500px"});
+          return this.endpointPageBuilder.openConfirmation(
+            'Alooo Endpoint Silinecek. Okey Mi?',
+            {title: 'Onay Istiyorum',
+            i18n: false, minWidth: '500px'}
+          );
         }
         return Promise.resolve(true);
       })
@@ -175,7 +179,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
 
             this.endpointPageBuilder
                 .createRelationPageBuilder(relation)
-                .withGridColumns('id','propKey', 'propKeyType', 'propValue', 'propValueType')
+                .withGridColumns('id', 'propKey', 'propKeyType', 'propValue', 'propValueType')
                 .withCompactColumns('id', 'propKey')
                 .withSortingSamples(EndpointProperty);
         } else if (relation.group === 'endpoint') {
@@ -196,13 +200,11 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
           .addPredicate('endpointInstanceId', Operator.LIKE, '')
           .and();
       })
-      .withViewer(PageViewMode.EDITOR);    
+      .withViewer(PageViewMode.EDITOR);
   }
 
-
-
   registerActions() {
-    
+
     this.buttonAction = new DynamicActionBuilder<any>('table.filter', ActionType.SEARCH)
     .withScope(ActionScope.CUSTOM)
     .withOrder(20000)
@@ -219,23 +221,23 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     .build();
 
     this.actions.push(this.buttonAction);
-    
+
   }
 
   buildTable() {
     this.control.addField(TableField.of('id', 'dynamic.field.id', true, 'static')).withColWidth('65px');
     this.control.addField(TableField.of('sourceIndex', 'Source Index', false, 'static'));
 
-    [ ...Array(20).keys()].map(n =>  `txt${n+1}`).forEach(s => {
+    [ ...Array(20).keys()].map(n =>  `txt${n + 1}`).forEach(s => {
       this.control.addField(TableField.of(s, s, false, 'static'));
     });
-    [ ...Array(20).keys()].map(n =>  `num${n+1}`).forEach(s => {
+    [ ...Array(20).keys()].map(n =>  `num${n + 1}`).forEach(s => {
       this.control.addField(TableField.of(s, s, false, 'static'));
     });
-    [ ...Array(10).keys()].map(n =>  `date${n+1}`).forEach(s => {
+    [ ...Array(10).keys()].map(n =>  `date${n + 1}`).forEach(s => {
       this.control.addField(TableField.of(s, s, false, 'static'));
     });
-    [ ...Array(5).keys()].map(n =>  `bool${n+1}`).forEach(s => {
+    [ ...Array(5).keys()].map(n =>  `bool${n + 1}`).forEach(s => {
       this.control.addField(TableField.of(s, s, false, 'static'));
     });
 
@@ -254,19 +256,18 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     this.control.show('date1');
     this.control.show('bool1');
 
-
     this.control.data = [
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
-      {txt1: 'Ziya', txt2: 'Erdem', num1: 789, num2: 111213, date1:(new Date()), bool1: false},
-      {txt1: 'Berk Efe', txt2: 'Erdem', num1: 141516, num2: 171819, date1:(new Date()), bool1: false},
-      {txt1: 'Eylul Ece', txt2: 'Erdem', num1: 202122, num2: 232425, date1:(new Date()), bool1: true},
-      {txt1: 'Serpil', txt2: 'Saygi Erdem', num1: 262728, num2: 293031, date1:(new Date()), bool1: true},
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
-      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1:(new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
+      {txt1: 'Ziya', txt2: 'Erdem', num1: 789, num2: 111213, date1: (new Date()), bool1: false},
+      {txt1: 'Berk Efe', txt2: 'Erdem', num1: 141516, num2: 171819, date1: (new Date()), bool1: false},
+      {txt1: 'Eylul Ece', txt2: 'Erdem', num1: 202122, num2: 232425, date1: (new Date()), bool1: true},
+      {txt1: 'Serpil', txt2: 'Saygi Erdem', num1: 262728, num2: 293031, date1: (new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
+      {txt1: 'Ali', txt2: 'Can', num1: 123, num2: 456, date1: (new Date()), bool1: true},
     ];
   }
 
@@ -292,7 +293,7 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
     .withScope(ActionScope.PAGE)
     .withLabel(label).withI18n(false).withPayload(theme)
     .withButtonClass(DynamicUtil.buttonThemeFor(theme))
-    //.withIconClass('file-excel')
+    // .withIconClass('file-excel')
     .withHandler((comp, d) => {
         comp.disabled = true;
         this.theme = d;

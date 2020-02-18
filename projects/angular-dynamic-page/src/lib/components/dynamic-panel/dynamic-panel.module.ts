@@ -12,5 +12,5 @@ import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
     CommonModule, DynamicCoreModule, DynamicButtonModule
   ],
   exports: [DynamicPanelComponent]
-}) 
+})
 export class DynamicPanelModule { }

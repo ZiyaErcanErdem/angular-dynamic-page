@@ -75,7 +75,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     private notificationSubject: Subject<any>;
     private routeDataSubscription: Subscription;
     private activeBuilderSubject: BehaviorSubject<PageBuilder<any>>;
-    private formValueChangeSubject: Subject<{form: FormGroup, control: AbstractControl, name: string, value: any}>
+    private formValueChangeSubject: Subject<{form: FormGroup, control: AbstractControl, name: string, value: any}>;
 
     private configConfigurer: (config: PageConfig<T>) => PageConfig<T>;
     private metamodelConfigurer: (col: ColumnMetadata, parent?: ColumnMetadata) => void;
@@ -89,8 +89,8 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     private defaultPageURI: string;
     private sortingSample: Array<string>;
 
-    private _columnsSelection: SelectionModel<ColumnMetadata>;
-    private _dataSelection: SelectionModel<T>;
+    private columnsSelection: SelectionModel<ColumnMetadata>;
+    private dataSelection: SelectionModel<T>;
     private isReady = false;
     private pageMetamodel: PageMetamodel;
     private metadataProvider: DynamicMetamodelService;
@@ -101,21 +101,21 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     private viewMode: PageViewMode;
     private viewer: DynamicPortalView<any>;
 
-    private _destroyed: boolean;
-    private _qualifier: string;
-    private _config: PageConfig<T>;
-    private _viewerTrigger: 'manual' | 'auto' = 'auto';
+    private componentDestroyed: boolean;
+    private pageQualifier: string;
+    private pageConfig: PageConfig<T>;
+    private triggerType: 'manual' | 'auto' = 'auto';
 
     private entityUpdateDelegate: (entity: T) => Observable<T>;
 
     private monitoredFormItems: Array<string>;
 
     public get qualifier(): string {
-        return this._qualifier;
+        return this.pageQualifier;
     }
 
     public get config(): PageConfig<any> {
-        return this._config;
+        return this.pageConfig;
     }
 
     constructor(
@@ -127,14 +127,14 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         private parentBuilder?: PageBuilder<any>
     ) {
         super();
-        this._destroyed = false;
-        this._qualifier = qualifier;
+        this.componentDestroyed = false;
+        this.pageQualifier = qualifier;
         this.viewMode = PageViewMode.NONE;
         this.gridCols = new Array<string>();
         this.compactCols = new Array<string>();
-        this._config = new GenericPageConfig(qualifier, dynamicConfig);
-        this._columnsSelection = new SelectionModel<ColumnMetadata>(true, [], true);
-        this._dataSelection = new SelectionModel<T>(false, [], true);
+        this.pageConfig = new GenericPageConfig(qualifier, dynamicConfig);
+        this.columnsSelection = new SelectionModel<ColumnMetadata>(true, [], true);
+        this.dataSelection = new SelectionModel<T>(false, [], true);
         this.actionList = new Array<DynamicAction<any>>();
 
         this.readySubject = new BehaviorSubject<boolean>(false);
@@ -157,9 +157,9 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.formValueChangeSubject = new Subject();
         this.monitoredFormItems = [];
 
-        this.collect = this._dataSelection.changed.subscribe(changes => {
-            if (this._dataSelection.selected && this._dataSelection.selected.length > 0) {
-                this.pageDataSubject.next(this._dataSelection.selected[0]);
+        this.collect = this.dataSelection.changed.subscribe(changes => {
+            if (this.dataSelection.selected && this.dataSelection.selected.length > 0) {
+                this.pageDataSubject.next(this.dataSelection.selected[0]);
             } else {
                 this.pageDataSubject.next(undefined);
             }
@@ -197,10 +197,10 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public destroy(): void {
-        if (this._destroyed) {
+        if (this.componentDestroyed) {
             return;
         }
-        this._destroyed = true;
+        this.componentDestroyed = true;
         this.clean();
         if (this.routeDataSubscription) {
             this.routeDataSubscription.unsubscribe();
@@ -232,7 +232,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                         col.selector.builder.destroy();
                         col.selector.builder = undefined;
                     }
-                    //col.selector = undefined;
+                    // col.selector = undefined;
                 }
             });
         }
@@ -274,21 +274,21 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             this.actionList = undefined;
         }
 
-        if (this._columnsSelection) {
-            this._columnsSelection.clear();
-            this._columnsSelection = undefined;
+        if (this.columnsSelection) {
+            this.columnsSelection.clear();
+            this.columnsSelection = undefined;
         }
 
-        if (this._dataSelection) {
-            this._dataSelection.clear();
-            this._dataSelection = undefined;
+        if (this.dataSelection) {
+            this.dataSelection.clear();
+            this.dataSelection = undefined;
         }
 
-        this._config = undefined;
+        this.pageConfig = undefined;
     }
 
     public isDestroyed(): boolean {
-        return this._destroyed;
+        return this.componentDestroyed;
     }
 
     public isChild(): boolean {
@@ -309,7 +309,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return this;
     }
 
-    public withSortingSample(...samples: Array<{ new (): any }>): PageBuilder<T> {
+    public withSortingSample(...samples: Array<new () => any >): PageBuilder<T> {
         if (samples && samples.length > 0) {
             this.sortingSample = new Array<string>();
             samples.forEach(sampleType => {
@@ -368,7 +368,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public withViewerTrigger(viewerTrigger: 'manual' | 'auto'): PageBuilder<T> {
-        this._viewerTrigger = viewerTrigger;
+        this.triggerType = viewerTrigger;
         return this;
     }
 
@@ -404,23 +404,23 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public dataSelectionChange(): Observable<boolean> {
-        return this._dataSelection.changed.pipe(map(s => true));
+        return this.dataSelection.changed.pipe(map(s => true));
     }
 
     public isDataSelected(data: T): boolean {
-        return this._dataSelection ? this._dataSelection.isSelected(data) : false;
+        return this.dataSelection ? this.dataSelection.isSelected(data) : false;
     }
 
     public deselectData(data: T): void {
-        this._dataSelection.deselect(data);
+        this.dataSelection.deselect(data);
     }
 
     public hasSelectedData(): boolean {
-        return this._dataSelection ? this._dataSelection.hasValue() : false;
+        return this.dataSelection ? this.dataSelection.hasValue() : false;
     }
 
     public getSelectedData(): T {
-        return this.hasSelectedData() ? this._dataSelection.selected[0] : null;
+        return this.hasSelectedData() ? this.dataSelection.selected[0] : null;
     }
 
     public getDataById(id: any): T {
@@ -439,8 +439,8 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public clearSelection(): void {
-        if (this._dataSelection) {
-            this._dataSelection.clear();
+        if (this.dataSelection) {
+            this.dataSelection.clear();
         }
     }
 
@@ -451,7 +451,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     public toggleData(data: T): void {
         if (this.config.pageType === PageType.POPUP || this.config.pageType === PageType.SELECTOR) {
             if (data && !this.isDataSelected(data)) {
-                this._dataSelection.toggle(data);
+                this.dataSelection.toggle(data);
             }
             this.exit(data);
         } else {
@@ -465,12 +465,12 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             }
             if (!this.isDataSelected(data)) {
                 this.collect = this.executeAction(data, DataActionType.BEFORE_SELECT, d => {
-                    this._dataSelection.toggle(data);
+                    this.dataSelection.toggle(data);
                     return of(d);
                 }).subscribe();
             } else {
-                this._dataSelection.toggle(data);
-                if (!this._dataSelection.hasValue()) {
+                this.dataSelection.toggle(data);
+                if (!this.dataSelection.hasValue()) {
                     this.setPageMode(PageMode.GRID);
                 }
             }
@@ -485,7 +485,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         if (!data && currentPageMode === PageMode.GRID) {
           return;
         }
-        if (this._viewerTrigger === 'auto') {
+        if (this.triggerType === 'auto') {
             this.changeViewMode();
         }
     }
@@ -583,7 +583,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         this.changeViewMode(preferredViewerMode);
     }
 
-    public openDialog<C, R>(content: PopoverContent,context: C, config: PopoverConfig = {}): PopoverRef<C, R> {
+    public openDialog<C, R>(content: PopoverContent, context: C, config: PopoverConfig = {}): PopoverRef<C, R> {
         return this.dialog.openDialog<C, R>(content, context, config);
     }
 
@@ -753,7 +753,11 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                     this.handlePageMetamodel(mm);
                     return;
                 }
-                this.collect = this.metadataProvider.metadataOf(this.config.qualifier, this.dynamicConfig.microserviceName, this.dynamicConfig.appPathPrefix).subscribe(
+                this.collect = this.metadataProvider.metadataOf(
+                    this.config.qualifier,
+                    this.dynamicConfig.microserviceName,
+                    this.dynamicConfig.appPathPrefix
+                ).subscribe(
                     (res: HttpResponse<PageMetamodel>) => {
                         const qmd: PageMetamodel = res.body;
                         this.handlePageMetamodel(qmd);
@@ -781,7 +785,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
 
     private configureConfig(): void {
         if (this.configConfigurer) {
-            this._config = this.configConfigurer(this.config);
+            this.pageConfig = this.configConfigurer(this.config);
         }
     }
 
@@ -870,8 +874,8 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         const selectedCols = listableCols.filter(cmd => cmd.showWhenGrid);
 
         this.gridColumnsSubject.next(listableCols);
-        this._columnsSelection.clear();
-        this._columnsSelection.select(...selectedCols);
+        this.columnsSelection.clear();
+        this.columnsSelection.select(...selectedCols);
 
         let searchableCols = new Array<ColumnMetadata>();
         this.buildSearchableGridColumns(searchableCols, configuredCols);
@@ -1046,7 +1050,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         return this.pageFormSubject.asObservable();
     }
 
-    public formItemChange(...formItems: string[]) : Observable<{form: FormGroup, control: AbstractControl, name: string, value: any}> {
+    public formItemChange(...formItems: string[]): Observable<{form: FormGroup, control: AbstractControl, name: string, value: any}> {
         formItems = [].concat(formItems);
         this.collect = this.form().subscribe(form => {
             if (form) {
@@ -1101,7 +1105,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     private informDataActionController(dataActionType: DataActionType, data: T): Promise<boolean> {
-        let promise = undefined;
+        let promise;
         if (this.dataActionController) {
             promise = this.dataActionController(dataActionType, data);
         }
@@ -1113,7 +1117,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
 
     private getDefaultEntityActionPromise(dataActionType: DataActionType, data: T): Promise<boolean> {
         if (dataActionType === DataActionType.BEFORE_DELETE) {
-            const entityId = data['id'];
+            const entityId = data[`id`];
             if (entityId) {
                 const q = this.prepareDeleteQuestion();
                 if (q) {
@@ -1156,11 +1160,10 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     private executeAction(entity: T, actionType: DataActionType, action: (entity: T) => Observable<T>): Observable<T> {
-        return Observable.create(observer => {
+        return new Observable(observer => {
             this.informDataActionController(actionType, entity).then(ok => {
                 if (ok) {
                     this.collect = action(entity).subscribe(data => {
-                        // console.log('PageBuilder.Action executed => ' + actionType);
                         observer.next(data);
                         this.informDataActionController(this.findAfterAction(actionType), data);
                         observer.complete();
@@ -1267,7 +1270,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     public delete(entity: T, errHandler?: (err: any) => void): Observable<boolean> {
         return this.executeAction(entity, DataActionType.BEFORE_DELETE, data => {
             const selfRel = this.pageMetamodel.getSelfRelation();
-            const response = this.datasource.deleteEntity(selfRel, data['id']).pipe(
+            const response = this.datasource.deleteEntity(selfRel, data[`id`]).pipe(
                 map(res => res.body),
                 tap(
                     rc => {
@@ -1432,7 +1435,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     public gridColumnsSelection(): SelectionModel<ColumnMetadata> {
-        return this._columnsSelection;
+        return this.columnsSelection;
     }
 
     public registerAction(action: DynamicAction<any>): boolean {
@@ -1481,9 +1484,10 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     private successVisitor(data: T[], headers?: HttpHeaders, authMap?: Map<number, any>): T[] {
-        if(this.isDestroyed()) {
+        if (this.isDestroyed()) {
             return data;
         }
+
         if (headers) {
             this.config.links = this.provider.parseLink(headers.get('link'));
             this.config.totalItems = headers.get('X-Total-Count');
@@ -1493,6 +1497,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             this.config.totalItems = data ? data.length : 0;
             this.config.queryCount = this.config.totalItems;
         }
+
         if (this.dataAuthorizer) {
             this.dataAuthorizer.setAuthorizationMap(authMap);
             return this.dataAuthorizer.authorizeAll(data, authMap);
@@ -1501,7 +1506,6 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
     }
 
     private errorVisitor(error: HttpErrorResponse) {
-        // this.zeeAlertService.error(error.message, null, null);
         this.notify(error.message);
     }
 
@@ -1513,7 +1517,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         const condition = criteria.condition;
         criteria.predicates.forEach(spec => {
 
-            const data : Criteria = spec as Criteria
+            const data: Criteria = spec as Criteria;
             if (data.condition) {
             // if (spec.hasOwnProperty('condition')) {
                 const c: Criteria = spec as Criteria;
@@ -1555,7 +1559,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
                 return '';
             }
         }
-        
+
         const operant = this.toRSQLOperant(predicate.operator);
         const path = this.toPath(cmd);
         const expression = path + '' + operant + '' + value;
@@ -1613,7 +1617,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
             case ColumnType.ENUM:
             case ColumnType.DATE:
             case ColumnType.STRING: {
-                out = "'" + prefix + val + posfix + "'";
+                out = `'${prefix}${val}${posfix}'`;
                 break;
             }
             default: {
@@ -1628,7 +1632,7 @@ export class GenericPageBuilder<T> extends DynamicBaseComponent implements PageB
         if (!vals || vals.length < 1 || !Array.isArray(vals)) {
             return '';
         }
-        const out = "('" + vals.join("','") + "')";
+        const out = `('${vals.join('\',\'')}')`;
         return out;
     }
 

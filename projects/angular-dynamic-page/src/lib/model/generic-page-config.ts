@@ -129,7 +129,7 @@ export class GenericPageConfig<T> implements PageConfig<T> {
         if (!entityLabel || entityLabel.startsWith(i18nEntityPrefix)) {
             return entityLabel;
         }
-        if (!prefix && i18nEntityPrefix && !entityLabel.startsWith('.')){
+        if (!prefix && i18nEntityPrefix && !entityLabel.startsWith('.')) {
             entityLabel = '.' + entityLabel;
         }
         return i18nEntityPrefix + entityLabel;
@@ -145,7 +145,7 @@ export class GenericPageConfig<T> implements PageConfig<T> {
             return label;
         }
         label = (uncapitalizeFirstLetter ? label : this.capitalizeFirstLetter(label));
-        if (!prefix && i18nLabelPrefix && !label.startsWith('.')){
+        if (!prefix && i18nLabelPrefix && !label.startsWith('.')) {
             label = '.' + label;
         }
         return i18nLabelPrefix + label;
@@ -271,7 +271,10 @@ export class GenericPageConfig<T> implements PageConfig<T> {
     }
 
     private setupDefaultOperatorMap(): void {
-        this.defaultOperatorMap.set('string', [Operator.EQ, Operator.NOT_EQ, Operator.EW, Operator.NOT_EW, Operator.SW, Operator.NOT_SW, Operator.LIKE, Operator.NOT_LIKE]);
+        this.defaultOperatorMap.set(
+            'string',
+            [Operator.EQ, Operator.NOT_EQ, Operator.EW, Operator.NOT_EW, Operator.SW, Operator.NOT_SW, Operator.LIKE, Operator.NOT_LIKE]
+        );
         this.defaultOperatorMap.set('number', [Operator.EQ, Operator.NOT_EQ, Operator.GT, Operator.GTE, Operator.LT, Operator.LTE]);
         this.defaultOperatorMap.set('time', [Operator.EQ, Operator.NOT_EQ, Operator.GT, Operator.GTE, Operator.LT, Operator.LTE]);
         this.defaultOperatorMap.set('date', [Operator.EQ, Operator.NOT_EQ, Operator.GT, Operator.GTE, Operator.LT, Operator.LTE]);

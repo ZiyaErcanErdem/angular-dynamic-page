@@ -11,7 +11,6 @@ export class PageMetamodel {
     path: string;
     relType: RelationType;
     key: string;
-    
     level: number;
 
     private columns: Array<ColumnMetadata>;
@@ -28,7 +27,7 @@ export class PageMetamodel {
 
     private parse(source: any, parentColumn?: ColumnMetadata): void {
 
-        const operators = source.operators ? this.parseOperators(source.operators) : undefined;;
+        const operators = source.operators ? this.parseOperators(source.operators) : undefined;
         const sourceColumns =  source.columns;
         const sourceAliases = source.aliases;
 
@@ -46,7 +45,7 @@ export class PageMetamodel {
         this.relationMap.set(this.selfRelation.path, this.selfRelation);
         this.relationList.push(this.selfRelation);
 
-        this.columns =  Array.from(sourceColumns).filter(c => !!c['name']).map(c => this.createColumnMetadata(c, operators, parentColumn));
+        this.columns =  Array.from(sourceColumns).filter(c => !!c[`name`]).map(c => this.createColumnMetadata(c, operators, parentColumn));
         this.aliases = Array.from(sourceAliases).map(a => `${a}`);
 
     }
@@ -55,13 +54,13 @@ export class PageMetamodel {
         const operators = new Map<ColumnType, Array<Operator>>();
         if (ops) {
             Object.keys(ops).forEach( key => {
-                const val = ops[key];            
+                const val = ops[key];
                 if (val) {
                     const colType: ColumnType = ColumnType[key];
                     if (colType) {
                         operators.set(colType, Array.from(val));
-                    }                
-                }            
+                    }
+                }
             });
         }
         return operators;
@@ -80,13 +79,13 @@ export class PageMetamodel {
         cmd.qualifier = this.qualifier;
         cmd.group = this.group;
         cmd.level = this.level;
-        if(!cmd.path) {
+        if (!cmd.path) {
             cmd.path = `${(this.path && this.path.length > 0 ? this.path + '.' : '')}${cmd.name}` ;
         }
-        if(!cmd.relType) {
+        if (!cmd.relType) {
             cmd.relType = cmd.metamodel ? cmd.metamodel.relType : this.relType ;
         }
-        if(!cmd.label) {
+        if (!cmd.label) {
             cmd.label = `${cmd.qualifier}.${cmd.name}` ;
         }
         if (operators) {
@@ -94,11 +93,11 @@ export class PageMetamodel {
         }
 
         this.setColumnDefaults(cmd);
-        
+
         if (features) {
             this.enhanceFeatures(cmd, features);
         }
-        
+
         if (cmd.metamodel) {
             cmd.metamodel = new PageMetamodel(cmd.metamodel, this, cmd);
             cmd.relation = new PageRelation(cmd.metamodel, this);
@@ -112,24 +111,24 @@ export class PageMetamodel {
     }
 
     private setColumnDefaults(cmd: ColumnMetadata): void {
-        if(ColumnType.ENUM === cmd.columnType) {
+        if (ColumnType.ENUM === cmd.columnType) {
             cmd.defaultOperator = Operator.EQ;
             if (cmd.options && cmd.options.length > 0) {
                 cmd.defaultValue = cmd.options[0].value;
             }
-		}else if(ColumnType.NUMBER == cmd.columnType || ColumnType.DOUBLE == cmd.columnType) {
-			cmd.defaultValue = 0;
-			cmd.defaultOperator = Operator.GT;
-		}else if(ColumnType.DATE == cmd.columnType) {
-			cmd.defaultValue = null;
-			cmd.defaultOperator = Operator.GT;
-		}else if(ColumnType.STRING == cmd.columnType) {
-			cmd.defaultValue = '';
-			cmd.defaultOperator = Operator.LIKE;
-		}else if(ColumnType.BOOLEAN == cmd.columnType) {
-			cmd.defaultValue = false;
-			cmd.defaultOperator = Operator.EQ;
-		}
+        } else if (ColumnType.NUMBER === cmd.columnType || ColumnType.DOUBLE === cmd.columnType) {
+            cmd.defaultValue = 0;
+            cmd.defaultOperator = Operator.GT;
+        } else if (ColumnType.DATE === cmd.columnType) {
+            cmd.defaultValue = null;
+            cmd.defaultOperator = Operator.GT;
+        } else if (ColumnType.STRING === cmd.columnType) {
+            cmd.defaultValue = '';
+            cmd.defaultOperator = Operator.LIKE;
+        } else if (ColumnType.BOOLEAN === cmd.columnType) {
+            cmd.defaultValue = false;
+            cmd.defaultOperator = Operator.EQ;
+        }
     }
 
     private enhanceFeatures(cmd: ColumnMetadata, features: string): void {
@@ -140,7 +139,7 @@ export class PageMetamodel {
 
         //   0     1      2    3    4    5     6
         // |null|search|list|view|edit|ignore|isId
-         
+
         const arrFeatures = features.split('|');
         cmd.nullable = arrFeatures[0] === '1' ? true : false;
         cmd.searchable = arrFeatures[1] === '1' ? true : false;

@@ -4,17 +4,17 @@ import { Directive, Input, TemplateRef } from '@angular/core';
   selector: '[zeePredicateInput]'
 })
 export class PredicateInputDirective {
-  private _type: string;
+  private inputType: string;
 
   @Input()
   get predicateInputType(): string {
-      return this._type;
+      return this.inputType;
   }
   set predicateInputType(value: string) {
       if (!value) {
           return;
       }
-      this._type = value;
+      this.inputType = value;
   }
 
   constructor(public template: TemplateRef<any>) {}

@@ -15,15 +15,15 @@ export const DynamicConfigRegistryToken = new InjectionToken<DynamicRegistryConf
   providedIn: 'root'
 })
 export class DynamicConfigService {
-  private _registry: Map<string | number, IDynamicConfig>;
-  private _defaultApplicationId: string | number;
+  private registry: Map<string | number, IDynamicConfig>;
+  private defaultApplicationId: string | number;
 
   constructor(
       @Inject('DynamicConfigRegistryToken') registryConfig: DynamicRegistryConfiguration,
       private localStorageService: LocalStorageService
     ) {
-      this._defaultApplicationId = null;
-      this._registry = new Map<string | number, IDynamicConfig>();
+      this.defaultApplicationId = null;
+      this.registry = new Map<string | number, IDynamicConfig>();
       if (registryConfig) {
           this.withDefaultRegistry(registryConfig);
       }
@@ -31,7 +31,7 @@ export class DynamicConfigService {
 
   private withDefaultRegistry(registryConfig: DynamicRegistryConfiguration): void {
       if (registryConfig) {
-          this._defaultApplicationId = registryConfig.defaultAppId;
+          this.defaultApplicationId = registryConfig.defaultAppId;
           if (registryConfig.registries) {
               registryConfig.registries.forEach(config => {
                   if (config && config.applicationId) {
@@ -46,15 +46,15 @@ export class DynamicConfigService {
       if (!applicationId || !config) {
           return;
       }
-      this._registry.set(applicationId, config);
+      this.registry.set(applicationId, config);
   }
 
   public getConfig(applicationId?: string | number): IDynamicConfig {
       if (!applicationId) {
-          applicationId = this._defaultApplicationId;
+          applicationId = this.defaultApplicationId;
       }
       if (applicationId) {
-          return this._registry.get(applicationId);
+          return this.registry.get(applicationId);
       }
       return null;
   }
@@ -63,7 +63,7 @@ export class DynamicConfigService {
       if (!applicationId) {
           return false;
       }
-      return this._registry.has(applicationId);
+      return this.registry.has(applicationId);
   }
 
   public getStorageProvider(): IDynamicStorageProvider {

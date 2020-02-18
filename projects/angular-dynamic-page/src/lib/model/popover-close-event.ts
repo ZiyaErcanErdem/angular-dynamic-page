@@ -1,4 +1,4 @@
-export type PopoverCloseEvent<R = any> = {
+export interface PopoverCloseEvent<R = any> {
     type: 'backdropClick' | 'close';
     data: R;
-};
+}

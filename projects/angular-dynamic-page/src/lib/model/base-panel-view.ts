@@ -4,7 +4,7 @@ import { DynamicBaseComponent } from './dynamic-base-component';
 import { OnDestroy, Input, Directive } from '@angular/core';
 import { Theme } from './theme.enum';
 
-@Directive()
+// @Directive()
 export class BasePanelView extends DynamicBaseComponent implements OnDestroy {
     @Input()
     public theme: Theme;

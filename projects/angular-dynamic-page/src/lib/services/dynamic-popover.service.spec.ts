@@ -6,7 +6,7 @@ describe('DynamicPopoverService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DynamicPopoverService = TestBed.get(DynamicPopoverService);
+    const service: DynamicPopoverService = TestBed.inject(DynamicPopoverService);
     expect(service).toBeTruthy();
   });
 });

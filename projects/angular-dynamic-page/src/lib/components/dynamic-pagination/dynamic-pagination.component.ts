@@ -17,21 +17,21 @@ export class DynamicPaginationComponent extends DynamicBaseComponent implements 
   config: PageConfig<any>;
   ready = false;
 
-  private _pageNum: number;
+  private pageNum: number;
 
   constructor() {
       super();
-      this._pageNum = 1;
+      this.pageNum = 1;
   }
 
   get pageNumber(): number {
-      return this.config ? this.config.page : this._pageNum;
+      return this.config ? this.config.page : this.pageNum;
   }
 
   set pageNumber(value: number) {
-      this._pageNum = value;
+      this.pageNum = value;
       if (this.config) {
-          this.config.page = this._pageNum;
+          this.config.page = this.pageNum;
       }
   }
 

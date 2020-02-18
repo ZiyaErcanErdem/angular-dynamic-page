@@ -16,8 +16,6 @@ import { ElementRef } from '@angular/core';
 import { DynamicDataService } from '../services/dynamic-data.service';
 
 export class DynamicDataSource<T> implements DataSource<T> {
-    private predicate: string;
-    private reverse: boolean;
     private dataSubject: BehaviorSubject<T[]>;
     private loadingSubject: BehaviorSubject<boolean>;
     public loading$: Observable<boolean>;
@@ -48,12 +46,10 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     connect(collectionViewer: CollectionViewer): Observable<T[]> {
-        // console.log('DynamicDataSource#connect');
         return this.dataSubject.asObservable();
     }
 
     disconnect(collectionViewer: CollectionViewer): void {
-        // console.log('DynamicDataSource#disconnect');
         this.dataSubject.complete();
         this.loadingSubject.complete();
         this.columns = undefined;
@@ -67,16 +63,11 @@ export class DynamicDataSource<T> implements DataSource<T> {
         if (!id || this.dataSubject || this.dataSubject.value) {
             return null;
         }
-        return this.dataSubject.value.find(c => c['id'] === id);
+        return this.dataSubject.value.find(c => c[`id`] === id);
     }
 
     public loadData(data: T[]): void {
         this.loadingSubject.next(false);
-        // let dataSize = 0;
-        // if (data && data.length) {
-        //    dataSize = data.length;
-        // }
-        // console.log(`DynamicDataSource#data-loaded: recordCount =>  ${dataSize}`);
         this.dataSubject.next(data);
 
         if (this.builder.isChild() && this.builder.config.canCreate && (!data || data.length <= 0)) {
@@ -85,12 +76,10 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     public clearData(): void {
-        // console.log(`DynamicDataSource#data-cleared: recordCount =>  0`);
         this.onSuccess([]);
     }
 
     public appendEntities(data: T[]): void {
-        // console.log('DynamicDataSource#append data');
         const current = this.dataSubject.value;
         if (current) {
             this.loadData(current.concat(data));
@@ -100,13 +89,13 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     public synchEntity(data: T): void {
-        if (!data || !data['id']) {
+        const key = 'id';
+        if (!data || !data[key]) {
             return;
         }
-        // console.log('DynamicDataSource#synch data');
         const current = this.dataSubject.value;
         if (current) {
-            let target = current.find(c => c['id'] === data['id']);
+            let target = current.find(c => c[key] === data[key]);
             if (target) {
                 target = Object.assign(target, data);
                 this.loadData(current.concat([]));
@@ -119,13 +108,13 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     public removeEntity(data: T): void {
-        if (!data || !data['id']) {
+        const key = 'id';
+        if (!data || !data[key]) {
             return;
         }
-        // console.log('DynamicDataSource#remove entity:' + data['id']);
         const current = this.dataSubject.value;
         if (current) {
-            const targetIndex = current.findIndex(c => c['id'] === data['id']);
+            const targetIndex = current.findIndex(c => c[key] === data[key]);
             if (targetIndex > -1) {
                 current.splice(targetIndex, 1);
                 this.loadData(current);
@@ -135,8 +124,6 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     createEntity(relation: PageRelation, entity: T): Observable<HttpResponse<T>> {
-        // console.log('DynamicDataSource#createEntity');
-        
         const copy = this.enhanceEntity<T>(relation, entity);
         return this.dynamicDataService
             .createEntity<T>(relation, copy)
@@ -144,35 +131,35 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     updateEntity(relation: PageRelation, entity: T): Observable<HttpResponse<T>> {
-        // console.log('DynamicDataSource#updateEntity');
         const copy = this.enhanceEntity<T>(relation, entity);
         return this.dynamicDataService.updateEntity(relation, copy, this.dynamicConfig.microserviceName)
                   .pipe(map(res => res.clone(this.modifyEntity<T>(relation, res.body))));
     }
 
     deleteEntity(relation: PageRelation, id: number): Observable<HttpResponse<any>> {
-        // console.log('DynamicDataSource#deleteEntity');
         return this.dynamicDataService.deleteEntity(relation, id, this.dynamicConfig.microserviceName);
     }
 
     findEntity<R>(relation: PageRelation, id: number): Observable<HttpResponse<R>> {
-        // console.log('DynamicDataSource#findEntity');
         return this.dynamicDataService.findEntity<R>(relation, id, this.dynamicConfig.microserviceName)
                   .pipe(map(res => res.clone(this.modifyEntity<R>(relation, res.body))));
     }
 
     findAllEntities<R>(relation: PageRelation): Observable<HttpResponse<Array<R>>> {
-        // console.log('DynamicDataSource#findAllEntities');
         return this.dynamicDataService
             .findAllEntities<R>(relation, null, this.dynamicConfig.microserviceName)
             .pipe(map(res => res.clone<Array<R>>({ body: this.modifyEntities<R>(relation, res.body) })));
     }
 
     search(req?: any): Observable<T[]> {
-        // console.log('DynamicDataSource#search');
         this.loadingSubject.next(true);
         return this.dynamicDataService
-            .search<T>(this.qualifier, this.dynamicConfig.appPathPrefix, this.dynamicConfig.microserviceName, req, (d: T) => this.modify(this.columns, d))
+            .search<T>(
+                this.qualifier,
+                this.dynamicConfig.appPathPrefix,
+                this.dynamicConfig.microserviceName,
+                req, (d: T) => this.modify(this.columns, d)
+            )
             .pipe(
                 tap((res: HttpResponse<T[]>) => this.onSuccess(res.body, res.headers), (err: HttpErrorResponse) => this.onError(err)),
                 map(res => res.body)
@@ -180,15 +167,17 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     public authorizedSearch<A>(authContext: Map<string, string>, req?: any): Observable<DynamicAuthorizedSearchResponse<T, A>> {
-        // console.log('DynamicDataSource#authorizedSearch');
-
         const query: string = req.search;
         const ctx = new DynamicAuthorizableSearchRequest(this.qualifier, query);
         ctx.provider = this.dynamicConfig.appPathPrefix;
         ctx.authContext = authContext;
 
         this.loadingSubject.next(true);
-        return this.dynamicDataService.authorizedSearch<T, A>(ctx, this.dynamicConfig.microserviceName, req, (d: T) => this.modify(this.columns, d)).pipe(
+        return this.dynamicDataService.authorizedSearch<T, A>(
+            ctx,
+            this.dynamicConfig.microserviceName,
+            req, (d: T) => this.modify(this.columns, d)
+        ).pipe(
             tap(
                 (res: HttpResponse<DynamicAuthorizedSearchResponse<T, A>>) =>
                     this.onSuccess(res.body.content, res.headers, res.body.authMap),
@@ -199,22 +188,18 @@ export class DynamicDataSource<T> implements DataSource<T> {
     }
 
     public convertToExcel(blob: Blob, fileName: string, elmLink: ElementRef): void {
-        // console.log('DynamicDataSource#convertToExcel');
         this.dynamicDataService.writeBlobAsResource(blob, fileName, elmLink);
     }
 
     public importExcelData(formData: FormData): Observable<HttpEvent<{}>> {
-        // console.log('DynamicDataSource#importExcelData');
         return this.dynamicDataService.importExcelData(this.qualifier, formData, this.dynamicConfig.microserviceName);
     }
 
     public async exportExcelData(req?: any): Promise<Blob> {
-        // console.log('DynamicDataSource#exportExcelData');
         return this.dynamicDataService.exportExcelData(this.qualifier, req, this.dynamicConfig.microserviceName);
     }
 
     public async exportExcelTemplate(req?: any): Promise<Blob> {
-        // console.log('DynamicDataSource#exportExcelTemplate');
         return this.dynamicDataService.exportExcelTemplate(this.qualifier, req, this.dynamicConfig.microserviceName);
     }
 
@@ -285,8 +270,8 @@ export class DynamicDataSource<T> implements DataSource<T> {
     private modifyEntities<R>(relation: PageRelation, data: R[]): R[] {
         const original: R[] = data;
         const enhanced: R[] = [];
-        for (let i = 0; i < original.length; i++) {
-            enhanced.push(this.modifyEntity<R>(relation, original[i]));
+        for (const item of original) {
+            enhanced.push(this.modifyEntity<R>(relation, item));
         }
         return enhanced;
     }

@@ -3,8 +3,8 @@ import { Criteria } from '../../../model/criteria';
 
 
 export interface CriteriaActionContext {
+    $implicit: Criteria;
     createPredicate(): Predicate;
     createCriteria(): Criteria;
     removeCriteria(): void;
-    $implicit: Criteria;
 }

@@ -15,26 +15,26 @@ import { PortalModule } from '@angular/cdk/portal';
 
 @NgModule({
   declarations: [
-    DynamicEditorComponent, 
-    DynamicFormAssociationComponent, 
-    DynamicFormButtonComponent, 
-    DynamicFormInputComponent, 
-    DynamicFormItemComponent, 
-    DynamicFormSelectComponent, 
+    DynamicEditorComponent,
+    DynamicFormAssociationComponent,
+    DynamicFormButtonComponent,
+    DynamicFormInputComponent,
+    DynamicFormItemComponent,
+    DynamicFormSelectComponent,
     DynamicFieldDirective],
   imports: [
     CommonModule, PortalModule, DynamicCoreModule, DynamicPageModule, ReactiveFormsModule
   ],
   exports: [
-    DynamicFormButtonComponent, 
-    DynamicFormInputComponent, 
-    DynamicFormSelectComponent, 
+    DynamicFormButtonComponent,
+    DynamicFormInputComponent,
+    DynamicFormSelectComponent,
     DynamicEditorComponent
   ],
   entryComponents: [
-    DynamicFormButtonComponent, 
-    DynamicFormInputComponent, 
-    DynamicFormSelectComponent, 
+    DynamicFormButtonComponent,
+    DynamicFormInputComponent,
+    DynamicFormSelectComponent,
     DynamicEditorComponent
   ]
 })

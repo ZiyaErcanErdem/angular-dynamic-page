@@ -3,30 +3,30 @@ export interface TableFieldSelection {
     value: any;
 }
 export class TableField<R> {
-    private _originalType: 'static' | 'text' | 'number' | 'date' | 'selection' | 'action' | 'hidden';
-    private _fieldReader: (row: R) => any;
-    private _fieldWriter: (row: R, val: any) => void;
+    private fieldOriginalType: 'static' | 'text' | 'number' | 'date' | 'selection' | 'action' | 'hidden';
+    private fieldReader: (row: R) => any;
+    private fieldWriter: (row: R, val: any) => void;
     public colWidth: string;
     public icon: string;
 
     set reader(fieldReader: (row: R) => any) {
-        this._fieldReader = fieldReader;
+        this.fieldReader = fieldReader;
     }
 
     get reader(): (row: R) => any {
-        return this._fieldReader;
+        return this.fieldReader;
     }
 
     get writer(): (row: R, val: any) => void {
-        return this._fieldWriter;
+        return this.fieldWriter;
     }
 
     set writer(fieldWriter: (row: R, val: any) => void) {
-        this._fieldWriter = fieldWriter;
+        this.fieldWriter = fieldWriter;
     }
 
     get originalType(): 'static' | 'text' | 'number' | 'date' | 'selection' | 'action' | 'hidden' {
-        return this._originalType;
+        return this.fieldOriginalType;
     }
 
     constructor(
@@ -38,9 +38,9 @@ export class TableField<R> {
         public selection?: Array<TableFieldSelection>
     ) {
         this.label = this.label || this.label === '' ? this.label : this.name;
-        this._originalType = this.type;
+        this.fieldOriginalType = this.type;
     }
-    
+
     public static of<R>(
         name: string,
         label?: string,
@@ -70,15 +70,15 @@ export class TableField<R> {
 
     public destroy(): void {
         this.action = undefined;
-        this._fieldReader = undefined;
-        this._fieldWriter = undefined;
+        this.fieldReader = undefined;
+        this.fieldWriter = undefined;
     }
 
     public read(row: R): any {
         if (!row) {
             return '';
         }
-        const value = this._fieldReader ? this._fieldReader(row) : (row as { [key: string]: any })[this.name];
+        const value = this.fieldReader ? this.fieldReader(row) : (row as { [key: string]: any })[this.name];
         return this.type === 'number' ? Number(value) : value;
     }
 
@@ -86,8 +86,8 @@ export class TableField<R> {
         if (!row) {
             return;
         }
-        if (this._fieldWriter) {
-            this._fieldWriter(row, val);
+        if (this.fieldWriter) {
+            this.fieldWriter(row, val);
             return;
         }
         (row as { [key: string]: any })[this.name] = val;
@@ -105,6 +105,6 @@ export class TableField<R> {
         if (this.type === 'hidden') {
             return;
         }
-        this.type = isReadonly ? (this._originalType === 'action' ? 'hidden' : 'static') : this.originalType;
+        this.type = isReadonly ? (this.fieldOriginalType === 'action' ? 'hidden' : 'static') : this.originalType;
     }
 }

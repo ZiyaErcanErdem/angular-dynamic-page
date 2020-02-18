@@ -16,12 +16,12 @@ import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 @NgModule({
   declarations: [DynamicPageComponent],
   imports: [
-    CommonModule, 
-    DynamicCoreModule, 
-    OverlayModule, 
-    DynamicPanelModule, 
-    DynamicPageActionsModule, 
-    DynamicGridModule, 
+    CommonModule,
+    DynamicCoreModule,
+    OverlayModule,
+    DynamicPanelModule,
+    DynamicPageActionsModule,
+    DynamicGridModule,
     DynamicPortalModule,
     DynamicContentViewModule,
     DynamicButtonModule,

@@ -1,4 +1,5 @@
-import { Directive, OnChanges, OnInit, OnDestroy, Input, ComponentRef, ComponentFactoryResolver, ViewContainerRef, Type } from '@angular/core';
+import { Directive, OnChanges, OnInit, OnDestroy, Input, Type } from '@angular/core';
+import { ComponentRef, ComponentFactoryResolver, ViewContainerRef } from '@angular/core';
 import { PageBuilder } from '../../../model/page-builder';
 import { FormGroup } from '@angular/forms';
 import { EditorMode } from '../../../model/editor-mode.enum';

@@ -6,7 +6,7 @@ describe('DynamicLinkParserService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DynamicLinkParserService = TestBed.get(DynamicLinkParserService);
+    const service: DynamicLinkParserService = TestBed.inject(DynamicLinkParserService);
     expect(service).toBeTruthy();
   });
 });

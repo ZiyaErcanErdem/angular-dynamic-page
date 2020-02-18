@@ -35,9 +35,9 @@ export class DynamicDataService {
   private dynamicExcelPath = '';
 
   constructor(
-    private appConfigService: DynamicConfigService, 
-    private http: HttpClient, 
-    private linkParser: DynamicLinkParserService, 
+    private appConfigService: DynamicConfigService,
+    private http: HttpClient,
+    private linkParser: DynamicLinkParserService,
     public dateUtils: DynamicDateParserService
   ) {
     this.microserviceName = this.appConfigService.getConfig().microserviceName;
@@ -53,7 +53,7 @@ export class DynamicDataService {
       return `${this.serverApiUrl}services/${microservice ? microservice : this.microserviceName}/api`;
     } else {
       return `${this.serverApiUrl}api`;
-    }  
+    }
   }
 
   createEntity<T>(relation: PageRelation, entity: T, microservice?: string): Observable<HttpResponse<T>> {
@@ -111,7 +111,12 @@ export class DynamicDataService {
             .pipe(map((res: HttpResponse<T[]>) => this.convertArrayResponse<T>(res, modifier)));
     }*/
 
-  public search<T>(qualifier: string, dynamicPathPrefix = '', microservice?: string, req?: any, modifier?: (d: T) => void): Observable<HttpResponse<T[]>> {
+  public search<T>(
+    qualifier: string,
+    dynamicPathPrefix = '',
+    microservice?: string,
+    req?: any, modifier?: (d: T) => void
+  ): Observable<HttpResponse<T[]>> {
     const dynamicUrl = this.apiUriOf(microservice);
     const options = createRequestOption(req);
     dynamicPathPrefix = dynamicPathPrefix ? dynamicPathPrefix : '';
@@ -241,8 +246,8 @@ export class DynamicDataService {
     if (!input) {
       return output;
     }
-    for (let i = 0; i < input.length; i++) {
-      output.push(this.convertItemFromServer<T>(input[i], modifier));
+    for (const value of input)  {
+      output.push(this.convertItemFromServer<T>(value, modifier));
     }
     return output;
   }

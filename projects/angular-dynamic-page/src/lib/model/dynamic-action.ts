@@ -34,19 +34,19 @@ export abstract class DynamicAction<D> extends DynamicBaseComponent {
     public readonly type: ActionType;
     private scopes: Array<ActionScope>;
     public readonly id: string | number;
-    protected _order: number;
-    protected _label: string;
-    protected _badge: string;
-    protected _buttonClass: string;
-    protected _iconClass: string;
-    protected _display: boolean;
-    protected _disabled: boolean;
-    private _data: D;
-    protected _i18n: boolean;
-    protected _payload: D;
-    protected _buttonType: 'button' | 'dropdown' | 'split';
+    protected propOrder: number;
+    protected propLabel: string;
+    protected propBadge: string;
+    protected propButtonClass: string;
+    protected propIconClass: string;
+    protected propDisplay: boolean;
+    protected propDisabled: boolean;
+    private propData: D;
+    protected propI18n: boolean;
+    protected propPayload: D;
+    protected propButtonType: 'button' | 'dropdown' | 'split';
 
-    protected _origin: HTMLElement;
+    protected propOrigin: HTMLElement;
 
     protected subject: Subject<D>;
 
@@ -69,17 +69,17 @@ export abstract class DynamicAction<D> extends DynamicBaseComponent {
         if (scopes && scopes.length > 0) {
             this.scopes = this.scopes.concat(scopes);
         }
-        this._label = label || label === '' ? label : '' + id;
-        this._badge = badge;
-        this._buttonClass = btnCls;
-        this._buttonType = buttonType;
-        this._iconClass = iconCls;
-        this._display = true;
-        this._disabled = false;
-        this._order = 0;
+        this.propLabel = label || label === '' ? label : '' + id;
+        this.propBadge = badge;
+        this.propButtonClass = btnCls;
+        this.propButtonType = buttonType;
+        this.propIconClass = iconCls;
+        this.propDisplay = true;
+        this.propDisabled = false;
+        this.propOrder = 0;
         this.subject = new Subject<D>();
-        this._i18n = i18n;
-        this._payload = payload;
+        this.propI18n = i18n;
+        this.propPayload = payload;
         this.collect = this.subject.pipe(throttleTime(500)).subscribe(d => this.handle(d));
     }
 
@@ -94,64 +94,64 @@ export abstract class DynamicAction<D> extends DynamicBaseComponent {
             this.subject.complete();
             this.subject = undefined;
         }
-        this._data = undefined;
-        this._payload = undefined;
+        this.propData = undefined;
+        this.propPayload = undefined;
         this.scopes = undefined;
     }
 
     public emit(data: D, origin?: HTMLElement): void {
-        this._data = data ? data : this._payload;
-        this._origin = origin;
-        this.subject.next(this._data);
-        this._origin = undefined;
+        this.propData = data ? data : this.propPayload;
+        this.propOrigin = origin;
+        this.subject.next(this.propData);
+        this.propOrigin = undefined;
     }
 
     public get order(): number {
-        return this._order;
+        return this.propOrder;
     }
 
     public get label(): string {
-        return this._label;
+        return this.propLabel;
     }
 
     public get badge(): string {
-        return this._badge;
+        return this.propBadge;
     }
 
     public get i18n(): boolean {
-        return this._i18n;
+        return this.propI18n;
     }
 
     public get payload(): D {
-        return this._payload;
+        return this.propPayload;
     }
 
     public get origin(): HTMLElement {
-        return this._origin;
+        return this.propOrigin;
     }
 
     public get buttonClass(): string {
-        return this._buttonClass;
+        return this.propButtonClass;
     }
 
     public get iconClass(): string {
-        return this._iconClass;
+        return this.propIconClass;
     }
 
     public get disabled(): boolean {
-        return !!this._disabled;
+        return !!this.propDisabled;
     }
 
     public get visible(): boolean {
-        return !!this._display;
+        return !!this.propDisplay;
     }
 
     public get data(): D {
-        return this._data;
+        return this.propData;
     }
 
     public get buttonType(): 'button' | 'dropdown' | 'split' {
-        return this._buttonType;
+        return this.propButtonType;
     }
 
     public containsScope(scope: ActionScope): boolean {
@@ -163,8 +163,8 @@ export abstract class DynamicAction<D> extends DynamicBaseComponent {
 }
 
 export class GenericDynamicAction<D> extends DynamicAction<D> {
-    private _handler: (action: GenericDynamicAction<D>, data: D) => void;
-    private _childs: Array<GenericDynamicAction<D>>;
+    private handlerAction: (action: GenericDynamicAction<D>, data: D) => void;
+    private childActions: Array<GenericDynamicAction<D>>;
 
     constructor(
         id: string | number,
@@ -180,108 +180,108 @@ export class GenericDynamicAction<D> extends DynamicAction<D> {
         payload = null
     ) {
         super(id, scopes, type, buttonType, label, badge, btnCls, iconCls, i18n, payload);
-        this._childs = new Array<GenericDynamicAction<D>>();
-        this._handler = handler;
+        this.childActions = new Array<GenericDynamicAction<D>>();
+        this.handlerAction = handler;
     }
 
     public get order(): number {
-        return this._order;
+        return this.propOrder;
     }
 
     public set order(value: number) {
-        this._order = value;
+        this.propOrder = value;
     }
 
     public get label(): string {
-        return this._label;
+        return this.propLabel;
     }
 
     public set label(value: string) {
-        this._label = value;
+        this.propLabel = value;
     }
 
     public get badge(): string {
-        return this._badge;
+        return this.propBadge;
     }
 
     public set badge(value: string) {
-        this._badge = value;
+        this.propBadge = value;
     }
     public get buttonType(): 'button' | 'dropdown' | 'split' {
-        return this._buttonType;
+        return this.propButtonType;
     }
 
     public set buttonType(value: 'button' | 'dropdown' | 'split') {
-        this._buttonType = value;
+        this.propButtonType = value;
     }
 
     public get buttonClass(): string {
-        return this._buttonClass;
+        return this.propButtonClass;
     }
 
     public set buttonClass(value: string) {
-        this._buttonClass = value;
+        this.propButtonClass = value;
     }
 
     public get iconClass(): string {
-        return this._iconClass;
+        return this.propIconClass;
     }
 
     public set iconClass(value: string) {
-        this._iconClass = value;
+        this.propIconClass = value;
     }
 
     public get disabled(): boolean {
-        return !!this._disabled;
+        return !!this.propDisabled;
     }
 
     public set disabled(value: boolean) {
-        this._disabled = !!value;
+        this.propDisabled = !!value;
     }
 
     public get visible(): boolean {
-        return !!this._display || this.childs.length > 0;
+        return !!this.propDisplay || this.childs.length > 0;
     }
 
     public set visible(value: boolean) {
-        this._display = !!value;
+        this.propDisplay = !!value;
     }
 
     public get i18n(): boolean {
-        return !!this._i18n;
+        return !!this.propI18n;
     }
 
     public set i18n(value: boolean) {
-        this._i18n = !!value;
+        this.propI18n = !!value;
     }
 
     public get payload(): D {
-        return this._payload;
+        return this.propPayload;
     }
 
     public set payload(value: D) {
-        this._payload = value;
+        this.propPayload = value;
     }
 
     public set handler(value: (action: GenericDynamicAction<D>, data: D) => void) {
-        this._handler = value;
+        this.handlerAction = value;
     }
 
     public get childs(): Array<DynamicAction<D>> {
-        return this._childs.length === 0 ? this._childs : this._childs.filter(c => !c.disabled && c.visible);
+        return this.childActions.length === 0 ? this.childActions : this.childActions.filter(c => !c.disabled && c.visible);
     }
 
     public forEachChild(childIterator: (c: GenericDynamicAction<D>) => void): void {
-        if (this._childs && childIterator) {
-            this._childs.forEach(c => childIterator(c));
+        if (this.childActions && childIterator) {
+            this.childActions.forEach(c => childIterator(c));
         }
     }
 
     protected handle(data: D) {
         // console.log('disabled: ' + this.disabled);
         // console.log('visible: ' + this.visible);
-        if (this._handler) {
-            this._handler(this, data);
+        if (this.handlerAction) {
+            this.handlerAction(this, data);
         }
     }
 
@@ -290,55 +290,55 @@ export class GenericDynamicAction<D> extends DynamicAction<D> {
     }
 
     public addChild(child: GenericDynamicAction<D>): void {
-        if (!child || this._childs.some(c => c.id === child.id)) {
+        if (!child || this.childActions.some(c => c.id === child.id)) {
             return;
         }
-        this._childs.push(child);
+        this.childActions.push(child);
     }
 
     public destroyChilds(): void {
-        if (this._childs) {
-            this._childs.forEach(c => c.destroy());
-            this._childs = [];
+        if (this.childActions) {
+            this.childActions.forEach(c => c.destroy());
+            this.childActions = [];
         }
     }
 
     public destroy(): void {
         super.destroy();
-        this._handler = undefined;
+        this.handlerAction = undefined;
         this.payload = undefined;
-        if (this._childs) {
-            this._childs.forEach(c => c.destroy());
-            this._childs = undefined;
+        if (this.childActions) {
+            this.childActions.forEach(c => c.destroy());
+            this.childActions = undefined;
         }
     }
 }
 
 let globalOrder = 10000;
 export class DynamicActionBuilder<D> {
-    private _handler: (action: GenericDynamicAction<D>, data: D) => void;
-    private _type: ActionType;
-    private _scopes: Array<ActionScope>;
-    private _id: string | number;
-    private _label: string;
-    private _badge: string;
-    private _buttonClass: string;
-    private _buttonType: 'button' | 'dropdown' | 'split' = 'button';
-    private _iconClass: string;
-    private _order = 0;
-    private _display = true;
-    private _disabled = false;
-    private _i18n = true;
-    private _payload: D = null;
+    private handlerAction: (action: GenericDynamicAction<D>, data: D) => void;
+    private propType: ActionType;
+    private propScopes: Array<ActionScope>;
+    private propId: string | number;
+    private propLabel: string;
+    private propBadge: string;
+    private propButtonClass: string;
+    private propButtonType: 'button' | 'dropdown' | 'split' = 'button';
+    private propIconClass: string;
+    private propOrder = 0;
+    private propDisplay = true;
+    private propDisabled = false;
+    private propI18n = true;
+    private propPayload: D = null;
 
-    private _childsProvider: (parent: DynamicAction<D>) => Array<GenericDynamicAction<D>>;
+    private childsProvider: (parent: DynamicAction<D>) => Array<GenericDynamicAction<D>>;
 
     constructor(id: string | number, type: ActionType) {
-        this._id = id;
-        this._type = type;
-        this._scopes = new Array<ActionScope>();
-        this._handler = d => {};
-        this._childsProvider = p => null;
+        this.propId = id;
+        this.propType = type;
+        this.propScopes = new Array<ActionScope>();
+        this.handlerAction = d => {};
+        this.childsProvider = p => null;
     }
 
     public static newAction<A>(
@@ -370,82 +370,82 @@ export class DynamicActionBuilder<D> {
 
     public withScope(...scopes: ActionScope[]): DynamicActionBuilder<D> {
         if (scopes && scopes.length > 0) {
-            this._scopes = [...this._scopes, ...scopes];
+            this.propScopes = [...this.propScopes, ...scopes];
         }
         return this;
     }
 
     public withHandler(handler: (action: GenericDynamicAction<D>, data: D) => void): DynamicActionBuilder<D> {
-        this._handler = handler;
+        this.handlerAction = handler;
         return this;
     }
 
     public withLabel(label: string): DynamicActionBuilder<D> {
-        this._label = label;
+        this.propLabel = label;
         return this;
     }
 
     public withBadge(badge: string): DynamicActionBuilder<D> {
-        this._badge = badge;
+        this.propBadge = badge;
         return this;
     }
 
     public withButtonClass(buttonClass: string): DynamicActionBuilder<D> {
-        this._buttonClass = buttonClass;
+        this.propButtonClass = buttonClass;
         return this;
     }
 
     public withButtonType(buttonType: 'button' | 'dropdown' | 'split'): DynamicActionBuilder<D> {
-        this._buttonType = buttonType;
+        this.propButtonType = buttonType;
         return this;
     }
 
     public withIconClass(iconClass: string): DynamicActionBuilder<D> {
-        this._iconClass = iconClass;
+        this.propIconClass = iconClass;
         return this;
     }
 
     public withI18n(i18n: boolean): DynamicActionBuilder<D> {
-        this._i18n = !!i18n;
+        this.propI18n = !!i18n;
         return this;
     }
 
     public withPayload(payload: D): DynamicActionBuilder<D> {
-        this._payload = payload;
+        this.propPayload = payload;
         return this;
     }
 
     public withOrder(order: number): DynamicActionBuilder<D> {
-        this._order = order;
+        this.propOrder = order;
         return this;
     }
 
     public withChildsProvider(provider: (parent: GenericDynamicAction<D>) => Array<GenericDynamicAction<D>>): DynamicActionBuilder<D> {
         if (provider) {
-            this._childsProvider = provider;
+            this.childsProvider = provider;
         }
         return this;
     }
 
     public build(): GenericDynamicAction<D> {
         const action = new GenericDynamicAction<D>(
-            this._id,
-            this._scopes,
-            this._type,
-            this._buttonType,
-            this._handler,
-            this._label,
-            this._badge,
-            this._buttonClass,
-            this._iconClass,
-            this._i18n,
-            this._payload
+            this.propId,
+            this.propScopes,
+            this.propType,
+            this.propButtonType,
+            this.handlerAction,
+            this.propLabel,
+            this.propBadge,
+            this.propButtonClass,
+            this.propIconClass,
+            this.propI18n,
+            this.propPayload
         );
-        action.disabled = this._disabled;
-        action.visible = this._display;
-        action.order = this._order <= 0 ? globalOrder++ : this._order;
+        action.disabled = this.propDisabled;
+        action.visible = this.propDisplay;
+        action.order = this.propOrder <= 0 ? globalOrder++ : this.propOrder;
 
-        const childs = this._childsProvider(action);
+        const childs = this.childsProvider(action);
         if (childs) {
             childs.forEach(c => {
                 action.addChild(c);

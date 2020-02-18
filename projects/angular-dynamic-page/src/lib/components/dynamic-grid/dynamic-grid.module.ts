@@ -12,20 +12,19 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 
 
-
 @NgModule({
   declarations: [
-    DynamicGridComponent, 
-    DynamicCellViewPipe, 
-    DynamicGridActionsComponent, 
-    DynamicGridConfigurerComponent, 
+    DynamicGridComponent,
+    DynamicCellViewPipe,
+    DynamicGridActionsComponent,
+    DynamicGridConfigurerComponent,
     DynamicSortHeaderComponent],
   imports: [
-    CommonModule, 
-    DynamicCoreModule, 
-    CdkTableModule, 
-    FlexLayoutModule, 
-    DynamicPaginationModule, 
+    CommonModule,
+    DynamicCoreModule,
+    CdkTableModule,
+    FlexLayoutModule,
+    DynamicPaginationModule,
     DynamicButtonModule
   ],
   exports: [DynamicGridComponent, DynamicCellViewPipe]

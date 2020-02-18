@@ -14,7 +14,7 @@ export class RelationPageBuilder {
     public builder: PageBuilder<any>;
     private gridCols: Array<string>;
     private compactCols: Array<string>;
-    private sortingSamples: { new (): any };
+    private sortingSamples: new () => any;
     private viewMode: PageViewMode;
     private viewer: DynamicPortalView<any>;
     private metamodelConfigurer: (col: ColumnMetadata) => void;
@@ -40,7 +40,7 @@ export class RelationPageBuilder {
         this.compactCols = cols;
         return this;
     }
-    public withSortingSamples(samples: { new (): any }): RelationPageBuilder {
+    public withSortingSamples(samples: new () => any ): RelationPageBuilder {
         this.sortingSamples = samples;
         return this;
     }
@@ -148,7 +148,7 @@ export class RelationPageBuilder {
                     .withCondition(Condition.AND)
                     .hide()
                     .addPredicate(predicatePath, Operator.EQ)
-                    .withValue(parentData ? parentData['id'] : 0)
+                    .withValue(parentData ? parentData[`id`] : 0)
                     .readonly()
                     .hide()
                     .and();

@@ -28,28 +28,28 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
   manager: IDynamicExplorerManager<any>;
   @Input()
   set element(val: IDynamicElement<any>) {
-      this._element = val;
-      this._isRoot = false;
+      this.editorElement = val;
+      this.isRoot = false;
       this.inspectViewType();
   }
   get element(): IDynamicElement<any> {
-      return this._element;
+      return this.editorElement;
   }
 
-  private _element: IDynamicElement<any>;
-  private _editorAction: GenericDynamicAction<any>;
-  private _editorActionNames: Array<string | number>;
-  private _navigationActionNames: Array<string | number>;
-  private _navigationActions: Array<GenericDynamicAction<any>>;
+  private editorElement: IDynamicElement<any>;
+  private action: GenericDynamicAction<any>;
+  private editorActionNames: Array<string | number>;
+  private navigationActionNames: Array<string | number>;
+  private navigationActions: Array<GenericDynamicAction<any>>;
 
-  private _children: Array<IDynamicElement<any>>;
-  private _isRoot: boolean;
-  private _rootNodeSubscription: Subscription;
+  private childElements: Array<IDynamicElement<any>>;
+  private isRoot: boolean;
+  private rootNodeSubscription: Subscription;
 
   public renderAs: 'template' | 'component' | 'text' = 'component';
 
   get uniqueId(): string {
-      return this._element ? this._element.uniqueId : null;
+      return this.editorElement ? this.editorElement.uniqueId : null;
   }
 
   get editable(): boolean {
@@ -61,7 +61,7 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
   }
 
   get active(): boolean {
-      return this.manager ? this.manager.isSelected(this._element) : false;
+      return this.manager ? this.manager.isSelected(this.editorElement) : false;
   }
 
   get navigationTheme(): string {
@@ -85,11 +85,11 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
   }
 
   get editorAction(): DynamicAction<any> {
-      return this.editable ? this._editorAction : null;
+      return this.editable ? this.action : null;
   }
 
   get expanded(): boolean {
-      return this._element ? this._element.isExpanded() : false;
+      return this.editorElement ? this.editorElement.isExpanded() : false;
   }
 
   get showChildren(): boolean {
@@ -101,11 +101,11 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
   }
 
   get parentElement(): IDynamicElement<any> {
-      return this._element ? this._element.parent : null;
+      return this.editorElement ? this.editorElement.parent : null;
   }
 
   get children(): IDynamicElement<any>[] {
-      return this._children;
+      return this.childElements;
   }
 
   get view(): ElementView {
@@ -165,22 +165,22 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
   }
 
   get navigations(): Array<DynamicAction<IDynamicElementContent<any>>> {
-      return this._navigationActions;
+      return this.navigationActions;
   }
 
   constructor(private injector: Injector, private translateService: TranslateService) {
       super();
-      this._isRoot = true;
+      this.isRoot = true;
       this.theme = Theme.dark;
-      this._editorActionNames = DynamicUtil.getEnumValues(EditorAction);
-      this._navigationActionNames = DynamicUtil.getEnumValues(NavigationAction);
-      this._navigationActions = Array<GenericDynamicAction<any>>();
+      this.editorActionNames = DynamicUtil.getEnumValues(EditorAction);
+      this.navigationActionNames = DynamicUtil.getEnumValues(NavigationAction);
+      this.navigationActions = Array<GenericDynamicAction<any>>();
   }
 
   ngOnInit() {
-      if (this._isRoot) {
-          this._rootNodeSubscription = this.manager.currentTop.subscribe(current => {
-              this._element = current;
+      if (this.isRoot) {
+          this.rootNodeSubscription = this.manager.currentTop.subscribe(current => {
+              this.editorElement = current;
               this.reset();
               this.resetActions();
               this.init();
@@ -192,28 +192,28 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
 
   ngOnDestroy() {
       super.ngOnDestroy();
-      if (this._rootNodeSubscription) {
-          this._rootNodeSubscription.unsubscribe();
-          this._rootNodeSubscription = undefined;
+      if (this.rootNodeSubscription) {
+          this.rootNodeSubscription.unsubscribe();
+          this.rootNodeSubscription = undefined;
       }
-      if (this._editorAction) {
-          this._editorAction.destroy();
-          this._editorAction = undefined;
+      if (this.action) {
+          this.action.destroy();
+          this.action = undefined;
       }
-      if (this._navigationActions) {
-          this._navigationActions.forEach(a => a.destroy());
-          this._navigationActions = undefined;
+      if (this.navigationActions) {
+          this.navigationActions.forEach(a => a.destroy());
+          this.navigationActions = undefined;
       }
   }
 
   private resetActions(): void {
-      if (this._editorAction) {
-          this._editorAction.destroy();
-          this._editorAction = undefined;
+      if (this.action) {
+          this.action.destroy();
+          this.action = undefined;
       }
-      if (this._navigationActions) {
-          this._navigationActions.forEach(a => a.destroy());
-          this._navigationActions = Array<GenericDynamicAction<any>>();
+      if (this.navigationActions) {
+          this.navigationActions.forEach(a => a.destroy());
+          this.navigationActions = Array<GenericDynamicAction<any>>();
       }
   }
 
@@ -221,9 +221,9 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
       this.createEditorAction();
       this.createNavigationActions();
       this.inspectViewType();
-      if (this._element && this.manager) {
+      if (this.editorElement && this.manager) {
           this.collect = this.manager.childsOf(this.uniqueId).subscribe(children => {
-              this._children = children;
+              this.childElements = children;
           });
           this.collect = this.manager.selected(this.uniqueId).subscribe(_ => this.expand());
           if (!this.parentElement || this.manager.isSelected(this.element)) {
@@ -233,14 +233,14 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
   }
 
   public expand(): void {
-      if (this._element) {
-          this._element.expand();
+      if (this.editorElement) {
+          this.editorElement.expand();
       }
   }
 
   public collapse(): void {
-      if (this._element) {
-          this._element.collapse();
+      if (this.editorElement) {
+          this.editorElement.collapse();
       }
   }
 
@@ -248,8 +248,8 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
       if (event) {
           event.preventDefault();
       }
-      if (this._element) {
-          this._element.toggle();
+      if (this.editorElement) {
+          this.editorElement.toggle();
       }
   }
 
@@ -257,7 +257,7 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
       if (event) {
           event.preventDefault();
       }
-      this.manager.select(this._element);
+      this.manager.select(this.editorElement);
       if (this.active) {
           this.expand();
       }
@@ -347,14 +347,14 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
       if (!this.element) {
           return;
       }
-      this._navigationActionNames.forEach(id => {
+      this.navigationActionNames.forEach(id => {
           if (!this.canNavigate(id)) {
               return;
           }
           const navId = 'explorer.navigation.' + id;
           const navIcon = NavigationAction.UP === id ? 'angle-up' : NavigationAction.TOP === id ? 'angle-double-up' : 'bullseye';
           const act = this.actionOf(navId, '', false, id, false, navIcon);
-          this._navigationActions.push(act);
+          this.navigationActions.push(act);
       });
   }
 
@@ -362,12 +362,12 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
       if (!this.element) {
           return;
       }
-      this._editorAction = this.actionOf('explorer.editor', '', false, null, true);
+      this.action = this.actionOf('explorer.editor', '', false, null, true);
   }
 
   private provideChildEditorActions(parent: GenericDynamicAction<any>): Array<GenericDynamicAction<any>> {
       const childs = new Array<GenericDynamicAction<any>>();
-      this._editorActionNames.forEach(id => {
+      this.editorActionNames.forEach(id => {
           if (id === EditorAction.CREATE) {
               return;
           } else if (id === EditorAction.EDIT || id === EditorAction.DELETE) {

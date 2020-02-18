@@ -2,9 +2,9 @@ import { Theme } from './theme.enum';
 
 
 export class DynamicUtil {
-    
+
     constructor() {}
-    
+
     public static buttonThemeFor(theme: Theme): string {
         return DynamicUtil.themeFor('btn-', theme);
     }

@@ -48,7 +48,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
 
   entities: Array<any>;
   ready = false;
-  _isChild: boolean;
+  isChildBuilder: boolean;
 
   private associationBuilder: PageBuilder<any>;
   private config: PageConfig<any>;
@@ -56,7 +56,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
   constructor() {
       super();
       this.entities = [];
-      this._isChild = false;
+      this.isChildBuilder = false;
   }
 
   get qualifier(): string {
@@ -64,15 +64,15 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
 }
 
   get isChild(): boolean {
-      if (this._isChild && this.mode !== EditorMode.VIEW && this.column) {
+      if (this.isChildBuilder && this.mode !== EditorMode.VIEW && this.column) {
         const topQualifier = this.builder.top().qualifier;
         const currentQualifier = this.pageMetamodel.qualifier;
         return topQualifier === currentQualifier;
       } else {
-          return this._isChild;
-      }   
+          return this.isChildBuilder;
+      }
   }
- 
+
   get editable(): boolean {
     return (this.mode === EditorMode.CREATE || this.mode === EditorMode.EDIT);
   }
@@ -98,7 +98,7 @@ export class DynamicFormAssociationComponent extends DynamicBaseComponent implem
         this.column = this.itemConfig.field.metadata;
       }
       this.pageMetamodel = this.column.metamodel;
-      this._isChild = this.builder.isChild();
+      this.isChildBuilder = this.builder.isChild();
 
       this.collect = this.builder.ready().subscribe(isReady => {
           this.config = this.builder.config;

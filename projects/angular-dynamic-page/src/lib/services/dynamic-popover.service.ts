@@ -29,7 +29,7 @@ export class DynamicPopoverService {
     public openConfirmation<C>(content: PopoverContent,  params: PopoverConfig = {}): PopoverRef<C, boolean> {
         const config: PopoverConfig = { minWidth: '400px', maxHeight: '600px', header: true, footer: true, ...params};
         return this.open<C, boolean>({type: 'confirmation', config, content});
-    }  
+    }
 
     public openTooltip<C, R>(origin: HTMLElement, content: PopoverContent, context?: C, params: PopoverConfig = {}): PopoverRef<C, R> {
         const config: PopoverConfig = { width: '200px', theme: Theme.dark, ...params};

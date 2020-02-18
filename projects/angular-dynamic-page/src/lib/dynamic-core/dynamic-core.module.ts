@@ -49,7 +49,7 @@ export function missingTranslationHandler() {
   ],
   exports: [NgbModule, HttpClientModule, FontAwesomeModule, TranslateModule]
 })
-export class DynamicCoreModule { 
+export class DynamicCoreModule {
   constructor(iconLibrary: FaIconLibrary) {
     iconLibrary.addIconPacks(fas);
     iconLibrary.addIcons(...fontAwesomeIcons);

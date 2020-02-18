@@ -33,7 +33,7 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
   ready = false;
   idColumn: ColumnMetadata;
 
-  private _displayedColumns: Array<string>;
+  private displayedCols: Array<string>;
 
   get gridTheme(): string {
       return (
@@ -67,7 +67,7 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
   }
 
   get displayedColumns() {
-      return this._displayedColumns;
+      return this.displayedCols;
   }
 
   get pageReady(): boolean {
@@ -144,31 +144,33 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
 
   private setupDisplayedColumns(): void {
       if (!this.idColumn) {
-        this.idColumn = this.columns.filter(col => col.idColumn && col.qualifier === this.builder.qualifier).reduce((acc, col) => acc = col);
+        this.idColumn = this.columns
+            .filter(col => col.idColumn && col.qualifier === this.builder.qualifier)
+            .reduce((acc, col) => acc = col);
       }
       if (this.mode === PageMode.GRID) {
           if (this.builder.gridColumnsSelection().selected) {
-              this._displayedColumns = this.builder
+              this.displayedCols = this.builder
                   .gridColumnsSelection()
                   .selected.sort((c1, c2) => (c1.order > c2.order ? 1 : c1.order < c2.order ? -1 : 0))
                   .map(cmd => cmd.path);
           }
       } else {
           if (this.gridViewMode === GridViewMode.MINIMIZED) {
-              this._displayedColumns = [];
+              this.displayedCols = [];
           } else {
-              this._displayedColumns = this.columns.filter(col => col.showWhenCompact).map(cmd => cmd.path);
+              this.displayedCols = this.columns.filter(col => col.showWhenCompact).map(cmd => cmd.path);
           }
       }
-      if (this.gridViewMode !== GridViewMode.MINIMIZED && this._displayedColumns.length === 0 && this.idColumn) {
-          this._displayedColumns = [this.idColumn.path];
+      if (this.gridViewMode !== GridViewMode.MINIMIZED && this.displayedCols.length === 0 && this.idColumn) {
+          this.displayedCols = [this.idColumn.path];
       }
       if (this.gridViewMode === GridViewMode.MINIMIZED) {
-        this._displayedColumns.push('idColumn');
+        this.displayedCols.push('idColumn');
       } else {
-        this._displayedColumns.push('gridActions');
+        this.displayedCols.push('gridActions');
       }
-      
+
   }
 
   public handleGridSelect(row: any, event: MouseEvent): void {

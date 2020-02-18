@@ -21,7 +21,7 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
 
   public query: Criteria;
 
-  private _actionSubscription: Subscription;
+  private actionSubscription: Subscription;
   queryActions: Array<DynamicAction<any>> = [];
 
   public queryEnabled: boolean;
@@ -49,8 +49,8 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
   }
 
   private buildActions(): void {
-      if (!this._actionSubscription) {
-          this._actionSubscription = this.builder.actions().subscribe(actionList => {
+      if (!this.actionSubscription) {
+          this.actionSubscription = this.builder.actions().subscribe(actionList => {
               const allPageActions = actionList
                   .filter(a => a.containsScope(ActionScope.PAGE))
                   .sort((a, b) => -1 * (a.order > b.order ? 1 : a.order === b.order ? 0 : -1));
@@ -72,9 +72,9 @@ export class DynamicPageActionsComponent extends BasePanelView implements OnInit
       super.ngOnDestroy();
       this.registeredActions.forEach(a => this.builder.unregisterAction(a));
 
-      if (this._actionSubscription) {
-          const s = this._actionSubscription;
-          this._actionSubscription = undefined;
+      if (this.actionSubscription) {
+          const s = this.actionSubscription;
+          this.actionSubscription = undefined;
           s.unsubscribe();
       }
       this.query = undefined;

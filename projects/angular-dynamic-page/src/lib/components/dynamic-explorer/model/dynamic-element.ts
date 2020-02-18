@@ -25,8 +25,8 @@ export interface IDynamicElement<T> {
 }
 
 export class DynamicElement<T> implements IDynamicElement<T> {
-    private _parent: IDynamicElement<T>;
-    private _expanded: boolean;
+    private parentElement: IDynamicElement<T>;
+    private elementExpanded: boolean;
 
     public icon?: string;
     public view: ElementView;
@@ -34,14 +34,14 @@ export class DynamicElement<T> implements IDynamicElement<T> {
     public actions?: Array<DynamicAction<IDynamicElementContent<T>>>;
 
     set parent(val: IDynamicElement<T>) {
-        this._parent = val;
+        this.parentElement = val;
         if (this.content) {
             this.content.parent = val ? val.content : null;
         }
     }
 
     get parent(): IDynamicElement<T> {
-        return this._parent;
+        return this.parentElement;
     }
 
     get uniqueId(): string {
@@ -74,24 +74,24 @@ export class DynamicElement<T> implements IDynamicElement<T> {
     public static generateUniqueId(id: string | number, type: string | number): string {
         return type ? `${id}@${type}` : null;
     }
-    
+
     public expand(): void {
-        this._expanded = true;
+        this.elementExpanded = true;
         if (this.parent) {
-            this._parent.expand();
+            this.parentElement.expand();
         }
     }
 
     public collapse(): void {
-        this._expanded = false;
+        this.elementExpanded = false;
     }
 
     public isExpanded(): boolean {
-        return this._expanded;
+        return this.elementExpanded;
     }
 
     public toggle(): void {
-        this._expanded = !this._expanded;
+        this.elementExpanded = !this.elementExpanded;
     }
 
     public addAction(action: DynamicAction<IDynamicElementContent<T>>): void {
@@ -108,7 +108,7 @@ export class DynamicElement<T> implements IDynamicElement<T> {
         }
         this.view = undefined;
         this.viewContext = undefined;
-        this._parent = undefined;
+        this.parentElement = undefined;
         if (this.content) {
             this.content.destroy();
         }

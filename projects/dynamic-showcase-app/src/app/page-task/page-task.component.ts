@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { 
-  BasePageView, 
+import {
+  BasePageView,
   PageBuilder,
   DynamicActionBuilder,
   DynamicUtil,
-  GenericDynamicAction, 
+  GenericDynamicAction,
   ActionScope,
   ActionType,
-  Theme, 
-  QueryMode, 
-  Condition, 
-  Operator, 
-  PageViewMode, 
+  Theme,
+  QueryMode,
+  Condition,
+  Operator,
+  PageViewMode,
   PageRelation,
-  ColumnMetadata 
+  ColumnMetadata
 } from 'angular-dynamic-page';
 import { Task } from '../model/task.model';
 
@@ -43,9 +43,9 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
   public ts: string;
 
   constructor(
-    private dynamicService: DynamicService, 
+    private dynamicService: DynamicService,
     private popoverService: DynamicPopoverService,
-    private http: HttpClient,
+    private http: HttpClient
   ) {
     super();
     this.theme = Theme.dark;
@@ -55,7 +55,10 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
     this.pageBuilder = this.dynamicService.createPageBuilder<Task>({qualifier: 'Task'});
     this.pageBuilder
       .withSortingSample(Task, Agent, CheckScript, Flow)
-      .withGridColumns('id', 'taskName', 'nextExecutionStartTime', 'taskState', 'checkScript.scriptName', 'flow.flowName', 'agent.agentName')
+      .withGridColumns(
+        'id', 'taskName', 'nextExecutionStartTime', 'taskState',
+        'checkScript.scriptName', 'flow.flowName', 'agent.agentName'
+      )
       .withCompactColumns('id', 'taskName', 'taskState')
       .withPageConfiguration(config => {
         config.queryMode = QueryMode.CRITERIA;
@@ -79,15 +82,15 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
         } else if (relation.qualifier === 'CheckScript') {
           relation.accessPath = 'check-scripts';
           relation.descriptionColumnName = 'scriptName';
-          relation.popupColumns = ['id', 'scriptName', 'scriptType']
+          relation.popupColumns = ['id', 'scriptName', 'scriptType'];
         } else if (relation.qualifier === 'Flow') {
           relation.accessPath = 'flows';
           relation.descriptionColumnName = 'flowName';
-          relation.popupColumns = ['id', 'flowName', 'flowState']
+          relation.popupColumns = ['id', 'flowName', 'flowState'];
         } else if (relation.qualifier === 'Agent') {
           relation.accessPath = 'agent';
           relation.descriptionColumnName = 'agentName';
-          relation.popupColumns = ['id', 'agentName', 'agentStatus']
+          relation.popupColumns = ['id', 'agentName', 'agentStatus'];
         } else if (relation.qualifier === 'TaskExecution') {
           relation.accessPath = 'task-executions';
           relation.descriptionColumnName = 'executionStartTime';
@@ -107,25 +110,25 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
           .addPredicate('contents.txt3', Operator.LIKE, '').and()
           .addPredicate('checkScript.scriptName', Operator.LIKE, '').and()
           .addPredicate('taskName', Operator.LIKE, '').and();
-      })
+       })
       .withViewer(PageViewMode.EDITOR);
 
-      this.pageBuilder.ready().subscribe(isReady => {
-        if (isReady) {
-          this.registerActions();
-        }
-      });
+    this.pageBuilder.ready().subscribe(isReady => {
+      if (isReady) {
+        this.registerActions();
+      }
+    });
 
-      /*
-      this.collect = this.pageBuilder.formItemChange('taskName', 'taskState').subscribe(change => {
-        change.form.get('taskDescription').setValue('Desc of ' + change.value);
-      });
-      */
+    /*
+    this.collect = this.pageBuilder.formItemChange('taskName', 'taskState').subscribe(change => {
+      change.form.get('taskDescription').setValue('Desc of ' + change.value);
+    });
+    */
 
-      this.collect = this.pageBuilder.dataSelectionChange().subscribe(_ => {
-        this.selection = this.pageBuilder.getSelectedData();
-        this.checkActionState();
-      });
+    this.collect = this.pageBuilder.dataSelectionChange().subscribe( _ => {
+      this.selection = this.pageBuilder.getSelectedData();
+      this.checkActionState();
+    });
   }
 
   private attachTaskExecutionRelation(relation: PageRelation): void {
@@ -142,7 +145,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
       config.canEdit = false;
       return config;
     })
-    .withGridColumns('id','executionStartTime', 'executionEndTime', 'executionStatus')
+    .withGridColumns('id', 'executionStartTime', 'executionEndTime', 'executionStatus')
     .withCompactColumns('id', 'executionStartTime')
     .withSortingSamples(TaskExecution)
     .withRelationConfiguration((pb, rel) => {
@@ -224,7 +227,9 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
     const taskExecutionId = this.selectionTaskExecution.id;
     const theme = this.theme;
     const context: { taskExecutionId: number; theme: Theme } = { taskExecutionId, theme };
-    const ref = this.popoverService.openDialog<{ taskExecutionId: number; theme: Theme }, any>(ExecutionContentViewComponent, context, undefined, undefined, undefined, '1000px');
+    const ref = this.popoverService.openDialog<{ taskExecutionId: number; theme: Theme }, any>(
+      ExecutionContentViewComponent, context, undefined, undefined, undefined, '1000px'
+    );
     ref.afterClosed$.subscribe(result => {
         // console.log('ExecutionResult dialog is closed => ' + (result ? result.type + ':' + result.data : ''));
         ref.context = undefined;
@@ -263,7 +268,6 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
       })
       .build();
     this.registerAction(this.executeAction);
-    
     this.checkActionState();
   }
 
@@ -275,13 +279,13 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
       .withIconClass('tasks')
       .withHandler((comp, d) => {
         comp.disabled = true;
-        // this.openExecutionContent(comp); 
-        alert('open execution');      
+        // this.openExecutionContent(comp);
+        alert('open execution');
       })
       .build();
 
     taskExecutionPageBuilder.registerAction(this.contentAction);
-    
+
     this.checkActionState();
   }
 
@@ -301,7 +305,7 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
       this.registeredActions.forEach(a => this.pageBuilder.unregisterAction(a));
       this.pageBuilder.destroy();
       this.pageBuilder = undefined;
-      alert('destroyed')
+      alert('destroyed');
     }
     super.ngOnDestroy();
   }

@@ -3,33 +3,31 @@ import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { BasePanelView } from '../../../model/base-panel-view';
 import { PageBuilder } from '../../../model/page-builder';
-import { PageMode } from '../../../model/page-mode.enum';
 
-@Directive()
+// @Directive()
 export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnInit, OnDestroy {
     @Input()
     set builder(value: PageBuilder<any>) {
-        this._builder = value;
-        this._activeBuilder = this._builder;
+        this.pageBuilder = value;
+        this.activePageBuilder = this.pageBuilder;
     }
 
-    private _builder: PageBuilder<any>;
-    private _activeBuilder: PageBuilder<any>;
-    private _entity: T;
-    public _entityValue: any;
-    private _entityForm: FormGroup;
-    private _builderPageMode: PageMode;
+    private pageBuilder: PageBuilder<any>;
+    private activePageBuilder: PageBuilder<any>;
+    private data: T;
+    public formValue: any;
+    private form: FormGroup;
 
     constructor(protected monitoredQualifier: string | Array<string>) {
         super();
     }
 
     get activeBuilder(): PageBuilder<any> {
-        return this._activeBuilder ? this._activeBuilder : this._builder;
+        return this.activePageBuilder ? this.activePageBuilder : this.pageBuilder;
     }
 
     get qualifier(): string {
-        return this._activeBuilder ? this._activeBuilder.qualifier : undefined;
+        return this.activePageBuilder ? this.activePageBuilder.qualifier : undefined;
     }
 
     get visible(): boolean {
@@ -37,7 +35,7 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
     }
 
     get entity(): T {
-        return this._entity;
+        return this.data;
     }
 
     abstract entityChanged(): void;
@@ -56,42 +54,42 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
     }
 
     public get entityValue(): any {
-        return this._entityValue;
-    }
-
-    protected delegateUpdate(delegator: (d: T) => Observable<T>): void {
-        if (this._activeBuilder) {
-            this._activeBuilder.delegateEntityUpdate(delegator);
-        }
-    }
-
-    protected resetUpdateDelegation(): void {
-        if (this._activeBuilder) {
-            this._activeBuilder.clearEntityUpdateDelegate();
-        }
+        return this.formValue;
     }
 
     public set entityValue(value: any) {
-        this._entityValue = value;
-        if (this._activeBuilder) {
+        this.formValue = value;
+        if (this.activePageBuilder) {
             this.entityChanged();
         }
     }
 
+    protected delegateUpdate(delegator: (d: T) => Observable<T>): void {
+        if (this.activePageBuilder) {
+            this.activePageBuilder.delegateEntityUpdate(delegator);
+        }
+    }
+
+    protected resetUpdateDelegation(): void {
+        if (this.activePageBuilder) {
+            this.activePageBuilder.clearEntityUpdateDelegate();
+        }
+    }
+
     protected readFormValue(propName: string): any {
-        if (this._entityForm) {
-            const control = this._entityForm.get(propName);
+        if (this.form) {
+            const control = this.form.get(propName);
             return control ? control.value : undefined;
         } else {
-            return this._entityValue ? this._entityValue[propName] : undefined;
+            return this.formValue ? this.formValue[propName] : undefined;
         }
     }
 
     protected writeFormValue(propName: string, value: any): void {
-        if (!this._entityForm || !propName) {
+        if (!this.form || !propName) {
             return;
         }
-        const control = this._entityForm.get(propName);
+        const control = this.form.get(propName);
         if (!control) {
             return;
         }
@@ -106,18 +104,18 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
     }
 
     ngOnInit() {
-        if (this._builder) {
-            this.collect = this._builder.activeBuilder().subscribe(apb => {
-                if (this._activeBuilder) {
-                    this._activeBuilder.clearEntityUpdateDelegate();
+        if (this.pageBuilder) {
+            this.collect = this.pageBuilder.activeBuilder().subscribe(apb => {
+                if (this.activePageBuilder) {
+                    this.activePageBuilder.clearEntityUpdateDelegate();
                 }
                 if (apb) {
                     console.log('Active Builder Changed: ' + apb.qualifier);
-                    this._activeBuilder = apb;
-                    this.monitorBuilder(this._activeBuilder);
+                    this.activePageBuilder = apb;
+                    this.monitorBuilder(this.activePageBuilder);
                 } else {
                     console.log('Active Builder Removed');
-                    this._activeBuilder = this._builder;
+                    this.activePageBuilder = this.pageBuilder;
                 }
             });
         }
@@ -126,42 +124,39 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
     ngOnDestroy() {
         super.ngOnDestroy();
         this.unmonitorBuilder();
-        this._builder = undefined;
-        if (this._activeBuilder) {
-            this._activeBuilder.clearEntityUpdateDelegate();
+        this.pageBuilder = undefined;
+        if (this.activePageBuilder) {
+            this.activePageBuilder.clearEntityUpdateDelegate();
         }
-        this._activeBuilder = undefined;
+        this.activePageBuilder = undefined;
     }
 
     private monitorBuilder(b: PageBuilder<any>): void {
         this.unmonitorBuilder();
         if (this.isInScope(b.qualifier)) {
             this.collect = b.data().subscribe(d => {
-                this._entity = d as T;
-                this.monitoring(this._entity);
+                this.data = d as T;
+                this.monitoring(this.data);
             });
             this.collect = b.form().subscribe(form => {
                 if (form) {
-                    this._entityForm = form;
+                    this.form = form;
                     this.collect = form.valueChanges.subscribe(val => {
                         Promise.resolve(true).then(() => (this.entityValue = val));
                     });
                 }
             });
-            this.collect = b.mode().subscribe(m => {
-                this._builderPageMode = m;
-            });
         } else {
-            this._entity = undefined;
+            this.data = undefined;
         }
     }
 
     private unmonitorBuilder(): void {
-        if (this._activeBuilder) {
-            this._activeBuilder.clearEntityUpdateDelegate();
+        if (this.activePageBuilder) {
+            this.activePageBuilder.clearEntityUpdateDelegate();
         }
-        this._entityForm = undefined;
-        this._entity = undefined;
+        this.form = undefined;
+        this.data = undefined;
         this.unmonitoring();
     }
 }

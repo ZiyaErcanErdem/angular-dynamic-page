@@ -76,7 +76,7 @@ export function missingTranslationHandler() {
     DynamicGridModule,
     DynamicPageModule,
     DynamicPortalModule,
-    DynamicEditorModule,    
+    DynamicEditorModule,
     AppRoutingModule
   ],
   providers: [],

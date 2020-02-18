@@ -1,7 +1,7 @@
 import { DynamicAction } from './dynamic-action';
 import { Theme } from './theme.enum';
 
-export type PopoverConfig = {
+export interface PopoverConfig {
     title?: string;
     i18n?: boolean;
     actions?: Array<DynamicAction<any>>;
@@ -15,4 +15,4 @@ export type PopoverConfig = {
     maxWidth?: string | number;
     maxHeight?: string | number;
     theme?: Theme;
-};
+}

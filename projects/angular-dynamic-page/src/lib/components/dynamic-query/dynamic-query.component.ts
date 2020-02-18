@@ -1,4 +1,8 @@
-import { Component, OnInit, AfterContentInit, OnDestroy, OnChanges, Input, ContentChild, ContentChildren, QueryList, ChangeDetectorRef, SimpleChanges, TemplateRef } from '@angular/core';
+import {
+    Component, OnInit, AfterContentInit, OnDestroy, OnChanges, Input,
+    ContentChild, ContentChildren, QueryList, ChangeDetectorRef, SimpleChanges,
+    TemplateRef
+} from '@angular/core';
 import { DynamicBaseComponent } from '../../model/dynamic-base-component';
 import { ControlValueAccessor } from '@angular/forms';
 import { PageBuilder } from '../../model/page-builder';
@@ -37,7 +41,8 @@ import { QueryMode } from '../../model/query-mode.enum';
   templateUrl: './dynamic-query.component.html',
   styleUrls: ['./dynamic-query.component.scss']
 })
-export class DynamicQueryComponent extends DynamicBaseComponent implements ControlValueAccessor, AfterContentInit, OnInit, OnDestroy, OnChanges {
+export class DynamicQueryComponent extends DynamicBaseComponent
+            implements ControlValueAccessor, AfterContentInit, OnInit, OnDestroy, OnChanges {
   @Input()
   builder: PageBuilder<any>;
   @Input()

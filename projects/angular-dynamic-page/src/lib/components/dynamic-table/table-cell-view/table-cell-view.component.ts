@@ -21,7 +21,7 @@ export class TableCellViewComponent implements OnInit, OnDestroy {
   set value(val: any) {
       this.field.write(this.row, val);
   }
-  
+
   constructor() {}
 
   public handleRowChange(field: TableField<any>, row: any, event: MouseEvent): void {

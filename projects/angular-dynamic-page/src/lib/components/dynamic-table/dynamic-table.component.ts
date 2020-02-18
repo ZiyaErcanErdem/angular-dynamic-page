@@ -19,13 +19,13 @@ export class DynamicTableComponent extends BasePanelView implements OnInit, OnDe
   rowChange: EventEmitter<{ field: TableField<any>; row: any }> = new EventEmitter<{ field: TableField<any>; row: any }>();
   @Input()
   set control(value: TableFieldControl<any>) {
-      this._control = value;
+      this.fieldControl = value;
       if (!value) {
-          this._control = new TableFieldControl();
+          this.fieldControl = new TableFieldControl();
       }
   }
   get control(): TableFieldControl<any> {
-      return this._control;
+      return this.fieldControl;
   }
 
   get gridBorderTheme(): string {
@@ -45,60 +45,60 @@ export class DynamicTableComponent extends BasePanelView implements OnInit, OnDe
   }
 
   get tableTitle(): string {
-      return this.title ? this.title : this._control ? this._control.title : '';
+      return this.title ? this.title : this.fieldControl ? this.fieldControl.title : '';
   }
 
   get actions(): Array<DynamicAction<any>> {
-      return this._control ? this._control.actions : [];
+      return this.fieldControl ? this.fieldControl.actions : [];
   }
 
   get filterEnabled(): boolean {
-      return !!(this.control && this._showFilter);
+      return !!(this.control && this.showFilter);
   }
 
   get filteredValue(): string {
-      return this._filteredValue;
+      return this.value;
   }
   set filteredValue(value: string) {
-      this._filteredValue = value;
+      this.value = value;
       if (this.control) {
-          this.control.filteredValue = this._filteredValue;
+          this.control.filteredValue = this.value;
           this.control.filter();
       }
   }
 
   get pageSizingEnabled(): boolean {
-      return !!(this.control && this.control.paginator && this._enablePageSizing);
+      return !!(this.control && this.control.paginator && this.enablePageSizing);
   }
 
   get pageSize(): number {
-      return this._pageSize;
+      return this.tablePageSize;
   }
   set pageSize(value: number) {
-      this._pageSize = value;
+      this.tablePageSize = value;
       if (this.control && this.control.paginator) {
-          this.control.paginator.pageSize = this._pageSize;
+          this.control.paginator.pageSize = this.tablePageSize;
           this.control.paginator.pageIndex = 0;
       }
   }
 
-  private _control: TableFieldControl<any>;
+  private fieldControl: TableFieldControl<any>;
 
   private filterAction: GenericDynamicAction<any>;
-  private _showFilter: boolean;
-  private _filteredValue: string;
+  private showFilter: boolean;
+  private value: string;
 
   public pageSizeList: Array<number>;
-  private _enablePageSizing: boolean;
-  private _pageSize: number;
+  private enablePageSizing: boolean;
+  private tablePageSize: number;
 
   constructor() {
       super();
       this.theme = Theme.dark;
       this.panelState = PanelState.EXPANDED;
-      this._showFilter = false;
+      this.showFilter = false;
 
-      this._enablePageSizing = true;
+      this.enablePageSizing = true;
       this.pageSizeList = [2, 5, 10, 20, 50, 100, 200];
   }
 
@@ -106,7 +106,7 @@ export class DynamicTableComponent extends BasePanelView implements OnInit, OnDe
       if (this.control) {
           this.registerActions();
           if (this.control.paginator) {
-              this._pageSize = this.control.paginator.pageSize;
+              this.tablePageSize = this.control.paginator.pageSize;
           }
       }
   }
@@ -117,12 +117,12 @@ export class DynamicTableComponent extends BasePanelView implements OnInit, OnDe
           this.filterAction.destroy();
           this.filterAction = undefined;
       }
-      this._control = undefined;
+      this.fieldControl = undefined;
   }
 
   private toggleFilter(): void {
-      this._showFilter = !this._showFilter;
-      if (!this._showFilter) {
+      this.showFilter = !this.showFilter;
+      if (!this.showFilter) {
           this.filteredValue = '';
       }
   }

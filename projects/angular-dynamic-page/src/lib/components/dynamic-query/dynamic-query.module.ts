@@ -10,28 +10,26 @@ import { RemovePredicateDirective } from './directives/remove-predicate.directiv
 import { DynamicCoreModule } from '../../dynamic-core/dynamic-core.module';
 import { FormsModule } from '@angular/forms';
 
-
-
 @NgModule({
   declarations: [
-    DynamicQueryComponent, 
-    CriteriaActionDirective, 
-    CriteriaConditionDirective, 
-    PredicateFieldDirective, 
-    PredicateInputDirective, 
-    PredicateOperatorDirective, 
+    DynamicQueryComponent,
+    CriteriaActionDirective,
+    CriteriaConditionDirective,
+    PredicateFieldDirective,
+    PredicateInputDirective,
+    PredicateOperatorDirective,
     RemovePredicateDirective
   ],
   imports: [
     CommonModule, DynamicCoreModule, FormsModule
   ],
   exports: [
-    DynamicQueryComponent, 
-    CriteriaActionDirective, 
-    CriteriaConditionDirective, 
-    PredicateFieldDirective, 
-    PredicateInputDirective, 
-    PredicateOperatorDirective, 
+    DynamicQueryComponent,
+    CriteriaActionDirective,
+    CriteriaConditionDirective,
+    PredicateFieldDirective,
+    PredicateInputDirective,
+    PredicateOperatorDirective,
     RemovePredicateDirective
   ]
 })

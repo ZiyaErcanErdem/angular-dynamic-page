@@ -17,8 +17,8 @@ export class DynamicMetamodelService {
   private cache: Map<string, PageMetamodel>;
 
   constructor(
-    private appConfigService: DynamicConfigService, 
-    private http: HttpClient, 
+    private appConfigService: DynamicConfigService,
+    private http: HttpClient,
     private dateUtils: DynamicDateParserService
   ) {
     this.microserviceName = this.appConfigService.getConfig().microserviceName;
@@ -31,7 +31,7 @@ export class DynamicMetamodelService {
       return `${this.serverApiUrl}services/${microservice ? microservice : this.microserviceName}/api`;
     } else {
       return `${this.serverApiUrl}api`;
-    }    
+    }
   }
 
   private cacheMetamodel(model: PageMetamodel, microservice?: string): void {

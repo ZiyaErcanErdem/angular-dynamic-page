@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { 
-  BasePageView, 
+import {
+  BasePageView,
   PageBuilder,
-  GenericDynamicAction, 
-  Theme, 
-  QueryMode, 
-  Condition, 
-  Operator, 
-  PageViewMode, 
-  PageRelation,
+  GenericDynamicAction,
+  Theme,
+  QueryMode,
+  Condition,
+  Operator,
+  PageViewMode,
+  PageRelation
 } from 'angular-dynamic-page';
 import { Task } from '../model/task.model';
 
@@ -28,7 +28,7 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
   public pageBuilder: PageBuilder<Flow>;
 
   constructor(
-    private dynamicService: DynamicService, 
+    private dynamicService: DynamicService,
     private popoverService: DynamicPopoverService,
     private http: HttpClient,
   ) {
@@ -62,7 +62,7 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
           } else if (relation.qualifier === 'EventTrigger') {
             relation.accessPath = 'event-triggers';
             relation.descriptionColumnName = 'triggerName';
-            relation.popupColumns = ['id', 'triggerName', 'triggerType']
+            relation.popupColumns = ['id', 'triggerName', 'triggerType'];
           } else if (relation.qualifier === 'Task') {
             relation.accessPath = 'tasks';
             relation.descriptionColumnName = 'taskName';
@@ -73,7 +73,7 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
             this.configureFlowExecutionRelation(relation);
           } else {
             relation.searchable = false;
-          } 
+          }
           return relation;
       })
       .withDefaultQuery(query => {
@@ -99,7 +99,7 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
       config.canDelete = false;
       return config;
     })
-    .withGridColumns('id','executionStartTime', 'executionEndTime', 'executionStatus')
+    .withGridColumns('id', 'executionStartTime', 'executionEndTime', 'executionStatus')
     .withCompactColumns('id', 'executionStartTime')
     .withSortingSamples(FlowExecution)
     .withRelationConfiguration((pb, rel) => {
@@ -145,7 +145,7 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
       this.registeredActions.forEach(a => this.pageBuilder.unregisterAction(a));
       this.pageBuilder.destroy();
       this.pageBuilder = undefined;
-      alert('destroyed')
+      alert('destroyed');
     }
     super.ngOnDestroy();
   }

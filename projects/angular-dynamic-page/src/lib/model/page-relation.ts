@@ -27,7 +27,7 @@ export class PageRelation {
         this.relationType = metamodel.relType;
         this.group = metamodel.group;
         this.qualifier = metamodel.qualifier;
-        this.path = metamodel.path
+        this.path = metamodel.path;
         this.relationBuilder = undefined;
         this.searchable = true;
         this.listable = true;

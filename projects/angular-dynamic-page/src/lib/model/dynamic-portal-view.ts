@@ -11,15 +11,15 @@ export class DynamicPortalView<C> {
     public readonly type: DynamicViewType;
     public readonly templatePortal: TemplatePortal<C> | null;
     public readonly componentPortal: ComponentPortal<C> | null;
-    private _viewRef: EmbeddedViewRef<C>;
-    private _componentRef: ComponentRef<C>;
+    private embeddedViewRef: EmbeddedViewRef<C>;
+    private compRef: ComponentRef<C>;
     private detachedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private attachedSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
     private renewSubject: Subject<DynamicPortalView<C>> = new Subject<DynamicPortalView<C>>();
 
-    private _completed: boolean;
-    private _attached: boolean;
-    private _detached: boolean;
+    private isCompleted: boolean;
+    private isViewAttached: boolean;
+    private isViewDetached: boolean;
 
     private template: TemplateRef<any>;
     private context?: any;
@@ -36,11 +36,11 @@ export class DynamicPortalView<C> {
             this.type = DynamicViewType.COMPONENT;
             this.componentPortal = new ComponentPortal<C>(component);
         }
-        this._completed = false;
-        this._attached = false;
-        this._detached = false;
-        this.detachedSubject = new BehaviorSubject<boolean>(this._detached);
-        this.attachedSubject = new BehaviorSubject<boolean>(this._attached);
+        this.isCompleted = false;
+        this.isViewAttached = false;
+        this.isViewDetached = false;
+        this.detachedSubject = new BehaviorSubject<boolean>(this.isViewDetached);
+        this.attachedSubject = new BehaviorSubject<boolean>(this.isViewAttached);
     }
 
     public static createFromTemplate(template: TemplateRef<any>, context?: any): DynamicPortalView<any> {
@@ -54,15 +54,15 @@ export class DynamicPortalView<C> {
     }
 
     public get completed(): boolean {
-        return this._completed;
+        return this.isCompleted;
     }
 
     public get viewRef(): EmbeddedViewRef<C> {
-        return this._viewRef;
+        return this.embeddedViewRef;
     }
 
     public get componentRef(): ComponentRef<C> {
-        return this._componentRef;
+        return this.compRef;
     }
 
     public renew(): DynamicPortalView<C> {
@@ -74,11 +74,11 @@ export class DynamicPortalView<C> {
     }
 
     public isAttached(): boolean {
-        return this._attached;
+        return this.isViewAttached;
     }
 
     public isDetached(): boolean {
-        return this._detached;
+        return this.isViewDetached;
     }
 
     public renewed(): Observable<DynamicPortalView<C>> {
@@ -95,37 +95,37 @@ export class DynamicPortalView<C> {
 
     public setViewReference(ref: EmbeddedViewRef<C>): void {
         if (ref && !this.completed && this.type === DynamicViewType.TEMPLATE) {
-            this._completed = true;
-            this._attached = true;
-            this._viewRef = ref;
+            this.isCompleted = true;
+            this.isViewAttached = true;
+            this.embeddedViewRef = ref;
             this.attachedSubject.next(true);
         }
     }
 
     public setComponentReference(ref: ComponentRef<C>): void {
         if (ref && !this.completed && this.type === DynamicViewType.COMPONENT) {
-            this._completed = true;
-            this._attached = true;
-            this._componentRef = ref;
-            this.attachedSubject.next(this._attached);
+            this.isCompleted = true;
+            this.isViewAttached = true;
+            this.compRef = ref;
+            this.attachedSubject.next(this.isViewAttached);
         }
     }
 
     public detach(): void {
-        if (!this._detached) {
-            this._attached = false;
-            this._detached = true;
-            this.detachedSubject.next(this._detached);
+        if (!this.isViewDetached) {
+            this.isViewAttached = false;
+            this.isViewDetached = true;
+            this.detachedSubject.next(this.isViewDetached);
             this.attachedSubject.complete();
             this.detachedSubject.complete();
-            if (this._viewRef) {
-                this._viewRef.destroy();
+            if (this.embeddedViewRef) {
+                this.embeddedViewRef.destroy();
             }
-            if (this._componentRef) {
-                this._componentRef.destroy();
+            if (this.compRef) {
+                this.compRef.destroy();
             }
-            this._viewRef = undefined;
-            this._componentRef = undefined;
+            this.embeddedViewRef = undefined;
+            this.compRef = undefined;
             this.detachedSubject = undefined;
             this.attachedSubject = undefined;
         }

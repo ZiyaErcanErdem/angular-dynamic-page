@@ -6,7 +6,7 @@ describe('DynamicMetamodelService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: DynamicMetamodelService = TestBed.get(DynamicMetamodelService);
+    const service: DynamicMetamodelService = TestBed.inject(DynamicMetamodelService);
     expect(service).toBeTruthy();
   });
 });
