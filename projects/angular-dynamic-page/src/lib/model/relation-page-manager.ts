@@ -10,7 +10,7 @@ import { Operator } from './operator.enum';
 import { ManagerType } from './manager-type.enum';
 import { DynamicPortalView } from './dynamic-portal-view';
 
-export class RelationPageBuilder {
+export class RelationPageManager {
     public manager: PageManager<any>;
     private gridCols: Array<string>;
     private compactCols: Array<string>;
@@ -29,40 +29,40 @@ export class RelationPageBuilder {
     ) {
         this.gridCols = new Array<string>();
         this.compactCols = new Array<string>();
-        this.relation.relationBuilder = this;
+        this.relation.relationManager = this;
     }
 
-    public withGridColumns(...cols: string[]): RelationPageBuilder {
+    public withGridColumns(...cols: string[]): RelationPageManager {
         this.gridCols = cols;
         return this;
     }
-    public withCompactColumns(...cols: string[]): RelationPageBuilder {
+    public withCompactColumns(...cols: string[]): RelationPageManager {
         this.compactCols = cols;
         return this;
     }
-    public withSortingSamples(samples: new () => any ): RelationPageBuilder {
+    public withSortingSamples(samples: new () => any ): RelationPageManager {
         this.sortingSamples = samples;
         return this;
     }
 
-    public withMetamodelConfiguration(metamodelConfigFn: (col: ColumnMetadata) => void): RelationPageBuilder {
+    public withMetamodelConfiguration(metamodelConfigFn: (col: ColumnMetadata) => void): RelationPageManager {
         this.metamodelConfigurer = metamodelConfigFn;
         return this;
     }
 
-    public withPageConfiguration(configFn: (config: PageConfig<any>) => PageConfig<any>): RelationPageBuilder {
+    public withPageConfiguration(configFn: (config: PageConfig<any>) => PageConfig<any>): RelationPageManager {
         this.configConfigurer = configFn;
         return this;
     }
 
     public withRelationConfiguration(
         relationConfigFn: (manager: PageManager<any>, col: PageRelation) => PageRelation
-    ): RelationPageBuilder {
+    ): RelationPageManager {
         this.relationConfigurer = relationConfigFn;
         return this;
     }
 
-    public withViewer(viewMode: PageViewMode, viewer?: DynamicPortalView<any>): RelationPageBuilder {
+    public withViewer(viewMode: PageViewMode, viewer?: DynamicPortalView<any>): RelationPageManager {
         if (!viewMode) {
             return this;
         }
@@ -78,7 +78,7 @@ export class RelationPageBuilder {
         }
 
         if (this.relation) {
-            this.relation.relationBuilder = undefined;
+            this.relation.relationManager = undefined;
             this.relation = undefined;
         }
 

@@ -1,7 +1,7 @@
 import { PageMetamodel } from './page-metamodel';
 import { RelationType } from './relation-type.enum';
 import { ColumnMetadata } from './column-metadata';
-import { RelationPageBuilder } from './relation-page-builder';
+import { RelationPageManager } from './relation-page-manager';
 
 export class PageRelation {
     public readonly parent: PageMetamodel;
@@ -19,7 +19,7 @@ export class PageRelation {
     public searchable: boolean;
     public listable: boolean;
 
-    public relationBuilder: RelationPageBuilder;
+    public relationManager: RelationPageManager;
 
     constructor(metamodel: PageMetamodel, parent: PageMetamodel) {
         this.metamodel = metamodel;
@@ -28,7 +28,7 @@ export class PageRelation {
         this.group = metamodel.group;
         this.qualifier = metamodel.qualifier;
         this.path = metamodel.path;
-        this.relationBuilder = undefined;
+        this.relationManager = undefined;
         this.searchable = true;
         this.listable = true;
     }

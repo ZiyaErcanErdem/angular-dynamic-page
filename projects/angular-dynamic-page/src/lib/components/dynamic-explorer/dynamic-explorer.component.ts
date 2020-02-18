@@ -421,7 +421,7 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
       const btnIcon = icon ? icon : createChilds ? 'bolt' : 'sync-alt';
       const btnPayload = payload ? payload : id;
 
-      const manager = new DynamicActionBuilder<any>(id, ActionType.CUSTOM)
+      const actionBuilder = new DynamicActionBuilder<any>(id, ActionType.CUSTOM)
           .withScope(ActionScope.CUSTOM)
           .withLabel(label)
           .withI18n(i18n)
@@ -434,9 +434,9 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
               comp.disabled = false;
           });
       if (createChilds) {
-          return manager.withChildsProvider(a => this.provideChildEditorActions(a)).build();
+          return actionBuilder.withChildsProvider(a => this.provideChildEditorActions(a)).build();
       } else {
-          return manager.build();
+          return actionBuilder.build();
       }
   }
 }

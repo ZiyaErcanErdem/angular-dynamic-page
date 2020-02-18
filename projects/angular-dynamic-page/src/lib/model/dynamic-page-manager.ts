@@ -30,7 +30,7 @@ import { PageType } from './page-type.enum';
 import { DataActionType } from './data-action-type.enum';
 import { DynamicSelectorModel, DynamicSelectorBuilder } from './dynamic-selector-model';
 import { QueryMode } from './query-mode.enum';
-import { RelationPageBuilder } from './relation-page-builder';
+import { RelationPageManager } from './relation-page-manager';
 import { ManagerType } from './manager-type.enum';
 import { GridViewMode } from './grid-view-mode.enum';
 import { FormGroup, AbstractControl } from '@angular/forms';
@@ -70,7 +70,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     private sortSubject: Subject<SortContext>;
     private searchColumnsSubject: BehaviorSubject<Array<ColumnMetadata>>;
     private pageQuerySubject: BehaviorSubject<Criteria>;
-    private relationPagesSubject: BehaviorSubject<Array<RelationPageBuilder>>;
+    private relationPagesSubject: BehaviorSubject<Array<RelationPageManager>>;
     private exitSubject: Subject<T>;
     private notificationSubject: Subject<any>;
     private routeDataSubscription: Subscription;
@@ -150,7 +150,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.sortSubject = new Subject<SortContext>();
         this.searchColumnsSubject = new BehaviorSubject<Array<ColumnMetadata>>([]);
         this.pageQuerySubject = new BehaviorSubject<Criteria>(undefined);
-        this.relationPagesSubject = new BehaviorSubject<Array<RelationPageBuilder>>([]);
+        this.relationPagesSubject = new BehaviorSubject<Array<RelationPageManager>>([]);
         this.exitSubject = new Subject<any>();
         this.notificationSubject = new Subject<any>();
         this.activeManagerSubject = new BehaviorSubject<PageManager<any>>(null);
@@ -245,9 +245,9 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
 
         if (this.pageMetamodel) {
             this.pageMetamodel.getRelations().forEach(r => {
-                if (r.relationBuilder) {
-                    r.relationBuilder.destroy();
-                    r.relationBuilder = undefined;
+                if (r.relationManager) {
+                    r.relationManager.destroy();
+                    r.relationManager = undefined;
                 }
             });
             this.pageMetamodel = undefined;
@@ -650,9 +650,9 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         return selectorModel;
     }
 
-    public createRelationPageManager(relation: PageRelation): RelationPageBuilder {
-        const relPageBuilder = new RelationPageBuilder(relation, this, this.config, this.pageMetamodel);
-        return relPageBuilder;
+    public createRelationPageManager(relation: PageRelation): RelationPageManager {
+        const relPageManager = new RelationPageManager(relation, this, this.config, this.pageMetamodel);
+        return relPageManager;
     }
 
     public openSelector(selector: DynamicSelectorModel<any>): void {
@@ -799,8 +799,8 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
 
         const relatedPages = rootMetamodel
             .getRelations()
-            .filter(rel => rel.relationBuilder !== undefined)
-            .map(rel => rel.relationBuilder);
+            .filter(rel => rel.relationManager !== undefined)
+            .map(rel => rel.relationManager);
 
         this.relationPagesSubject.next(relatedPages);
     }
@@ -1089,7 +1089,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         return this.actionSubject.asObservable();
     }
 
-    public relationPages(): Observable<Array<RelationPageBuilder>> {
+    public relationPages(): Observable<Array<RelationPageManager>> {
         return this.relationPagesSubject.asObservable();
     }
 

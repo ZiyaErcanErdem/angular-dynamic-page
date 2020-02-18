@@ -6,7 +6,7 @@ import { PageManager } from '../../model/page-manager';
 import { EditorMode } from '../../model/editor-mode.enum';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { GenericDynamicAction, ActionScope, DynamicActionBuilder, ActionType } from '../../model/dynamic-action';
-import { RelationPageBuilder } from '../../model/relation-page-builder';
+import { RelationPageManager } from '../../model/relation-page-manager';
 import { FormItemConfig } from './model/form-item-config';
 import { ColumnMetadata } from '../../model/column-metadata';
 import { PageConfig } from '../../model/page-config';
@@ -71,7 +71,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   private cachedData: any;
   private formReady = false;
 
-  private childRelations: Array<RelationPageBuilder>;
+  private childRelations: Array<RelationPageManager>;
   private originalMode: EditorMode;
   private formSubscription: Subscription;
 
@@ -99,7 +99,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
   constructor(private fb: FormBuilder, @Optional() private popoverRef: PopoverRef<{ manager: PageManager<any>; mode: EditorMode }, any>) {
       super();
       this.formOptions = { updateOn: 'blur' };
-      this.childRelations = new Array<RelationPageBuilder>();
+      this.childRelations = new Array<RelationPageManager>();
       this.initIfPopover();
   }
 
@@ -185,7 +185,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       this.startFormMonitoring();
   }
 
-  private setupChildPages(childs: Array<RelationPageBuilder>): void {
+  private setupChildPages(childs: Array<RelationPageManager>): void {
       this.childRelations = childs;
       this.registerChildRelationActions();
   }
@@ -670,7 +670,7 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       return txt ? txt.charAt(0).toLowerCase() + txt.slice(1) : txt;
   }
 
-  private activateRelatedPage(cb: RelationPageBuilder): void {
+  private activateRelatedPage(cb: RelationPageManager): void {
       if (cb) {
           this.originalMode = this.mode;
           this.editorMode = EditorMode.CHILD;

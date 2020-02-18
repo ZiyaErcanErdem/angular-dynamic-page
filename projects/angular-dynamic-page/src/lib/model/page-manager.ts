@@ -19,7 +19,7 @@ import { CriteriaBuilder } from './query-builder';
 import { DataActionType } from './data-action-type.enum';
 import { EditorMode } from './editor-mode.enum';
 import { DynamicSelectorModel, DynamicSelectorBuilder } from './dynamic-selector-model';
-import { RelationPageBuilder } from './relation-page-builder';
+import { RelationPageManager } from './relation-page-manager';
 import { HttpEvent } from '@angular/common/http';
 import { GridViewMode } from './grid-view-mode.enum';
 import { FormGroup, AbstractControl } from '@angular/forms';
@@ -79,7 +79,7 @@ export interface PageManager<T> {
   form(): Observable<FormGroup>;
   formItemChange(...formItems: string[]): Observable<{form: FormGroup, control: AbstractControl, name: string, value: any}>;
   portal(): Observable<DynamicPortalView<any>>;
-  relationPages(): Observable<Array<RelationPageBuilder>>;
+  relationPages(): Observable<Array<RelationPageManager>>;
   activeManager(): Observable<PageManager<any>>;
   onNotification(): Observable<any>;
   onExit(): Observable<T>;
@@ -148,7 +148,7 @@ export interface PageManager<T> {
 
   createInstanceFor<R>(qualifier: string, parent?: PageManager<any>): PageManager<R>;
   createSelectorBuilder(qualifier: string, accessPath: string): DynamicSelectorBuilder<any>;
-  createRelationPageManager(relation: PageRelation): RelationPageBuilder;
+  createRelationPageManager(relation: PageRelation): RelationPageManager;
 
   openViewer(preferredViewerMode?: EditorMode): void;
 
