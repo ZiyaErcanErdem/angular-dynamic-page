@@ -11,6 +11,13 @@ export class DynamicService {
 
   constructor(private dynamicConfigService: DynamicConfigService) { }
 
+  public getConfig(applicationId?: string | number): IDynamicConfig {
+    return this.dynamicConfigService.getConfig(applicationId);
+  }
+
+  public hasConfig(applicationId: string | number): boolean {
+    return this.dynamicConfigService.hasConfig(applicationId);
+  }
 
   public createPageManager<T>(
     {qualifier, appId}: {qualifier: string, appId?: string} = {qualifier: 'Default', appId: null}

@@ -28,7 +28,7 @@
     "@ng-bootstrap/ng-bootstrap": "^5.2.1",
     "@ngx-translate/core": "^11.0.1",
     "@ngx-translate/http-loader": "^4.0.0",
-    "angular-dynamic-page": "0.0.3",
+    "angular-dynamic-page": "0.0.9",
     "bootstrap": "^4.4.1",
     "moment": "^2.24.0",
     "ngx-webstorage": "5.0.0",

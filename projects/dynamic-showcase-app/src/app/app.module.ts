@@ -42,7 +42,6 @@ export function missingTranslationHandler() {
   ],
   imports: [
     BrowserModule,
-    /*
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -56,7 +55,6 @@ export function missingTranslationHandler() {
       },
       isolate: false
     }),
-    */
     DynamicCoreModule,
     DynamicModule.forRoot({
       defaultAppId: 'Corecon',
@@ -73,10 +71,7 @@ export function missingTranslationHandler() {
     DynamicPanelModule,
     DynamicButtonModule,
     DynamicTableModule,
-    DynamicGridModule,
     DynamicPageModule,
-    DynamicPortalModule,
-    DynamicEditorModule,
     AppRoutingModule
   ],
   providers: [],

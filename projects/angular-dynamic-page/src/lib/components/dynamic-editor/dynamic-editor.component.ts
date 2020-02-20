@@ -21,7 +21,7 @@ import { GridViewMode } from '../../model/grid-view-mode.enum';
 
 
 export function isAssociated(input: FormControl) {
-  const associated = input.value && (input.value > 0 || ('' + input.value).trim().length > 0);
+  const associated = (input.value || input.value === false || input.value > 0) && (('' + input.value).trim().length > 0);
   if (!associated) {
       input.markAsDirty();
   }
