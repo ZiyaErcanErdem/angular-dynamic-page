@@ -422,26 +422,30 @@ export class DynamicEditorComponent extends BasePortal implements OnChanges, OnI
       if (this.mode === EditorMode.VIEW) {
           return validators;
       }
-      if (this.isRequired(cmd, parentColumn)) {
-          validators.push(Validators.required);
-          if (cmd.columnType === ColumnType.ENUM) {
-              validators.push(isEnumUnknown);
-          }
-          if (cmd.relType === RelationType.INNER) {
-              validators.push(isAssociated);
-          }
-      }
-      if (cmd.minLength && cmd.minLength > 0) {
-          validators.push(Validators.minLength(cmd.minLength));
-      }
-      if (cmd.maxLength && cmd.maxLength > 0 && cmd.maxLength < 9999999) {
-          validators.push(Validators.maxLength(cmd.maxLength));
-      }
-      if (cmd.min && cmd.min > 0) {
-          validators.push(Validators.min(cmd.min));
-      }
-      if (cmd.max && cmd.max > 0 && cmd.max < 999999999999999999) {
-          validators.push(Validators.max(cmd.max));
+      if (cmd.relType === RelationType.SELF) {
+        if (this.isRequired(cmd, parentColumn)) {
+            validators.push(Validators.required);
+            if (cmd.columnType === ColumnType.ENUM) {
+                validators.push(isEnumUnknown);
+            }
+        }
+        if (cmd.minLength && cmd.minLength > 0) {
+            validators.push(Validators.minLength(cmd.minLength));
+        }
+        if (cmd.maxLength && cmd.maxLength > 0 && cmd.maxLength < 9999999) {
+            validators.push(Validators.maxLength(cmd.maxLength));
+        }
+        if (cmd.min && cmd.min > 0) {
+            validators.push(Validators.min(cmd.min));
+        }
+        if (cmd.max && cmd.max > 0 && cmd.max < 999999999999999999) {
+            validators.push(Validators.max(cmd.max));
+        }
+      } else if (cmd.relType === RelationType.INNER) {
+        if (cmd.idColumn && this.isRequired(cmd, parentColumn)) {
+            validators.push(Validators.required);
+            validators.push(isAssociated);
+        }
       }
       return validators;
   }
