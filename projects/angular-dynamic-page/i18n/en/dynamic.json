@@ -94,7 +94,10 @@
     "popup": {
       "alert": "Alert",
       "error": "Error",
-      "confirmation": "Confirmation"
+      "confirmation": "Confirmation",
+      "configure-grid": {
+        "title": "Columns Configuration"
+      }
     },    
     "options": {
       "yes": "Yes",
@@ -142,6 +145,13 @@
       "number": "This field should be a number.",
       "datetimelocal": "This field should be a date and time.",
       "patternLogin": "This field can only contain letters, digits and e-mail addresses."
+    },
+    "error": {
+      "internalServerError": "Internal server error",
+      "server-not-reachable": "Server not reachable",
+      "url-not-found": "Not found",
+      "NotNull": "Field {{ fieldName }} cannot be empty!",
+      "Size": "Field {{ fieldName }} does not meet min/max size requirements!"
     }
   }
 }

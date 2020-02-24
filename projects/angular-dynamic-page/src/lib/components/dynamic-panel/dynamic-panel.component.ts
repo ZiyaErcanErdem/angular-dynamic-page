@@ -1,14 +1,18 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { BasePanel } from '../../model/base-panel';
 import { Theme } from '../../model/theme.enum';
 import { DynamicUtil } from '../../model/dynamic-util';
+import { PopoverRef } from '../../model/popover-ref';
+import { DynamicPopoverService } from '../../services/dynamic-popover.service';
+import { PopoverContent } from '../../model/popover-content';
+import { PopoverConfig } from '../../model/popover-config';
 
 @Component({
   selector: 'zee-dynamic-panel',
   templateUrl: './dynamic-panel.component.html',
   styleUrls: ['./dynamic-panel.component.scss']
 })
-export class DynamicPanelComponent extends BasePanel {
+export class DynamicPanelComponent extends BasePanel implements OnDestroy {
   @Input()
   theme: Theme = Theme.dark;
   @Input()
@@ -18,7 +22,9 @@ export class DynamicPanelComponent extends BasePanel {
   @Input()
   embeddedBody: boolean;
 
-  constructor() {
+  private popoverRef: PopoverRef<any, any>;
+
+  constructor(private popoverService: DynamicPopoverService) {
       super();
       this.header = true;
       this.embeddedBody = false;
@@ -55,6 +61,25 @@ export class DynamicPanelComponent extends BasePanel {
 
   get tooltipButtonClass(): string {
       return DynamicUtil.buttonThemeFor(this.theme) + ' ' + this.panelHeaderTextColor;
+  }
+
+  public openPopup(origin: HTMLElement, content: PopoverContent): void {
+    const config: PopoverConfig = {header: false}
+    this.popoverRef = this.popoverService.openPopup(origin, content, {}, config);
+    this.popoverRef.afterClosed$.subscribe(() => {
+        this.popoverRef = null;
+    })
+  }
+
+  public closePopup(): void {
+    if (this.popoverRef) {
+        this.popoverRef.close();
+        this.popoverRef = null;
+      }
+  }
+
+  ngOnDestroy() {
+    this.closePopup();
   }
 }
 

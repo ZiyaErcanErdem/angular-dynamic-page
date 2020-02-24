@@ -11,6 +11,7 @@ import { DynamicContentViewModule } from '../dynamic-content-view/dynamic-conten
 import { DynamicExcelModule } from '../dynamic-excel/dynamic-excel.module';
 import { DynamicPopoverModule } from '../dynamic-popover/dynamic-popover.module';
 import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
+import { DynamicNotifierModule } from '../dynamic-notifier/dynamic-notifier.module';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
     DynamicContentViewModule,
     DynamicButtonModule,
     DynamicExcelModule,
-    DynamicPopoverModule
+    DynamicPopoverModule,
+    DynamicNotifierModule
   ],
   exports: [DynamicPageComponent],
   entryComponents: [DynamicPageComponent]

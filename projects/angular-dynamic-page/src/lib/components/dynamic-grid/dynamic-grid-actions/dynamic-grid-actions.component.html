@@ -6,7 +6,7 @@
     </div>
 </ng-template>
 
-<button *ngIf="actions && actions.length > 0" type="button" class="btn btn-outline-secondary btn-sm" placement="left" (click)="$event.stopPropagation();"
-        [ngbPopover]="actionContent" >
+<button *ngIf="actions && actions.length > 0" type="button" class="btn btn-outline-secondary btn-sm" 
+    #origin (click)="openPopup(origin, actionContent)">
         <fa-icon [icon]="'ellipsis-h'"></fa-icon>
 </button>

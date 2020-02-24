@@ -6,6 +6,10 @@ import { DynamicDataService } from '../services/dynamic-data.service';
 import { DynamicService } from '../services/dynamic.service';
 import { DynamicEditorModule } from '../components/dynamic-editor/dynamic-editor.module';
 import { DynamicPageModule } from '../components/dynamic-page/dynamic-page.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { DynamicHttpListenerInterceptor } from '../interceptors/dynamic-http-listener.interceptor';
+import { DynamicAlertManagerService } from '../services/dynamic-alert-manager.service';
+import { DynamicEventHubService } from '../services/dynamic-event-hub.service';
 
 
 
@@ -21,14 +25,21 @@ export class DynamicModule {
     return {
         ngModule: DynamicModule,
         providers: [
-            DynamicMetamodelService,
+            DynamicConfigService,
             DynamicDataService,
             {
                 provide: 'DynamicConfigRegistryToken',
                 useValue: registryConfig
             },
-            DynamicConfigService,
-            DynamicService
+            DynamicMetamodelService,
+            DynamicService,
+            DynamicEventHubService,
+            DynamicAlertManagerService,
+            {
+              provide: HTTP_INTERCEPTORS,
+              useClass: DynamicHttpListenerInterceptor,
+              multi: true
+            }
         ]
     };
 }

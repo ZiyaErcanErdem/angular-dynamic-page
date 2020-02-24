@@ -4,6 +4,10 @@ import { PageManager } from '../../../model/page-manager';
 import { PageConfig } from '../../../model/page-config';
 import { Subscription } from 'rxjs';
 import { DynamicAction, ActionScope, ActionType } from '../../../model/dynamic-action';
+import { PopoverContent } from '../../../model/popover-content';
+import { PopoverConfig } from '../../../model/popover-config';
+import { DynamicPopoverService } from '../../../services/dynamic-popover.service';
+import { PopoverRef } from '../../../model/popover-ref';
 
 @Component({
   selector: 'zee-dynamic-grid-actions',
@@ -16,11 +20,20 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
 
   private pageConfig: PageConfig<any>;
   private actionSubscription: Subscription;
+  private popoverRef: PopoverRef<any, any>;
   actions: Array<DynamicAction<any>> = [];
 
-  constructor() {
+  constructor(private popoverService: DynamicPopoverService) {
       super();
   }
+
+  public openPopup(origin: HTMLElement, content: PopoverContent): void {
+    const config: PopoverConfig = {header: false}
+    this.popoverRef = this.popoverService.openPopup(origin, content, {}, config);
+    this.popoverRef.afterClosed$.subscribe(() => {
+        this.popoverRef = null;
+    })
+}
 
   private buildActions(): void {
       this.pageConfig = this.manager.config;
@@ -69,5 +82,9 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
           // this.actions.forEach(a => a.destroy());
           this.actions = undefined;
       }
+      if (this.popoverRef) {
+        this.popoverRef.close();
+        this.popoverRef = null;
+      }      
   }
 }

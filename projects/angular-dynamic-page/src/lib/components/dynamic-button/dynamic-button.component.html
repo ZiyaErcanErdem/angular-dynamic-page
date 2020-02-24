@@ -25,10 +25,7 @@
                     <span *ngIf="hasLabel" class="d-none d-md-inline">{{ action.i18n ? (action.label | translate) : action.label }}</span>
                     <span *ngIf="hasBadge" class="badge badge-light">{{ action.badge }}</span>
                 </button>
-                <button #actionButton
-                        [ngbPopover]="actionContent"
-                        [placement]="['top', 'left', 'right', 'bottom']"
-                        [container]="'body'"
+                <button #actionButton (click)="openPopup(actionButton, actionContent)"
                         type="button"
                         [disabled]="action.disabled"
                         class="btn btn-sm" [ngClass]="action.buttonClass">

@@ -7,6 +7,10 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { GridViewMode } from '../../../model/grid-view-mode.enum';
 import { Theme } from '../../../model/theme.enum';
 import { DynamicUtil } from '../../../model/dynamic-util';
+import { DynamicPopoverService } from '../../../services/dynamic-popover.service';
+import { PopoverConfig } from '../../../model/popover-config';
+import { PopoverContent } from '../../../model/popover-content';
+import { PopoverRef } from '../../../model/popover-ref';
 
 let confUniqueId = 0;
 
@@ -26,7 +30,9 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
   mode: PageMode;
   gridViewMode: GridViewMode;
 
-  constructor() {
+  private popoverRef: PopoverRef<any, any>;
+
+  constructor(private popoverService: DynamicPopoverService) {
       super();
       this.metamodel = null;
   }
@@ -61,6 +67,10 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
           this.selection.select(cmd);
       }
       this.storeGridColumnSelectionSetting();
+      if (this.popoverRef) {
+        this.popoverRef.close();
+        this.popoverRef = null;
+      }
   }
 
   private storeGridColumnSelectionSetting(): void {
@@ -79,6 +89,15 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
       }
   }
 
+
+    public openPopup(origin: HTMLElement, content: PopoverContent): void {
+        const config: PopoverConfig = {title: 'dynamic.popup.configure-grid.title', i18n: true}
+        this.popoverRef = this.popoverService.openPopup(origin, content, {}, config);
+        this.popoverRef.afterClosed$.subscribe(() => {
+            this.popoverRef = null;
+        })
+    }
+
   ngOnInit() {
       this.manager.gridColumns().subscribe(cols => {
           this.metamodel = cols.filter(cmd => cmd.listable);
@@ -96,6 +115,10 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
       super.ngOnDestroy();
       this.selection = undefined;
       this.metamodel = undefined;
+      if (this.popoverRef) {
+        this.popoverRef.close();
+        this.popoverRef = null;
+      }
   }
 }
 

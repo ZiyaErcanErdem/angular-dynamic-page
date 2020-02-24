@@ -1,0 +1,16 @@
+<nav>
+    <ul [ngClass]="paginationClass">
+        <li *ngFor="let page of pages" class="page-item" 
+        [class.active]="page.current"
+        [class.disabled]="page.disabled" 
+        [attr.aria-current]="(page.current ? 'page' : null)">
+            <a class="page-link" href (click)="selectPage(page); $event.preventDefault()"
+                [attr.tabindex]="page.tabIndex" 
+                [attr.aria-disabled]="page.disabled" 
+                [attr.aria-label]="page.ariaLabel" [innerHTML]="page.label">
+                {{ page.label }}
+                <span *ngIf="page.current" class="sr-only">(current)</span>
+            </a>
+        </li>
+    </ul>
+</nav>

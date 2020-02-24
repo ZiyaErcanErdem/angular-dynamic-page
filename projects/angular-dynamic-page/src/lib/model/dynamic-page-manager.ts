@@ -699,6 +699,10 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                     return;
                 }
                 if (cmd.relType === RelationType.SELF) {
+                    if (cmd.idColumn) {
+                        cmd.gridColWith = '80px';
+                        cmd.compactColWidth = '50px';
+                    }
                     cmd.showWhenGrid = selector.selectorColumns.includes(cmd.name);
                     cmd.showWhenCompact = selector.selectorColumns.includes(cmd.name);
                     if (selector.selectorColumnStyles) {
@@ -706,7 +710,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                         if (colWith) {
                             cmd.gridColWith = colWith;
                         }
-                    }
+                    }                    
                 }
                 cmd.order = selector.selectorColumns.indexOf(cmd.name);
                 cmd.order = cmd.order < 0 ? 1000 : cmd.order;
@@ -839,6 +843,10 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         let configuredCols = cols;
 
         configuredCols.forEach(col => {
+            if (col.idColumn) {
+                col.gridColWith = '80px';
+                col.compactColWidth = '50px';
+            }
             if (col.relType === RelationType.SELF) {
                 col.showWhenGrid = this.gridCols.includes(col.path);
                 col.showWhenCompact = this.compactCols.includes(col.path);

@@ -10,8 +10,8 @@
                         <div class="p-2 mr-2 flex-grow-1">{{ tooltip }}</div>
                     </div>
                 </ng-template>
-                <button type="button" class="py-0 px-2 btn btn-sm border border-white" [ngClass]="tooltipButtonClass" [ngbPopover]="tooltipContent"
-                    container="body" placement="right" triggers="mouseenter:mouseleave">
+                <button type="button" class="py-0 px-2 btn btn-sm border border-white" [ngClass]="tooltipButtonClass" 
+                    #origin (mouseenter)="openPopup(origin, tooltipContent)" (mouseleave)="closePopup()">
                     <fa-icon class="p-0 m-0" [icon]="'exclamation'"></fa-icon>
                 </button>
             </div>

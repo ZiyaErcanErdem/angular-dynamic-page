@@ -12,6 +12,8 @@ export * from './lib/dynamic-core/dynamic-core.module';
 
 export * from './lib/services/dynamic.service';
 export * from './lib/services/dynamic-popover.service';
+export * from './lib/services/dynamic-alert-manager.service';
+export * from './lib/services/dynamic-event-hub.service';
 
 export * from './lib/components/dynamic-button/dynamic-button.module';
 export * from './lib/components/dynamic-button/dynamic-button.component';
@@ -40,6 +42,11 @@ export * from './lib/components/dynamic-page/dynamic-page.component';
 export * from './lib/components/dynamic-portal/dynamic-portal.module';
 export * from './lib/components/dynamic-portal/dynamic-portal.component';
 
+export * from './lib/components/dynamic-alert/dynamic-alert.module';
+export * from './lib/components/dynamic-alert/dynamic-alert.component';
+
+export * from './lib/components/dynamic-notifier/dynamic-notifier.module';
+export * from './lib/components/dynamic-notifier/dynamic-notifier.component';
 
 export * from './lib/components/dynamic-grid/pipes/dynamic-cell-view.pipe';
 
@@ -64,6 +71,10 @@ export * from './lib/model/popover-ref';
 export * from './lib/model/dynamic-action';
 export * from './lib/model/theme.enum';
 export * from './lib/model/panel-state.enum';
+
+export * from './lib/model/alert-type.enum';
+export * from './lib/model/dynamic-alert';
+export * from './lib/model/dynamic-event';
 
 export * from './lib/model/dynamic-util';
 

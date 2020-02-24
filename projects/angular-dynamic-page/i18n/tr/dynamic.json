@@ -94,7 +94,10 @@
     "popup": {
       "alert": "Uyarı",
       "error": "Hata",
-      "confirmation": "Onay"
+      "confirmation": "Onay",
+      "configure-grid": {
+        "title": "Kolon Konfigürasyonu"
+      }
     },    
     "options": {
       "yes": "Evet",
@@ -140,6 +143,13 @@
       "number": "Bu alan numara içermeli.",
       "datetimelocal": "Bu alan tarih veya zaman içermeli.",
       "patternLogin": "Bu alan harf, rakam veya e-posta adresi içermeli."
+    },
+    "error": {
+      "internalServerError": "Internal server error",
+      "server-not-reachable": "Sunucuya ulaşılamıyor",
+      "url-not-found": "Bulunamadı",
+      "NotNull": "{{fieldName}} alanı boş bırakılamaz!",
+      "Size": "{{fieldName}} alanı min/max kurallarına uymuyor!"
     }
   }
 }

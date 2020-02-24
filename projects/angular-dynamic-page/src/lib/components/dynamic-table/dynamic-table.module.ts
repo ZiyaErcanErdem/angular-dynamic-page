@@ -10,7 +10,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { DynamicPanelModule } from '../dynamic-panel/dynamic-panel.module';
 import { FormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { DynamicPaginationModule } from '../dynamic-pagination/dynamic-pagination.module';
+import { DynamicPagerModule } from '../dynamic-pager/dynamic-pager.module';
+import { DynamicItemCountModule } from '../dynamic-item-count/dynamic-item-count.module';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { DynamicPaginationModule } from '../dynamic-pagination/dynamic-paginatio
     TableSortHeaderComponent
   ],
   imports: [
-    CommonModule, FormsModule, CdkTableModule, DynamicCoreModule, DynamicPanelModule, FlexLayoutModule, DynamicPaginationModule
+    CommonModule, FormsModule, CdkTableModule, DynamicCoreModule, DynamicPanelModule, FlexLayoutModule,
+    DynamicPagerModule, DynamicItemCountModule
   ],
   exports: [DynamicTableComponent],
   entryComponents: [DynamicTableComponent]
