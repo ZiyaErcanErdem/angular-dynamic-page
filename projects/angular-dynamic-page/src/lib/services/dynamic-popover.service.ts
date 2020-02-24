@@ -14,11 +14,6 @@ import { PopoverConfig } from '../model/popover-config';
   providedIn: 'root'
 })
 export class DynamicPopoverService {
-    private top: ConnectionPositionPair = { originX: 'center', originY: 'top', overlayX: 'center', overlayY: 'bottom' };
-    private left: ConnectionPositionPair = { originX: 'start', originY: 'center', overlayX: 'end', overlayY: 'center' };
-    private right: ConnectionPositionPair = { originX: 'end', originY: 'center', overlayX: 'start', overlayY: 'center' };
-    private bottom: ConnectionPositionPair = { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'top' };
-    private up: ConnectionPositionPair = { originX: 'center', originY: 'bottom', overlayX: 'center', overlayY: 'bottom' };
     constructor(private overlay: Overlay, private injector: Injector) {}
 
     public openAlert<R>(content: string, params: PopoverConfig = {}): PopoverRef<any, R> {
@@ -86,7 +81,13 @@ export class DynamicPopoverService {
             const positionStrategy = this.overlay
                 .position()
                 .flexibleConnectedTo(origin)
-                .withPositions(this.getPositions())
+                .withPositions([{
+                    overlayX: 'end',
+                    overlayY: 'top',
+                    originX: 'end',
+                    originY: 'bottom'
+                  }])
+                .withDefaultOffsetY(5)
                 .withFlexibleDimensions(false)
                 .withPush(false)
                 .withGrowAfterOpen(true);
@@ -98,9 +99,5 @@ export class DynamicPopoverService {
     createInjector(popoverRef: PopoverRef<any, any>, injector: Injector) {
         const tokens = new WeakMap([[PopoverRef, popoverRef]]);
         return new PortalInjector(injector, tokens);
-    }
-
-    private getPositions(): ConnectionPositionPair[] {
-        return [this.top, this.right, this.left, this.bottom];
     }
 }
