@@ -14,7 +14,7 @@ export interface Page {
   num: number;
   label?: string;
   ariaLabel?: string;
-  tabIndex?: string
+  tabIndex?: string;
   current?: boolean;
 }
 
@@ -27,7 +27,7 @@ export interface Page {
 export class DynamicPagerComponent implements OnChanges {
   pageCount = 0;
   pages: Page[] = [];
-  page: Page ={num: 1, type: 'page'};
+  page: Page = { num: 1, type: 'page' };
 
   @Input() disabled: boolean;
   @Input() boundaries = true;
@@ -38,10 +38,10 @@ export class DynamicPagerComponent implements OnChanges {
   @Input() maxSize: number;
   @Input() set pageNumber(value: number) {
     this.page = {num: value, type: 'page'};
-  };
+  }
   get pageNumber(): number {
     return this.page?.num;
-  };
+  }
   @Input() pageSize: number;
   @Input() size: 'sm' | 'lg';
   @Output() pageNumberChange = new EventEmitter<number>(true);
@@ -111,7 +111,7 @@ export class DynamicPagerComponent implements OnChanges {
         p.tabIndex = p.disabled ? '-1' : null;
         p.current = false;
         p.label = p.type === 'next' ? '&raquo;' : '&raquo;&raquo;';
-        p.ariaLabel = p.type === 'next' ? 'Next' : 'Last';     
+        p.ariaLabel = p.type === 'next' ? 'Next' : 'Last';
       }
 
     });
@@ -176,8 +176,8 @@ export class DynamicPagerComponent implements OnChanges {
   private setupRotation(): [number, number] {
     let start = 0;
     let end = this.pageCount;
-    let leftOffset = Math.floor(this.maxSize / 2);
-    let rightOffset = this.maxSize % 2 === 0 ? leftOffset - 1 : leftOffset;
+    const leftOffset = Math.floor(this.maxSize / 2);
+    const rightOffset = this.maxSize % 2 === 0 ? leftOffset - 1 : leftOffset;
 
     if (this.page?.num <= leftOffset) {
       end = this.maxSize;
@@ -192,9 +192,9 @@ export class DynamicPagerComponent implements OnChanges {
   }
 
   private setupPagination(): [number, number] {
-    let page = Math.ceil(this.page?.num / this.maxSize) - 1;
-    let start = page * this.maxSize;
-    let end = start + this.maxSize;
+    const page = Math.ceil(this.page?.num / this.maxSize) - 1;
+    const start = page * this.maxSize;
+    const end = start + this.maxSize;
 
     return [start, end];
   }

@@ -91,11 +91,11 @@ export class DynamicGridConfigurerComponent extends DynamicBaseComponent impleme
 
 
     public openPopup(origin: HTMLElement, content: PopoverContent): void {
-        const config: PopoverConfig = {title: 'dynamic.popup.configure-grid.title', i18n: true}
+        const config: PopoverConfig = { title: 'dynamic.popup.configure-grid.title', i18n: true };
         this.popoverRef = this.popoverService.openPopup(origin, content, {}, config);
         this.popoverRef.afterClosed$.subscribe(() => {
             this.popoverRef = null;
-        })
+        });
     }
 
   ngOnInit() {

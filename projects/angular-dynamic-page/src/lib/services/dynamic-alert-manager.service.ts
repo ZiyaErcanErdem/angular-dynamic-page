@@ -34,19 +34,19 @@ export class DynamicAlertManagerService {
     return this.alerts$.next([]);
   }
 
-  public alert({msg, params, i18n} : { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
+  public alert({msg, params, i18n}: { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
     return this.addAlert({ type: AlertType.alert, msg, params, timeout: this.alertTimeoutInMilis, i18n });
   }
 
-  public error({msg, params, i18n} : { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
+  public error({msg, params, i18n}: { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
     return this.addAlert({ type: AlertType.error, msg, params, timeout: this.alertTimeoutInMilis, i18n });
   }
 
-  public info({msg, params, i18n} : { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
+  public info({msg, params, i18n}: { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
     return this.addAlert({ type: AlertType.info, msg, params, timeout: this.alertTimeoutInMilis, i18n });
   }
 
-  public warning({msg, params, i18n} : { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
+  public warning({msg, params, i18n}: { msg: string, params?: any, i18n?: boolean }): DynamicAlert {
     return this.addAlert({ type: AlertType.warning, msg, params, timeout: this.alertTimeoutInMilis, i18n });
   }
 
@@ -68,7 +68,7 @@ export class DynamicAlertManagerService {
   }
 
   public activateNotifier(notifierId: number): void {
-    if(this.activeNotifierId <= 0) {
+    if (this.activeNotifierId <= 0) {
       this.activeNotifierId = notifierId;
     }
   }

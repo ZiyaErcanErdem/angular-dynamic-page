@@ -10,11 +10,11 @@ export class DynamicAlertComponent implements OnInit {
 
   @Input() dismissible: boolean;
   @Input() type: string;
-  @Output() close = new EventEmitter<void>();
+  @Output() alertClose = new EventEmitter<void>();
 
   get alertType(): {[key: string]: boolean} {
     return {
-      'alert' : true,
+      alert : true,
       'alert-primary': this.type === 'primary' || this.type === 'alert',
       'alert-secondary': this.type === 'secondary',
       'alert-success': this.type === 'success',
@@ -24,13 +24,13 @@ export class DynamicAlertComponent implements OnInit {
       'alert-light': this.type === 'light',
       'alert-dark': this.type === 'dark',
       'fade show alert-dismissible': this.dismissible
-    }
+    };
   }
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  public closeHandler() { this.close.emit(null); }
+  public closeHandler() { this.alertClose.emit(null); }
 
 }

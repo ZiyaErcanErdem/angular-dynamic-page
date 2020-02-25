@@ -710,7 +710,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                         if (colWith) {
                             cmd.gridColWith = colWith;
                         }
-                    }                    
+                    }
                 }
                 cmd.order = selector.selectorColumns.indexOf(cmd.name);
                 cmd.order = cmd.order < 0 ? 1000 : cmd.order;

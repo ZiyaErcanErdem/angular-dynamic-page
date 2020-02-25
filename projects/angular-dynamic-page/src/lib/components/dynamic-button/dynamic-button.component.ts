@@ -39,11 +39,11 @@ export class DynamicButtonComponent implements OnInit, OnDestroy {
   }
 
   public openPopup(origin: HTMLElement, content: PopoverContent): void {
-    const config: PopoverConfig = {header: false}
+    const config: PopoverConfig = { header: false };
     this.popoverRef = this.popoverService.openPopup(origin, content, {}, config);
     this.popoverRef.afterClosed$.subscribe(() => {
         this.popoverRef = null;
-    })
+    });
 }
 
   ngOnInit() {}

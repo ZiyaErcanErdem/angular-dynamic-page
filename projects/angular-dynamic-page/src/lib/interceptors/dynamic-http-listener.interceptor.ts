@@ -7,9 +7,9 @@ import {
   HttpErrorResponse,
   HttpResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DynamicEventHubService } from '../services/dynamic-event-hub.service';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 import { DynamicEvent } from '../model/dynamic-event';
 import { DynamicAlertManagerService } from '../services/dynamic-alert-manager.service';
 
@@ -24,14 +24,17 @@ export class DynamicHttpListenerInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request)
     .pipe(
-      tap(null, (err: HttpErrorResponse) => {
-        this.monitorError(err);
+      catchError((err: any) => {
+        if (err instanceof HttpErrorResponse) {
+          this.monitorError(err);
+        }
+        return of(err);
       }),
       tap((event: HttpEvent<unknown>) => {
         if (event instanceof HttpResponse) {
           this.monitorResponse(event);
         }
-      })      
+      })
     );
   }
 
@@ -51,7 +54,7 @@ export class DynamicHttpListenerInterceptor implements HttpInterceptor {
       if (header.endsWith('app-alert')) {
         msg = response.headers.get(entry);
       } else if (header.endsWith('app-params')) {
-        param = decodeURIComponent(response.headers.get(entry)!.replace(/\+/g, ' '));
+        param = decodeURIComponent(response.headers.get(entry).replace(/\+/g, ' '));
       }
     });
 

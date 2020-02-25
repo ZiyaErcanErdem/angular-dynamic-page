@@ -1,6 +1,6 @@
 <div class="dynamic-alerts" [ngClass]="positionClass">
     <div *ngFor="let alert of alerts" class="dynamic-alert">
-      <zee-dynamic-alert [type]="alert.type" [dismissible]="true" (close)="alert.close()">
+      <zee-dynamic-alert [type]="alert.type" [dismissible]="true" (alertClose)="alert.close()">
         <pre [innerHTML]="alert.msg"></pre>
       </zee-dynamic-alert>
     </div>

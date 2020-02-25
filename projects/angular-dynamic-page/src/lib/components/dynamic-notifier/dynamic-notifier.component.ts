@@ -13,7 +13,7 @@ export class DynamicNotifierComponent implements OnInit, OnDestroy {
   public alerts: DynamicAlert[];
   private subscription: Subscription;
   private notifierId: number;
-  
+
   constructor(private alertService: DynamicAlertManagerService) {
     this.alerts = [];
   }
@@ -23,7 +23,7 @@ export class DynamicNotifierComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.notifierId = this.alertService.getNotifierId();    
+    this.notifierId = this.alertService.getNotifierId();
     this.subscription = this.alertService.alerts().subscribe(alerts => {
       this.alertService.activateNotifier(this.notifierId);
       if (this.alertService.isActiveNotifier(this.notifierId)) {

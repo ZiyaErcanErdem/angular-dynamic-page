@@ -34,5 +34,4 @@ export class DynamicEventHubService {
       subscriber.unsubscribe();
     }
   }
-  
 }

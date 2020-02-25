@@ -28,11 +28,11 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
   }
 
   public openPopup(origin: HTMLElement, content: PopoverContent): void {
-    const config: PopoverConfig = {header: false}
+    const config: PopoverConfig = { header: false };
     this.popoverRef = this.popoverService.openPopup(origin, content, {}, config);
     this.popoverRef.afterClosed$.subscribe(() => {
         this.popoverRef = null;
-    })
+    });
 }
 
   private buildActions(): void {
@@ -85,6 +85,6 @@ export class DynamicGridActionsComponent extends DynamicBaseComponent implements
       if (this.popoverRef) {
         this.popoverRef.close();
         this.popoverRef = null;
-      }      
+      }
   }
 }
