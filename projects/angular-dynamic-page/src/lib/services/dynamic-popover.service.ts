@@ -1,5 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
-import { ConnectionPositionPair, Overlay, OverlayConfig, PositionStrategy } from '@angular/cdk/overlay';
+import { Overlay, OverlayConfig, PositionStrategy } from '@angular/cdk/overlay';
 import { PopoverParams } from '../model/popover-params';
 import { PopoverRef } from '../model/popover-ref';
 import { Theme } from '../model/theme.enum';

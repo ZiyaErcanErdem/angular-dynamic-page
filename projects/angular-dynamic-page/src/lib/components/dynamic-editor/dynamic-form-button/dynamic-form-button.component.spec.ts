@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicFormButtonComponent } from './dynamic-form-button.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../../test/dynamic-test-util';
 
 describe('DynamicFormButtonComponent', () => {
   let component: DynamicFormButtonComponent;
@@ -8,7 +9,13 @@ describe('DynamicFormButtonComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicFormButtonComponent ]
+      declarations: [ DynamicFormButtonComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+      ],
     })
     .compileComponents();
   }));

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicExplorerComponent } from './dynamic-explorer.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
 
 describe('DynamicExplorerComponent', () => {
   let component: DynamicExplorerComponent;
@@ -8,7 +9,13 @@ describe('DynamicExplorerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicExplorerComponent ]
+      declarations: [ DynamicExplorerComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+      ],
     })
     .compileComponents();
   }));

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicGridActionsComponent } from './dynamic-grid-actions.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../../test/dynamic-test-util';
 
 describe('DynamicGridActionsComponent', () => {
   let component: DynamicGridActionsComponent;
@@ -8,7 +9,13 @@ describe('DynamicGridActionsComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicGridActionsComponent ]
+      declarations: [ DynamicGridActionsComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+      ],
     })
     .compileComponents();
   }));

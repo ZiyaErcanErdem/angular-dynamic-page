@@ -12,7 +12,7 @@ export class DynamicDateParserService {
       this.datePipe = new DatePipe('en');
   }
 
-  convertDateTimeFromServer(date: any) {
+  public convertDateTimeFromServer(date: any): Date {
       if (date) {
           return new Date(date);
       } else {
@@ -20,7 +20,7 @@ export class DynamicDateParserService {
       }
   }
 
-  convertLocalDateFromServer(date: any) {
+  public convertLocalDateFromServer(date: any): Date {
       if (date) {
           const dateString = date.split('-');
           return new Date(dateString[0], dateString[1] - 1, dateString[2]);
@@ -28,7 +28,7 @@ export class DynamicDateParserService {
       return null;
   }
 
-  convertLocalDateToServer(date: any, pattern = this.pattern) {
+  public convertLocalDateToServer(date: any, pattern = this.pattern): string {
       if (date) {
           const newDate = new Date(date.year, date.month - 1, date.day);
           return this.datePipe.transform(newDate, pattern);
@@ -37,11 +37,11 @@ export class DynamicDateParserService {
       }
   }
 
-  dateformat() {
+  public dateformat(): string {
       return this.pattern;
   }
 
-  toDate(date: any): Date {
+  public toDate(date: any): Date {
       if (date === undefined || date === null) {
           return null;
       }

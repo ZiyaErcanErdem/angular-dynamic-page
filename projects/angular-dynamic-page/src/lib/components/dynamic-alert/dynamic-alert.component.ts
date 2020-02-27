@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 
 @Component({
@@ -6,7 +6,7 @@ import { Component, OnInit, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './dynamic-alert.component.html',
   styleUrls: ['./dynamic-alert.component.scss']
 })
-export class DynamicAlertComponent implements OnInit {
+export class DynamicAlertComponent {
 
   @Input() dismissible: boolean;
   @Input() type: string;
@@ -27,9 +27,6 @@ export class DynamicAlertComponent implements OnInit {
     };
   }
   constructor() { }
-
-  ngOnInit(): void {
-  }
 
   public closeHandler() { this.alertClose.emit(null); }
 

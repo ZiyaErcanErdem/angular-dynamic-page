@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageTaskComponent } from './page-task.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from 'projects/angular-dynamic-page/src/lib/test/dynamic-test-util';
 
 describe('PageTaskComponent', () => {
   let component: PageTaskComponent;
@@ -8,7 +9,13 @@ describe('PageTaskComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PageTaskComponent ]
+      declarations: [ PageTaskComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders()
+      ]
     })
     .compileComponents();
   }));

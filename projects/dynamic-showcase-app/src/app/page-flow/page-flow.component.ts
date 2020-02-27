@@ -27,11 +27,7 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
   private registeredActions: Array<GenericDynamicAction<any>> = [];
   public pageManager: PageManager<Flow>;
 
-  constructor(
-    private dynamicService: DynamicService,
-    private popoverService: DynamicPopoverService,
-    private http: HttpClient,
-  ) {
+  constructor(private dynamicService: DynamicService) {
     super();
     this.theme = Theme.dark;
   }

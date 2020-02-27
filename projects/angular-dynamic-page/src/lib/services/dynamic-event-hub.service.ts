@@ -20,7 +20,7 @@ export class DynamicEventHubService {
     this.events$.next(event);
   }
 
-  subscribe(eventName: string, observer?: PartialObserver<any>): Subscription {
+  subscribe(eventName: string, observer?: PartialObserver<DynamicEvent<any>>): Subscription {
     const subscriber: Subscription = this.observable$
         .pipe(
             filter((event: DynamicEvent<any>) =>  event.name === eventName),

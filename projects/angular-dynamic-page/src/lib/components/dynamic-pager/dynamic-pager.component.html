@@ -8,7 +8,6 @@
                 [attr.tabindex]="page.tabIndex" 
                 [attr.aria-disabled]="page.disabled" 
                 [attr.aria-label]="page.ariaLabel" [innerHTML]="page.label">
-                {{ page.label }}
                 <span *ngIf="page.current" class="sr-only">(current)</span>
             </a>
         </li>

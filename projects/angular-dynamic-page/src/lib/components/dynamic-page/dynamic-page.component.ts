@@ -163,8 +163,8 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
   ngAfterViewInit() {
       this.collect = this.manager.ready().subscribe(isReady => {
           if (isReady) {
-              const toh = setTimeout(() => {
-                  clearTimeout(toh);
+              // const toh = setTimeout(() => {
+                  // clearTimeout(toh);
                   if (this.manager && this.pageConfig && !this.manager.isChild()) {
                       if (this.pageConfig.autoSearch) {
                           this.search();
@@ -178,7 +178,7 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
                               this.manager.searchWith(parentData).subscribe();
                           });
                   }
-              }, 1);
+              // }, 1);
           }
       });
   }

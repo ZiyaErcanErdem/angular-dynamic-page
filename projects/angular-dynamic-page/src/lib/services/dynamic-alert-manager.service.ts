@@ -64,7 +64,7 @@ export class DynamicAlertManagerService {
   }
 
   public getNotifierId(): number {
-    return this.notifierSequence++;
+    return ++this.notifierSequence;
   }
 
   public activateNotifier(notifierId: number): void {
@@ -74,7 +74,9 @@ export class DynamicAlertManagerService {
   }
 
   public passivateNotifier(notifierId: number): void {
-    this.activeNotifierId = 0;
+    if (this.activeNotifierId === notifierId) {
+      this.activeNotifierId = 0;
+    }
   }
 
   public isActiveNotifier(notifierId: number): boolean {
@@ -83,7 +85,7 @@ export class DynamicAlertManagerService {
 
   private addAlert(options: DynamicAlert): DynamicAlert {
     options.id = this.alertSequence++;
-    if (options.i18n && options.msg) {
+    if (this.translateService && options.i18n && options.msg) {
       options.msg = this.translateService.instant(options.msg, options.params);
     }
     const alert = this.create(options);

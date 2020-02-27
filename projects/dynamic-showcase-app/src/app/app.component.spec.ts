@@ -1,15 +1,20 @@
 import { TestBed, async } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { provideDynamicConfigRegistryToken, prepareDynamicTestImports } from 'projects/angular-dynamic-page/src/lib/test/dynamic-test-util';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
+        ...prepareDynamicTestImports(),
         RouterTestingModule
       ],
       declarations: [
         AppComponent
+      ],
+      providers: [
+        provideDynamicConfigRegistryToken(),
       ],
     }).compileComponents();
   }));

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicGridConfigurerComponent } from './dynamic-grid-configurer.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../../test/dynamic-test-util';
 
 describe('DynamicGridConfigurerComponent', () => {
   let component: DynamicGridConfigurerComponent;
@@ -8,7 +9,13 @@ describe('DynamicGridConfigurerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicGridConfigurerComponent ]
+      declarations: [ DynamicGridConfigurerComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+      ],
     })
     .compileComponents();
   }));

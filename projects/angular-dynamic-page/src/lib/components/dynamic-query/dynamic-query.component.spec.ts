@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicQueryComponent } from './dynamic-query.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
 
 describe('DynamicQueryComponent', () => {
   let component: DynamicQueryComponent;
@@ -8,7 +9,13 @@ describe('DynamicQueryComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicQueryComponent ]
+      declarations: [ DynamicQueryComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+      ],
     })
     .compileComponents();
   }));

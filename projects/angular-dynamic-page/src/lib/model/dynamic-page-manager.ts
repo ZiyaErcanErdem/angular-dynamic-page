@@ -323,7 +323,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     public withRouter(router: Router): PageManager<T> {
         this.router = router;
         if (this.config && this.config.pageType === PageType.PAGE) {
-            this.defaultPageURI = router.url.split('?')[0];
+            this.defaultPageURI = router.url?.split('?')[0];
         }
         return this;
     }

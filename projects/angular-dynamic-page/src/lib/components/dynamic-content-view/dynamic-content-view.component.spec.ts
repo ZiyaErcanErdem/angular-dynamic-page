@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicContentViewComponent } from './dynamic-content-view.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
 
 describe('DynamicContentViewComponent', () => {
   let component: DynamicContentViewComponent;
@@ -8,7 +9,13 @@ describe('DynamicContentViewComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DynamicContentViewComponent ]
+      declarations: [ DynamicContentViewComponent ],
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+      ],
     })
     .compileComponents();
   }));

@@ -1,7 +1,5 @@
-<div *ngIf="i18nEnabled; else noI18n" class="info zee-item-count" translate="dynamic.item-count" [translateParams]="i18nValues()">
+<div *ngIf="i18n; else noI18n" class="info zee-item-count" translate="dynamic.item-count" [translateParams]="i18nValues()">
 </div>
 <ng-template #noI18n class="info zee-item-count">
-    Showing
-    {{ (page - 1) * itemsPerPage == 0 ? 1 : (page - 1) * itemsPerPage + 1 }}
-    - {{ page * itemsPerPage < total ? page * itemsPerPage : total }} of {{ total }} items.
+    Showing {{ first }} - {{ second }} of {{ total }} items.
 </ng-template>

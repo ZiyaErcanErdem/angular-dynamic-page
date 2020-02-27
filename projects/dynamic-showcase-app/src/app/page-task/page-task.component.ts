@@ -44,7 +44,6 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
 
   constructor(
     private dynamicService: DynamicService,
-    private popoverService: DynamicPopoverService,
     private http: HttpClient
   ) {
     super();
