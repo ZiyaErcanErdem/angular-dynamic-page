@@ -23,15 +23,15 @@ export class DynamicFormItemComponent implements OnInit {
   constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
-      if (this.itemConfig.parentColumn) {
+      if (this.itemConfig?.parentColumn) {
           this.itemType = this.itemConfig.parentColumn.columnType;
-      } else if (this.itemConfig.field) {
+      } else if (this.itemConfig?.field) {
           this.itemType = this.itemConfig.field.metadata.columnType;
       } else {
           this.itemType = ColumnType.UNKNOWN;
       }
-      this.group = this.itemConfig.group;
-      this.field = this.itemConfig.field;
+      this.group = this.itemConfig?.group;
+      this.field = this.itemConfig?.field;
   }
 }
 

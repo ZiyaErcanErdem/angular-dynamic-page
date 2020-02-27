@@ -25,7 +25,7 @@ describe('DynamicDataService', () => {
     const sampleConfig: IDynamicConfig = prepareSampleDynamicConfig();
     const testData = getSampleEndpointData();
     const testURI = `${sampleConfig.serverApiUrl}api/dynamic/search/${qualifier}`;
-    const httpTestingController = TestBed.get(HttpTestingController);
+    const httpTestingController = TestBed.inject(HttpTestingController);
 
     service.search<any>(qualifier).subscribe(endpoint => {
       expect(endpoint).toBeTruthy();
@@ -33,7 +33,7 @@ describe('DynamicDataService', () => {
       expect(endpoint.body.length).toEqual(1);
       expect(endpoint.body[0].id).toEqual(1);
     });
-    
+
     const req = httpTestingController.expectOne(testURI);
     expect(req.request.method).toEqual('GET');
     req.flush(testData);

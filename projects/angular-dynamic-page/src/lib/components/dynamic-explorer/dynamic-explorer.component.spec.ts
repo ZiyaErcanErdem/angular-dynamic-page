@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicExplorerComponent } from './dynamic-explorer.component';
 import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
+import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 
 describe('DynamicExplorerComponent', () => {
   let component: DynamicExplorerComponent;
@@ -12,6 +13,7 @@ describe('DynamicExplorerComponent', () => {
       declarations: [ DynamicExplorerComponent ],
       imports: [
         ...prepareDynamicTestImports(),
+        DynamicButtonModule
       ],
       providers: [
         ...prepareDynamicTestProviders(),

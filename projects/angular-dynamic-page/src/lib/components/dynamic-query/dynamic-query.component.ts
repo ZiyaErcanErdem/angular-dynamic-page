@@ -35,6 +35,7 @@ import { OperatorContext } from '../../model/operator-context';
 import { ColumnType } from '../../model/column-type.enum';
 import { OptionContext } from '../../model/option-context';
 import { QueryMode } from '../../model/query-mode.enum';
+import { DynamicAlertManagerService } from '../../services/dynamic-alert-manager.service';
 
 @Component({
   selector: 'zee-dynamic-query',
@@ -83,7 +84,7 @@ export class DynamicQueryComponent extends DynamicBaseComponent
   private onChangeCallback: (value: any) => void;
   private onTouchedCallback: () => any;
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  constructor(private changeDetectorRef: ChangeDetectorRef, private alertManagerService: DynamicAlertManagerService) {
       super();
       this.expressions = new Array<ExpressionContext>();
       this.initialize();
@@ -98,11 +99,11 @@ export class DynamicQueryComponent extends DynamicBaseComponent
   }
 
   ngAfterContentInit() {
-      this.templateContext.setTemplate(TemplateType.Action, this.actionTemplate);
-      this.templateContext.setTemplate(TemplateType.Condition, this.conditionTemplate);
-      this.templateContext.setTemplate(TemplateType.Field, this.fieldTemplate);
-      this.templateContext.setTemplate(TemplateType.Input, this.inputTemplates);
-      this.templateContext.setTemplate(TemplateType.Operator, this.operatorTemplate);
+      this.templateContext?.setTemplate(TemplateType.Action, this.actionTemplate);
+      this.templateContext?.setTemplate(TemplateType.Condition, this.conditionTemplate);
+      this.templateContext?.setTemplate(TemplateType.Field, this.fieldTemplate);
+      this.templateContext?.setTemplate(TemplateType.Input, this.inputTemplates);
+      this.templateContext?.setTemplate(TemplateType.Operator, this.operatorTemplate);
   }
 
   ngOnInit() {
@@ -112,7 +113,10 @@ export class DynamicQueryComponent extends DynamicBaseComponent
               this.collect = this.manager.metamodel().subscribe(pmm => {
                   this.relations = pmm.getRelations().filter(r => r.searchable);
               });
-              this.collect = this.manager.searchColumns().subscribe(cols => (this.columns = cols), err => console.warn(err));
+              this.collect = this.manager.searchColumns().subscribe(
+                  cols => (this.columns = cols),
+                  err => this.alertManagerService.warning({msg: err, i18n: false})
+                );
               if (!this.templateContext) {
                   this.templateContext = new TemplateContext();
               }
@@ -174,7 +178,7 @@ export class DynamicQueryComponent extends DynamicBaseComponent
               return queryInput.template;
           } else {
               if (!this.defaultTemplateTypes.includes(type)) {
-                  console.warn(`Could not find template for field with type: ${type}`);
+                  this.alertManagerService.warning({msg: `Could not find template for field with type: ${type}`, i18n: false});
               }
               return null;
           }
@@ -371,10 +375,10 @@ export class DynamicQueryComponent extends DynamicBaseComponent
       predicate.operator = this.config.getDefaultOperator(cmd);
 
       if (cmd && !predicate.operator) {
-          console.warn(
+          const msg =
               `No operators found for Column '${predicate.metadata.path}'. ` +
-                  `A 'defaultOperator' is also not specified on the manager. Operator value will default to null.`
-          );
+                  `A 'defaultOperator' is also not specified on the manager. Operator value will default to null.`;
+          this.alertManagerService.warning({msg, i18n: false});
       }
 
       this.templateContext.deletePredicate(predicate);
@@ -394,14 +398,14 @@ export class DynamicQueryComponent extends DynamicBaseComponent
   }
 
   public getDefaultOperator(cmd: ColumnMetadata) {
-      const operator = this.config.getDefaultOperator(cmd);
-      if (!operator) {
-          console.warn(
-              `No operators found for Column '${cmd.path}'. ` +
-                  `A 'defaultOperator' is also not specified on the manager. Operator value will default to null.`
-          );
-      }
-      return operator;
+        const operator = this.config.getDefaultOperator(cmd);
+        if (!operator) {
+            const msg =
+            `No operators found for Column '${cmd.path}'. ` +
+            `A 'defaultOperator' is also not specified on the manager. Operator value will default to null.`;
+            this.alertManagerService.warning({msg, i18n: false});
+        }
+        return operator;
   }
 
   public getOperators(cmd: ColumnMetadata): Array<OperatorContext> {

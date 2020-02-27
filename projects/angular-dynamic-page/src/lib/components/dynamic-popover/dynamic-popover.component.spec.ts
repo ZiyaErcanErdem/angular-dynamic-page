@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicPopoverComponent } from './dynamic-popover.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
+import { PopoverRef } from '../../model/popover-ref';
+import { PopoverType } from '../../model/popover-type';
+import { Theme } from '../../model/theme.enum';
+import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 
 describe('DynamicPopoverComponent', () => {
   let component: DynamicPopoverComponent;
@@ -8,6 +13,14 @@ describe('DynamicPopoverComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ...prepareDynamicTestImports(),
+        DynamicButtonModule
+      ],
+      providers: [
+        ...prepareDynamicTestProviders(),
+        { provide: PopoverRef, useValue: new PopoverRef<any, any>('alert', {theme: Theme.dark}, null, 'TestContent', {}) }
+      ],
       declarations: [ DynamicPopoverComponent ]
     })
     .compileComponents();

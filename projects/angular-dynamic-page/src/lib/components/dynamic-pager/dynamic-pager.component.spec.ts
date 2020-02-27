@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicPagerComponent } from './dynamic-pager.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
 
 describe('DynamicPagerComponent', () => {
   let component: DynamicPagerComponent;
@@ -8,6 +9,12 @@ describe('DynamicPagerComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ...prepareDynamicTestImports()
+      ],
+      providers: [
+        ...prepareDynamicTestProviders()
+      ],
       declarations: [ DynamicPagerComponent ]
     })
     .compileComponents();

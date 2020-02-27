@@ -1,4 +1,4 @@
-import { DynamicRegistryConfiguration, DynamicConfigService } from '../services/dynamic-config.service';
+import { DynamicRegistryConfiguration } from '../services/dynamic-config.service';
 import { LocalStorageService } from 'ngx-webstorage';
 import { Overlay, OverlayModule } from '@angular/cdk/overlay';
 import { DynamicCoreModule } from '../dynamic-core/dynamic-core.module';
@@ -9,15 +9,19 @@ import { TranslateModule, TranslateLoader, MissingTranslationHandler } from '@ng
 import { translatePartialLoader, missingTranslationHandler } from 'projects/dynamic-showcase-app/src/app/app.module';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IDynamicStorageProvider, PageManager } from '../model/page-manager';
 import { IDynamicConfig } from '../model/dynamic-config';
-import { DynamicPageManager } from '../model/dynamic-page-manager';
 import { QueryMode } from '../model/query-mode.enum';
 import { DataActionType } from '../model/data-action-type.enum';
 import { Condition } from '../model/condition.enum';
 import { Operator } from '../model/operator.enum';
 import { PageViewMode } from '../model/page-view-mode.enum';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DynamicService } from '../services/dynamic.service';
+import { PageManager } from '../model/page-manager';
+import { PortalModule } from '@angular/cdk/portal';
+import { getSampleEndpointMetamodelData } from './dynamic-test-data';
+import { PageMetamodel } from '../model/page-metamodel';
+import { CdkTableModule } from '@angular/cdk/table';
 
 export class ActivatedRouteStub {
     private subject = new ReplaySubject<ParamMap>();
@@ -41,6 +45,11 @@ export class ActivatedRouteStub {
 
 export function createRouterSpy() {
     return jasmine.createSpyObj('Router', ['navigate']);
+}
+
+export function createSampleEndpointMetamodel(): PageMetamodel {
+  const data = getSampleEndpointMetamodelData();
+  return new PageMetamodel(data, null);
 }
 
 export function prepareSampleDynamicConfig(): IDynamicConfig {
@@ -98,7 +107,9 @@ export function prepareDynamicTestImports(): any[] {
         HttpClientTestingModule,
         FormsModule,
         ReactiveFormsModule,
+        PortalModule,
         OverlayModule,
+        CdkTableModule,
         DynamicModule.forRoot(prepareDynamicRegistryConfiguration())
     ];
 }
@@ -110,15 +121,11 @@ export function prepareDynamicTestProviders(): any[] {
     ];
 }
 
-export function  createSamplePageManager(dynamicConfigService: DynamicConfigService): PageManager<any> {
+export function  createSamplePageManager(dynamicService: DynamicService): PageManager<any> {
     const qualifier = 'Endpoint';
     const appId = null;
-    const storageProvider: IDynamicStorageProvider = dynamicConfigService.getStorageProvider();
-    const dynamicConfig: IDynamicConfig = dynamicConfigService.getConfig(appId);
 
-    const pageManager: PageManager<any> = new DynamicPageManager<any>(qualifier, dynamicConfig);
-    pageManager.withStorageProvider(storageProvider);
-
+    const pageManager: PageManager<any> = dynamicService.createPageManager({qualifier});
     pageManager
     // .withSortingSample(Endpoint)
     .withGridColumns('id', 'endpointName', 'endpointInstanceId', 'endpointType', 'endpointSpec')

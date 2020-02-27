@@ -18,30 +18,30 @@ describe('DynamicDateParserService', () => {
   });
 
   it('should convert formatted date string to javascript Date', () => {
-    const date = service.toDate('2019-12-05 23:16:45')
+    const date = service.toDate('2019-12-05 23:16:45');
     expect(date).toBeTruthy();
     expect(date.getFullYear()).toEqual(2019);
     expect(date.getMonth()).toEqual(11);
-    expect(date.getDate()).toEqual(5);    
+    expect(date.getDate()).toEqual(5);
     expect(date.getSeconds()).toEqual(45);
   });
 
   it('should format date like object', () => {
-    const dateText = service.convertLocalDateToServer({year:2020, month: 5, day: 19}, 'yyyy-MM-dd');
+    const dateText = service.convertLocalDateToServer({year: 2020, month: 5, day: 19}, 'yyyy-MM-dd');
     expect(dateText).toBeTruthy();
     expect(dateText).toEqual('2020-05-19');
   });
 
   it('should convert date string to javascript Date', () => {
-    const date = service.convertLocalDateFromServer('2019-12-05')
+    const date = service.convertLocalDateFromServer('2019-12-05');
     expect(date).toBeTruthy();
     expect(date.getFullYear()).toEqual(2019);
     expect(date.getMonth()).toEqual(11);
-    expect(date.getDate()).toEqual(5);    
+    expect(date.getDate()).toEqual(5);
   });
 
   it('should convert ISO formatted date string to javascript Date', () => {
-    const date = service.convertDateTimeFromServer('2020-02-26T18:47:13.874Z')
+    const date = service.convertDateTimeFromServer('2020-02-26T18:47:13.874Z');
     expect(date).toBeTruthy();
     expect(date.getFullYear()).toEqual(2020);
     expect(date.getDate()).toEqual(26);

@@ -30,7 +30,7 @@ describe('DynamicMetamodelService', () => {
     const sampleConfig: IDynamicConfig = prepareSampleDynamicConfig();
     const testData = getSampleEndpointMetamodelData();
     const testURI = `${sampleConfig.serverApiUrl}api/dynamic/metamodel/${qualifier}`;
-    const httpTestingController = TestBed.get(HttpTestingController);
+    const httpTestingController = TestBed.inject(HttpTestingController);
 
     service.metadataOf('Endpoint').subscribe(md => {
       expect(md).toBeTruthy();
@@ -44,7 +44,7 @@ describe('DynamicMetamodelService', () => {
 
       expect(metamodel.qualifier).toEqual(qualifier);
     });
-    
+
     const req = httpTestingController.expectOne(testURI);
 
     expect(req.request.method).toEqual('GET');

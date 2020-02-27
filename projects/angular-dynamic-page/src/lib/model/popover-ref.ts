@@ -18,9 +18,11 @@ export class PopoverRef<C, R = any> {
     ) {
         this.afterClosed = new Subject<PopoverCloseEvent<R>>();
         this.afterClosed$ = this.afterClosed.asObservable();
-        this.overlay.backdropClick().subscribe(() => {
-            this._close('backdropClick', null);
-        });
+        if (this.overlay) {
+            this.overlay.backdropClick().subscribe(() => {
+                this._close('backdropClick', null);
+            });
+        }
     }
 
     public close(data?: R) {
@@ -28,7 +30,9 @@ export class PopoverRef<C, R = any> {
     }
 
     private _close(type: PopoverCloseEvent['type'], data?: R) {
-        this.overlay.dispose();
+        if (this.overlay) {
+            this.overlay.dispose();
+        }
         this.config.actions = undefined;
         this.afterClosed.next({
             type,

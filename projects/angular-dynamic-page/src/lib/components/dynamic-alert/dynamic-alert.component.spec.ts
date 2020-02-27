@@ -33,7 +33,7 @@ describe('DynamicAlertComponent', () => {
   });
 
   it('dismissible alerts should render close button', () => {
-     component.dismissible = true;
+    component.dismissible = true;
 
     fixture.detectChanges();
 
@@ -45,11 +45,11 @@ describe('DynamicAlertComponent', () => {
   it('non-dismissible alerts should not render close button', () => {
     component.dismissible = false;
 
-   fixture.detectChanges();
+    fixture.detectChanges();
 
-   const alertDe: DebugElement = fixture.debugElement;
-   const buttonDe = alertDe.query(By.css('.js-alert-button'));
-   expect(buttonDe).toBeFalsy();
+    const alertDe: DebugElement = fixture.debugElement;
+    const buttonDe = alertDe.query(By.css('.js-alert-button'));
+    expect(buttonDe).toBeFalsy();
  });
 
   it('dismissible alerts should emit alertClose event', () => {
@@ -60,24 +60,24 @@ describe('DynamicAlertComponent', () => {
 
     component.alertClose.subscribe(() => {
       expect(closed).toBe(true);
-    })
+    });
 
     const alertDe: DebugElement = fixture.debugElement;
     const buttonDe = alertDe.query(By.css('.js-alert-button'));
     closed = true;
     buttonDe.triggerEventHandler('click', {});
-    
+
     fixture.detectChanges();
   });
 
   it('alerts should set given alert type', () => {
     component.type = 'danger';
 
-   fixture.detectChanges();
+    fixture.detectChanges();
 
-   const alertDe: DebugElement = fixture.debugElement;
-   const themeDe = alertDe.query(By.css('.alert-danger'));
-   expect(themeDe).toBeTruthy();
+    const alertDe: DebugElement = fixture.debugElement;
+    const themeDe = alertDe.query(By.css('.alert-danger'));
+    expect(themeDe).toBeTruthy();
  });
 
 });

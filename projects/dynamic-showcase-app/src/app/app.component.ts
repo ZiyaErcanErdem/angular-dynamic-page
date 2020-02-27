@@ -139,7 +139,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
         .addPredicate('agentName', Operator.LIKE, '').and()
         .addPredicate('agentInstanceId', Operator.LIKE, '').and();
     })
-    .withViewer(PageViewMode.EDITOR);
+    .withViewer(PageViewMode.EDITOR)
+    .start();
   }
 
   private prepareEndpointManager() {
@@ -200,7 +201,8 @@ export class AppComponent extends BasePageView<Agent> implements OnInit, OnDestr
           .addPredicate('endpointInstanceId', Operator.LIKE, '')
           .and();
       })
-      .withViewer(PageViewMode.EDITOR);
+      .withViewer(PageViewMode.EDITOR)
+      .start();
   }
 
   registerActions() {

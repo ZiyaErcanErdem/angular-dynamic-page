@@ -78,7 +78,8 @@ export class PageFlowComponent extends BasePageView<Flow> implements OnInit, OnD
           .addPredicate('flowName', Operator.LIKE, '').and()
           .addPredicate('eventTrigger.triggerName', Operator.LIKE, '').and();
       })
-      .withViewer(PageViewMode.EDITOR);
+      .withViewer(PageViewMode.EDITOR)
+      .start();
   }
 
   private configureFlowExecutionRelation(relation: PageRelation): void {

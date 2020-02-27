@@ -29,7 +29,7 @@ describe('DynamicEventHubService', () => {
       }
     });
 
-    service.publish(DynamicEvent.create('test.event', {body: 'zee'}))
-    
+    service.publish(DynamicEvent.create('test.event', {body: 'zee'}));
+
   });
 });

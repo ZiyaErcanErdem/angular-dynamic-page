@@ -26,41 +26,41 @@ export class DynamicFormInputComponent extends DynamicBaseComponent implements O
   }
 
   get metadata(): ColumnMetadata {
-      return this.field.metadata;
+      return this.field?.metadata;
   }
 
   get control(): AbstractControl {
-      return this.group.controls[this.field.metadata.name];
+      return this.group?.controls[this.field.metadata.name];
   }
 
   get readonlyItem(): boolean {
-      if (this.metadata.readonly) {
+      if (this.metadata?.readonly) {
           return true;
       }
       return false;
   }
 
   get required(): boolean | null {
-      return !this.metadata.nullable ? true : null;
+      return !this.metadata?.nullable ? true : null;
   }
 
   get minLength(): number | null {
-      const val = this.metadata.minLength;
+      const val = this.metadata?.minLength;
       return this.inputType === 'text' && val && val > 0 ? val : null;
   }
 
   get maxLength(): number | null {
-      const val = this.metadata.maxLength;
+      const val = this.metadata?.maxLength;
       return this.inputType === 'text' && val && val > 0 && val < 9999999 ? val : null;
   }
 
   get min(): number | null {
-      const val = this.metadata.min;
+      const val = this.metadata?.min;
       return this.inputType === 'number' && val && val > 0 ? val : null;
   }
 
   get max(): number | null {
-      const val = this.metadata.max;
+      const val = this.metadata?.max;
       return this.inputType === 'number' && val && val > 0 && val < 999999999999999999 ? val : null;
   }
 
@@ -74,10 +74,10 @@ export class DynamicFormInputComponent extends DynamicBaseComponent implements O
   }
 
   get inputType(): string {
-      const colType = this.field.metadata.columnType;
-      if (!this.field.metadata.viewable) {
+      const colType = this.field?.metadata.columnType;
+      if (!this.field?.metadata.viewable) {
           return 'hidden';
-      } else if (this.mode === EditorMode.CREATE && !this.field.metadata.editable && !this.field.metadata.idColumn) {
+      } else if (this.mode === EditorMode.CREATE && !this.field?.metadata.editable && !this.field?.metadata.idColumn) {
           return 'hidden';
       }
       switch (colType) {
@@ -98,15 +98,15 @@ export class DynamicFormInputComponent extends DynamicBaseComponent implements O
   }
 
   get isLargeText(): boolean {
-      return (ColumnType.STRING === this.field.metadata.columnType && this.metadata.maxLength > 300);
+      return (ColumnType.STRING === this.field?.metadata.columnType && this.metadata?.maxLength > 300);
   }
 
   get itemIdFirst(): string {
-      return `${this.instanceId}_first_${this.metadata.qualifier}_${this.metadata.name}`;
+      return `${this.instanceId}_first_${this.metadata?.qualifier}_${this.metadata?.name}`;
   }
 
   get itemIdSecond(): string {
-      return `${this.instanceId}_second_${this.metadata.qualifier}_${this.metadata.name}`;
+      return `${this.instanceId}_second_${this.metadata?.qualifier}_${this.metadata?.name}`;
   }
 
   public openSelector(): void {
@@ -121,18 +121,18 @@ export class DynamicFormInputComponent extends DynamicBaseComponent implements O
   }
 
   public hasSelectedValue(): boolean {
-      if (!this.control.value) {
+      if (!this.control?.value) {
           return false;
       }
-      const colType = this.metadata.columnType;
+      const colType = this.metadata?.columnType;
       if (colType === ColumnType.NUMBER || colType === ColumnType.DOUBLE) {
-          return this.control.value > 0;
+          return this.control?.value > 0;
       }
       return true;
   }
 
   public clearSelectorValue(): void {
-      if (this.metadata.selector) {
+      if (this.metadata?.selector) {
           this.metadata.selector.mapSelection({}, this.group);
       }
   }

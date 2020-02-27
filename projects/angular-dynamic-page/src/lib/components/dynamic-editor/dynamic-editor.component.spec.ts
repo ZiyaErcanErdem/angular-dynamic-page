@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicEditorComponent } from './dynamic-editor.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../test/dynamic-test-util';
+import { DynamicPageModule } from '../dynamic-page/dynamic-page.module';
 
 describe('DynamicEditorComponent', () => {
   let component: DynamicEditorComponent;
@@ -8,6 +10,13 @@ describe('DynamicEditorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ...prepareDynamicTestImports(),
+        DynamicPageModule
+      ],
+      providers: [
+        ...prepareDynamicTestProviders()
+      ],
       declarations: [ DynamicEditorComponent ]
     })
     .compileComponents();

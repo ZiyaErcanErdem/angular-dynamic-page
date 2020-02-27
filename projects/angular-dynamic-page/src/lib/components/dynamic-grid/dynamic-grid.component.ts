@@ -11,6 +11,7 @@ import { PageType } from '../../model/page-type.enum';
 import { DynamicUtil } from '../../model/dynamic-util';
 import { ManagerType } from '../../model/manager-type.enum';
 import { PageMode } from '../../model/page-mode.enum';
+import { DynamicAlertManagerService } from '../../services/dynamic-alert-manager.service';
 
 @Component({
   selector: 'zee-dynamic-grid',
@@ -90,7 +91,7 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
       return true;
   }
 
-  constructor() {
+  constructor(private alertManagerService: DynamicAlertManagerService) {
       super();
       this.columns = new Array<ColumnMetadata>();
   }
@@ -104,7 +105,7 @@ export class DynamicGridComponent extends DynamicBaseComponent implements OnInit
                       this.columns = cols;
                       this.setupDisplayedColumns();
                   },
-                  err => console.warn(err)
+                  err => this.alertManagerService.warning({msg: err, i18n: false})
               );
               this.config = this.manager.config;
               this.collect = this.manager.mode().subscribe(mode => {

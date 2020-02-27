@@ -1,5 +1,5 @@
 {
-  "coreconApp": {
+  "zeemonApp": {
     "TaskState": {
       "null": "",
       "PENDING": "PENDING",

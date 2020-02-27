@@ -49,7 +49,7 @@ describe('DynamicButtonComponent', () => {
     const dynamicButtonDe: DebugElement = fixture.debugElement;
 
     fixture.detectChanges();
-    let buttons = dynamicButtonDe.queryAll(By.css('button'));
+    const buttons = dynamicButtonDe.queryAll(By.css('button'));
     expect(buttons.length).toEqual(1);
   });
 
@@ -72,8 +72,8 @@ describe('DynamicButtonComponent', () => {
     const dynamicButtonDe: DebugElement = fixture.debugElement;
 
     fixture.detectChanges();
-    let buttons = dynamicButtonDe.queryAll(By.css('button'));
-    buttons[0].triggerEventHandler('click', {})
+    const buttons = dynamicButtonDe.queryAll(By.css('button'));
+    buttons[0].triggerEventHandler('click', {});
 
     fixture.detectChanges();
     expect(actionPayload).toEqual(testPayload);

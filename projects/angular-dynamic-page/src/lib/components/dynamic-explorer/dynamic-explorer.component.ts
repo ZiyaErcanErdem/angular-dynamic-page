@@ -179,7 +179,7 @@ export class DynamicExplorerComponent extends DynamicBaseComponent implements On
 
   ngOnInit() {
       if (this.isRoot) {
-          this.rootNodeSubscription = this.manager.currentTop.subscribe(current => {
+          this.rootNodeSubscription = this.manager?.currentTop.subscribe(current => {
               this.editorElement = current;
               this.reset();
               this.resetActions();

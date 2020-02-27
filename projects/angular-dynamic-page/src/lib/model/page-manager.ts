@@ -45,6 +45,8 @@ export interface PageManager<T> {
   readonly dynamicConfig: IDynamicConfig;
   readonly config: PageConfig<any>;
 
+  start(): PageManager<T>;
+
   withRouter(router: Router): PageManager<T>;
   withRoute(route: ActivatedRoute): PageManager<T>;
   withDialog(dialog: DynamicPopoverService): PageManager<T>;

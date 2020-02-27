@@ -49,6 +49,7 @@ import { PopoverConfig } from './popover-config';
 
 export class DynamicPageManager<T> extends DynamicBaseComponent implements PageManager<T> {
     private router: Router;
+    private route: ActivatedRoute;
     private dialog: DynamicPopoverService;
     private provider: DynamicDataService;
     private datasource: DynamicDataSource<T>;
@@ -92,6 +93,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     private columnsSelection: SelectionModel<ColumnMetadata>;
     private dataSelection: SelectionModel<T>;
     private isReady = false;
+    private isStarted = false;
     private pageMetamodel: PageMetamodel;
     private metadataProvider: DynamicMetamodelService;
     private lastQuery: Criteria;
@@ -158,7 +160,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.monitoredFormItems = [];
 
         this.collect = this.dataSelection.changed.subscribe(changes => {
-            if (this.dataSelection.selected && this.dataSelection.selected.length > 0) {
+            if (this.dataSelection?.selected && this.dataSelection.selected?.length > 0) {
                 this.pageDataSubject.next(this.dataSelection.selected[0]);
             } else {
                 this.pageDataSubject.next(undefined);
@@ -260,6 +262,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         this.detachViewer();
 
         this.router = undefined;
+        this.route = undefined;
         this.dialog = undefined;
         this.provider = undefined;
         this.dataAuthorizer = undefined;
@@ -305,7 +308,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
 
     public withMetamodelProvider(metadataProvider: DynamicMetamodelService): PageManager<T> {
         this.metadataProvider = metadataProvider;
-        this.build();
+        // this.build();
         return this;
     }
 
@@ -329,6 +332,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     public withRoute(route: ActivatedRoute): PageManager<T> {
+        this.route = route;
         this.routeDataSubscription = route.data.subscribe(data => {
             if (this.isDestroyed()) {
                 return;
@@ -390,13 +394,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         if (view && !view.completed) {
             this.collect = view.attached().subscribe(attached => {
                 if (attached) {
-                    // console.log('View is attached');
                     this.setPageMode(PageMode.VIEW);
-                }
-            });
-            this.collect = view.detached().subscribe(detached => {
-                if (detached) {
-                    // this.setPageMode(PageMode.GRID);
                 }
             });
             this.pagePortalSubject.next(view);
@@ -642,6 +640,11 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     public createInstanceFor(qualifier: string, parent?: PageManager<any>): PageManager<any> {
         const instance = new DynamicPageManager<any>(qualifier, this.dynamicConfig, parent);
         instance.withStorageProvider(this.storage);
+        instance.withDialog(this.dialog);
+        instance.withRouter(this.router);
+        instance.withRoute(this.route);
+        instance.withMetamodelProvider(this.metadataProvider);
+        instance.withDataProvider(this.provider);
         return instance;
     }
 
@@ -722,7 +725,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                 return relation;
             })
             .withDefaultQuery(query => {
-                if (!selector.defaultQueryItems || selector.defaultQueryItems.length === 0) {
+                if (!selector.defaultQueryItems || selector.defaultQueryItems?.length === 0) {
                     return;
                 }
                 const criteriaBuilder = query
@@ -741,6 +744,14 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
         return selector.manager;
     }
 
+    public start(): PageManager<T> {
+        if (!this.isStarted) {
+            this.build();
+            this.connect();
+        }
+        return this;
+    }
+
     private build(): void {
         if (this.isReady) {
             // do nothing...
@@ -750,8 +761,10 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                 return;
             }
             if (this.config.pageRelation && this.config.pageRelation.metamodel) {
+                this.isReady = true;
                 Promise.resolve(this.config.pageRelation.metamodel).then(mm => this.handlePageMetamodel(mm));
             } else if (this.metadataProvider) {
+                this.isReady = true;
                 const mm = this.metadataProvider.getCachedMetamodel(this.config.qualifier, this.dynamicConfig.microserviceName);
                 if (mm) {
                     this.handlePageMetamodel(mm);
@@ -777,12 +790,12 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     private handlePageMetamodel(metamodel: PageMetamodel): void {
+        this.isStarted = true;
         this.pageMetamodel = metamodel;
         this.configureRelations(this.pageMetamodel);
         const cols: Array<ColumnMetadata> = this.pageMetamodel.getColumns();
         this.configureColumns(cols);
         this.configureDefaultQuery();
-        this.isReady = true;
         this.readySubject.next(this.isReady);
         this.setActiveManager(this);
     }
@@ -828,7 +841,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
             this.defaultQueryConstraintProvider(queryBuiler.query());
             query = queryBuiler.build();
         }
-        if (query && query.predicates && query.predicates.length > 0) {
+        if (criteria && query?.predicates?.length > 0) {
             query.predicates.push(criteria);
         } else {
             query = criteria;
@@ -851,7 +864,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                 col.showWhenGrid = this.gridCols.includes(col.path);
                 col.showWhenCompact = this.compactCols.includes(col.path);
             }
-            if (this.sortingSample && this.sortingSample.length > 0) {
+            if (this.sortingSample?.length > 0) {
                 col.order = this.sortingSample.indexOf(col.name);
                 col.order = col.order < 0 ? 1000 : col.order + 100;
             }
@@ -1202,7 +1215,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
             this.lastQuery = criteria;
             const searchQuery = this.extractSearchQuery(query);
             this.clearSelection();
-            console.warn(`PageManager.search => page: ${this.config.page} query: ${searchQuery}`);
+            // console.warn(`PageManager.search => page: ${this.config.page} query: ${searchQuery}`);
             if (this.dataAuthorizer) {
                 const authContext = this.dataAuthorizer.createAutrozitonContext();
                 return this.datasource
@@ -1248,7 +1261,6 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                     tap(
                         updatedData => {
                             // entity = Object.assign(entity, responseData);
-                            // console.log('PageManager.Update => entity updated');
                             this.refreshSearch().subscribe();
                             // this.synchEntity(updatedData);
                         },
@@ -1263,7 +1275,6 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                     tap(
                         responseData => {
                             // entity = Object.assign(entity, responseData);
-                            // console.log('PageManager.Update => entity updated');
                             this.refreshSearch().subscribe();
                             // this.synchEntity(responseData);
                         },
@@ -1283,7 +1294,6 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
                 tap(
                     rc => {
                         this.refreshSearch().subscribe();
-                        // console.log('PageManager.Delete => entity deleted: ' + rc);
                         // this.removeEntity(data);
                     },
                     err => (errHandler ? errHandler(err) : undefined)
@@ -1373,29 +1383,20 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     public findRelatedEntity<R>(relation: PageRelation, id: any): Observable<R> {
-        // console.log('PageManager.find entity');
         const response = this.datasource.findEntity<R>(relation, id).pipe(
             map(res => res.body),
-            tap(result => {
-                // console.log('PageManager.find => entity found: ' + result);
-            })
         );
         return response;
     }
 
     public findRelatedEntities<R>(relation: PageRelation): Observable<Array<R>> {
-        // console.log('PageManager.findAllEntities');
         const response = this.datasource.findAllEntities<R>(relation).pipe(
             map(res => res.body),
-            tap(results => {
-                // console.log('PageManager.findAllEntities => entities found: ' + (results ? results.length : 0));
-            })
         );
         return response;
     }
 
     public navigate(criteria: Criteria, page: number): Observable<Array<T>> {
-        // console.warn(`PageManager.navigate => page: ${page}`);
         if (page !== this.config.previousPage) {
             this.config.previousPage = page;
             return this.transition(criteria);
@@ -1416,7 +1417,7 @@ export class DynamicPageManager<T> extends DynamicBaseComponent implements PageM
     }
 
     private transition(criteria: Criteria): Observable<Array<T>> {
-        if (this.router && this.defaultPageURI && this.config.pageType === PageType.PAGE) {
+        if (criteria && this.router && this.defaultPageURI && this.config.pageType === PageType.PAGE) {
             this.router.navigate([this.defaultPageURI], {
                 queryParams: {
                     page: this.config.page,

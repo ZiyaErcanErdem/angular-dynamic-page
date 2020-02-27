@@ -18,6 +18,8 @@ import { DynamicUtil } from '../../model/dynamic-util';
 export class DynamicPageActionsComponent extends BasePanelView implements OnInit, OnDestroy {
   @Input()
   manager: PageManager<any>;
+  @Input()
+  public theme: Theme;
 
   public query: Criteria;
 

@@ -6,6 +6,7 @@ import { Theme } from '../../model/theme.enum';
 import { DebugElement } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { PanelState } from '../../model/panel-state.enum';
+import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 
 describe('DynamicPanelComponent', () => {
   let component: DynamicPanelComponent;
@@ -16,6 +17,7 @@ describe('DynamicPanelComponent', () => {
       declarations: [ DynamicPanelComponent ],
       imports: [
         ...prepareDynamicTestImports(),
+        DynamicButtonModule
       ],
       providers: [
         ...prepareDynamicTestProviders(),
@@ -65,7 +67,7 @@ describe('DynamicPanelComponent', () => {
 
     component.panelStateChanged.subscribe(state => {
       expect(state).toBe(PanelState.COLLAPSED);
-    })
+    });
     component.collapse();
     fixture.detectChanges();
 
@@ -73,5 +75,5 @@ describe('DynamicPanelComponent', () => {
     const panelContainerDe = panelDe.query(By.css('.panel-normal'));
     expect(panelContainerDe).toBeDefined();
   });
-  
+
 });

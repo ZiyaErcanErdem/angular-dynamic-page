@@ -91,12 +91,8 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
   }
 
   ngOnInit() {
-      this.manager.withDialog(this.popoverService);
-      this.manager.withRouter(this.router);
-      this.manager.withRoute(this.activatedRoute);
-      this.manager.withMetamodelProvider(this.dynamicMetamodelService);
-      this.manager.withDataProvider(this.dynamicDataService).connect();
       this.handlePageConfig(this.manager.config);
+      this.manager.start();
       this.collect = this.manager.query().subscribe(q => (this.query = q));
       this.collect = this.manager.dataSelectionChange().subscribe(c => this.setActionStates());
       this.collect = this.manager.mode().subscribe(mode => this.setupPageMode(mode));
@@ -125,7 +121,6 @@ export class DynamicPageComponent extends DynamicBaseComponent implements OnInit
           if (message && 'alert' === notificationType) {
               this.manager.openAlert(message, params);
           }
-          // console.log(`Notification => ${message}`, notification);
       }
   }
 

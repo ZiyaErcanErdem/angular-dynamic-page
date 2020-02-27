@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DynamicFormItemComponent } from './dynamic-form-item.component';
+import { prepareDynamicTestImports, prepareDynamicTestProviders } from '../../../test/dynamic-test-util';
 
 describe('DynamicFormItemComponent', () => {
   let component: DynamicFormItemComponent;
@@ -8,6 +9,12 @@ describe('DynamicFormItemComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        ...prepareDynamicTestImports(),
+      ],
+      providers: [
+        ...prepareDynamicTestProviders()
+      ],
       declarations: [ DynamicFormItemComponent ]
     })
     .compileComponents();

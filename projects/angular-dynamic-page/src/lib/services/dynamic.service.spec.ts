@@ -1,7 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DynamicService } from './dynamic.service';
-import { prepareDynamicTestImports, prepareDynamicRegistryConfiguration } from '../test/dynamic-test-util';
+import {
+  prepareDynamicTestImports,
+  prepareDynamicRegistryConfiguration,
+  prepareDynamicTestProviders
+} from '../test/dynamic-test-util';
 import { DynamicRegistryConfiguration } from './dynamic-config.service';
 import { IDynamicConfig } from '../model/dynamic-config';
 
@@ -13,7 +17,8 @@ describe('DynamicService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [...prepareDynamicTestImports()]
+      imports: [...prepareDynamicTestImports()],
+      providers: [...prepareDynamicTestProviders()]
     });
     service = TestBed.inject(DynamicService);
   });

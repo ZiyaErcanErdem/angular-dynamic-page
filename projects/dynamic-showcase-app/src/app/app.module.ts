@@ -3,14 +3,12 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DynamicPanelModule, DynamicEditorModule } from 'angular-dynamic-page';
+import { DynamicPanelModule } from 'angular-dynamic-page';
 import { DynamicButtonModule } from 'angular-dynamic-page';
 import { DynamicTableModule } from 'angular-dynamic-page';
-import { DynamicGridModule } from 'angular-dynamic-page';
 import { DynamicPageModule } from 'angular-dynamic-page';
 import { DynamicModule } from 'angular-dynamic-page';
 import { DynamicCoreModule } from 'angular-dynamic-page';
-import { DynamicPortalModule } from 'angular-dynamic-page';
 import { TranslateModule, TranslateLoader, MissingTranslationHandler, MissingTranslationHandlerParams } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -57,12 +55,12 @@ export function missingTranslationHandler() {
     }),
     DynamicCoreModule,
     DynamicModule.forRoot({
-      defaultAppId: 'Corecon',
+      defaultAppId: 'Zeemon',
       registries: [
         {
           serverApiUrl: 'http://localhost:8590/',
-          applicationId: 'Corecon',
-          i18nPrefix: 'coreconApp',
+          applicationId: 'Zeemon',
+          i18nPrefix: 'zeemonApp',
           i18nAppName: '',
           appPathPrefix: ''
         }

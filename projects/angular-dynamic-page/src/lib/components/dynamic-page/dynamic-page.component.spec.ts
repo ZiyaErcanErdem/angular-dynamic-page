@@ -8,7 +8,6 @@ import {
 } from '../../test/dynamic-test-util';
 import { DynamicService } from '../../services/dynamic.service';
 import { getSampleEndpointData, getSampleEndpointMetamodelData } from '../../test/dynamic-test-data';
-import { DynamicConfigService } from '../../services/dynamic-config.service';
 import { DynamicPanelModule } from '../dynamic-panel/dynamic-panel.module';
 import { DynamicPageActionsModule } from '../dynamic-page-actions/dynamic-page-actions.module';
 import { DynamicGridModule } from '../dynamic-grid/dynamic-grid.module';
@@ -18,12 +17,13 @@ import { DynamicButtonModule } from '../dynamic-button/dynamic-button.module';
 import { DynamicExcelModule } from '../dynamic-excel/dynamic-excel.module';
 import { DynamicPopoverModule } from '../dynamic-popover/dynamic-popover.module';
 import { DynamicNotifierModule } from '../dynamic-notifier/dynamic-notifier.module';
+import { DebugElement } from '@angular/core';
+import { By } from '@angular/platform-browser';
 
 describe('DynamicPageComponent', () => {
   let component: DynamicPageComponent;
   let fixture: ComponentFixture<DynamicPageComponent>;
   let dynamicService: DynamicService;
-  let dynamicConfigService: DynamicConfigService;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -51,9 +51,8 @@ describe('DynamicPageComponent', () => {
     fixture = TestBed.createComponent(DynamicPageComponent);
     component = fixture.componentInstance;
     dynamicService = TestBed.inject(DynamicService);
-    dynamicConfigService =  TestBed.inject(DynamicConfigService);
 
-    component.manager = createSamplePageManager(dynamicConfigService);
+    component.manager = createSamplePageManager(dynamicService);
     fixture.detectChanges();
   });
 
@@ -61,7 +60,7 @@ describe('DynamicPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should search with given qualifier', (() => {
+  it('should search with given qualifier', () => {
     const qualifier = 'Endpoint';
     const config = dynamicService.getConfig();
 
@@ -70,7 +69,7 @@ describe('DynamicPageComponent', () => {
 
     const testMetamodelData = getSampleEndpointMetamodelData();
     const metamodelURI = `${config.serverApiUrl}api/dynamic/metamodel/${qualifier}`;
-    const httpTestingController = TestBed.get(HttpTestingController);
+    const httpTestingController = TestBed.inject(HttpTestingController);
 
     component.title = 'Test Page';
 
@@ -79,20 +78,28 @@ describe('DynamicPageComponent', () => {
     const metamodelReq = httpTestingController.expectOne(metamodelURI);
     expect(metamodelReq.request.method).toEqual('GET');
     metamodelReq.flush(testMetamodelData);
-    // httpTestingController.verify();
 
     fixture.detectChanges();
 
-    let dataReq = httpTestingController.expectOne(dataURI);
+    const dataReq = httpTestingController.expectOne(dataURI);
     expect(dataReq.request.method).toEqual('GET');
     dataReq.flush(testData);
-    httpTestingController.verify();
+
+    fixture.detectChanges();
 
     component.manager.ready().subscribe(isReady => {
       if (isReady) {
+        Promise.resolve(null).then(() => {
+          fixture.detectChanges();
+          const dynamicPageDe: DebugElement = fixture.debugElement;
 
+          const notifierDe = dynamicPageDe.query(By.css('zee-dynamic-notifier'));
+          expect(notifierDe).toBeTruthy();
+      });
       }
     });
 
-  }));
+    httpTestingController.verify();
+
+  });
 });

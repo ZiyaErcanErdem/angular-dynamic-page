@@ -110,7 +110,8 @@ export class PageTaskComponent extends BasePageView<Task> implements OnInit, OnD
           .addPredicate('checkScript.scriptName', Operator.LIKE, '').and()
           .addPredicate('taskName', Operator.LIKE, '').and();
        })
-      .withViewer(PageViewMode.EDITOR);
+      .withViewer(PageViewMode.EDITOR)
+      .start();
 
     this.pageManager.ready().subscribe(isReady => {
       if (isReady) {

@@ -10,6 +10,7 @@ import { Theme } from '../../model/theme.enum';
 import { ManagerType } from '../../model/manager-type.enum';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ColumnType } from '../../model/column-type.enum';
+import { DynamicAlertManagerService } from '../../services/dynamic-alert-manager.service';
 
 @Component({
   selector: 'zee-dynamic-content-view',
@@ -35,6 +36,7 @@ export class DynamicContentViewComponent extends DynamicBaseComponent implements
 
   constructor(
       private dynamicMetamodelService: DynamicMetamodelService,
+      private alertManagerService: DynamicAlertManagerService,
       @Optional() private popoverRef: PopoverRef<{ ctx: ContentContext; theme: Theme }, any>
   ) {
       super();
@@ -85,7 +87,7 @@ export class DynamicContentViewComponent extends DynamicBaseComponent implements
           },
           (res: HttpErrorResponse) => {
               const err = `Could not find metadata of: ${this.qualifier}`;
-              console.warn(err);
+              this.alertManagerService.warning({msg: err, i18n: false});
           }
       );
   }

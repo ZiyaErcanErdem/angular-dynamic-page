@@ -23,7 +23,7 @@ describe('DynamicConfigService', () => {
   it('should get default config', () => {
     const config = service.getConfig();
     expect(config).toBeTruthy();
-    expect(config.applicationId).toEqual(registry.defaultAppId);    
+    expect(config.applicationId).toEqual(registry.defaultAppId);
   });
 
   it('should get config with applicationId', () => {

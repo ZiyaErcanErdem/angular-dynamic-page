@@ -110,11 +110,9 @@ export abstract class DynamicPageMonitor<T> extends BasePanelView implements OnI
                     this.activePageManager.clearEntityUpdateDelegate();
                 }
                 if (apb) {
-                    console.log('Active Manager Changed: ' + apb.qualifier);
                     this.activePageManager = apb;
                     this.monitorManager(this.activePageManager);
                 } else {
-                    console.log('Active Manager Removed');
                     this.activePageManager = this.pageManager;
                 }
             });

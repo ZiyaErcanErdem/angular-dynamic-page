@@ -431,7 +431,6 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
         const elm = event.payload;
         const elmUniqueId = elm ? elm.uniqueId : null;
 
-        // console.log('Editor event fired : ' + event.type);
         if (event.type === EditorAction.CREATE_CHILD) {
             if (this.contentProvider && elm) {
                 const childContent = this.contentProvider.createChild(event.extra, elm.content);
@@ -490,7 +489,6 @@ export class DynamicExplorerManager<T> extends DynamicBaseComponent implements I
         }
         const elm = event.payload;
 
-        // console.log('Navigation event fired : ' + event.type);
         if (event.type === NavigationAction.UP) {
             this.navigateTo(elm.parent);
         } else if (event.type === NavigationAction.TOP) {

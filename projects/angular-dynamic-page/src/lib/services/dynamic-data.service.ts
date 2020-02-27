@@ -48,7 +48,6 @@ export class DynamicDataService {
   }
 
   private apiUriOf(microservice?: string): string {
-    console.log(this.serverApiUrl);
     if (this.microserviceName || microservice) {
       return `${this.serverApiUrl}services/${microservice ? microservice : this.microserviceName}/api`;
     } else {

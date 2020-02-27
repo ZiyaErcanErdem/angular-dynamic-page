@@ -20,15 +20,15 @@ export class DynamicFormSelectComponent implements OnInit, FormField {
   constructor() {}
 
   get metadata(): ColumnMetadata {
-      return this.field.metadata;
+      return this.field?.metadata;
   }
 
   get control(): AbstractControl {
-      return this.group.controls[this.field.metadata.name];
+      return this.group?.controls[this.field.metadata.name];
   }
 
   get required(): boolean | null {
-      return !this.metadata.nullable ? true : null;
+      return !this.metadata?.nullable ? true : null;
   }
 
   ngOnInit() {}

@@ -1,5 +1,5 @@
 {
-  "coreconApp": {
+  "zeemonApp": {
     "AgentType": {
       "null": "",
       "SQL_AGENT": "SQL_AGENT",

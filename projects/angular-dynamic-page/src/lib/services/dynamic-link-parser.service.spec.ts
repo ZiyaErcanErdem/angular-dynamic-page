@@ -5,7 +5,7 @@ import { prepareDynamicTestImports } from '../test/dynamic-test-util';
 
 describe('DynamicLinkParserService', () => {
   let service: DynamicLinkParserService;
-  const linkHeader = '<http://a.com/search/xxx?search=(xxx.id%3D%3D1)&sort=id%2Cdesc&page=1&size=20>; rel="last",<http://a.com/search/xxx?search=(xxx.id%3D%3D1)&sort=id%2Cdesc&page=0&size=20>; rel="first"';
+  const linkHeader = '<a/xxx?sort=id%2Cdesc&page=1&size=20>; rel="last",<a/xxx?sort=id%2Cdesc&page=0&size=20>; rel="first"';
 
   beforeEach(() => {
     TestBed.configureTestingModule({

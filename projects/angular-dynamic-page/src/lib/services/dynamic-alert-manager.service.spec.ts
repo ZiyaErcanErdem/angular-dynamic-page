@@ -65,7 +65,7 @@ describe('DynamicAlertManagerService', () => {
     const error1 = service.error({msg: 'Error_1', params: {param: 'e'}, i18n: true});
     const info1 = service.info({msg: 'Info_1', params: {param: 'i'}, i18n: true});
     const warning1 = service.warning({msg: 'Warning_1', params: {param: 'w'}, i18n: true});
-    
+
     service.alerts().subscribe(alerts => {
       expect(alerts.length).toEqual(4);
 
@@ -85,7 +85,7 @@ describe('DynamicAlertManagerService', () => {
     service.warning({msg: 'Warning_1', params: {param: 'w'}, i18n: true});
 
     service.clear();
-    
+
     service.alerts().subscribe(alerts => {
       expect(alerts.length).toEqual(0);
     });
@@ -100,7 +100,7 @@ describe('DynamicAlertManagerService', () => {
     service.warning({msg: 'Warning_1', params: {param: 'w'}, i18n: true});
 
     alert1.close();
-    
+
     service.alerts().subscribe(alerts => {
       expect(alerts.length).toEqual(3);
     });
@@ -115,7 +115,7 @@ describe('DynamicAlertManagerService', () => {
     service.warning({msg: 'Warning_1', params: {param: 'w'}, i18n: true});
 
     service.closeAlert(alert1.id);
-    
+
     service.alerts().subscribe(alerts => {
       expect(alerts.length).toEqual(3);
     });

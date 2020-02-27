@@ -278,8 +278,6 @@ export class GenericDynamicAction<D> extends DynamicAction<D> {
     }
 
     protected handle(data: D) {
-        // console.log('disabled: ' + this.disabled);
-        // console.log('visible: ' + this.visible);
         if (this.handlerAction) {
             this.handlerAction(this, data);
         }
