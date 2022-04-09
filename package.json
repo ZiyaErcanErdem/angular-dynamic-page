@@ -29,7 +29,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "angular-dynamic-page": "0.1.5",
     "bootstrap": "^4.4.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "ngx-webstorage": "5.0.0",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
